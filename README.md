@@ -38,7 +38,7 @@ __For admins__:
 
 __For players__:
 - Run `/submit <track>` to submit a track. If there are multiple Hearizons with submissions open, you'll have to specify which one. This command can also be used to update your submission for a Hearizons by running it again with the updated submission.
-- Run `/review` to submit a review for a track you were assigned to. This will then send a message in the reviews post channel, and you will no longer be able to submit a review until the next cycle.
+- Run `/review` to submit a review for a track you were assigned to. This will then send a message in the reviews post channel, and you will no longer be able to submit a review until the next cycle. If your review is overdue, you will have to specify which Hearizons you are submitting a review for.
 
 
 `/ping` can be used to check the bot's connection status.
