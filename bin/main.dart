@@ -31,7 +31,7 @@ void main() async {
     ..addCommand(submit)
     ..addCommand(review);
 
-  commands.addConverter(activeHearizonsConverter);
+  commands.addConverter(activeHearizonConverter);
 
   client
     ..registerPlugin(Logging())

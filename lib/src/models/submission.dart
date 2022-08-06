@@ -9,7 +9,7 @@ class Submission with _$Submission {
   @SqliteBoolConverter()
   const factory Submission({
     int? id,
-    @JsonKey(name: 'hearizons_id') required int hearizonsId,
+    @JsonKey(name: 'hearizons_id') required int hearizonId,
     @JsonKey(name: 'phase_id') required int phaseId,
     @JsonKey(name: 'user_id') required int userId,
     required String url,

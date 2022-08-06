@@ -1,7 +1,6 @@
 import 'package:get_it/get_it.dart';
-import 'package:hearizons_bot/src/converters/hearizons.dart';
 import 'package:hearizons_bot/src/models/assigned_reviewer.dart';
-import 'package:hearizons_bot/src/models/hearizons.dart';
+import 'package:hearizons_bot/src/models/hearizon.dart';
 import 'package:hearizons_bot/src/services/database.dart';
 import 'package:nyxx/nyxx.dart';
 import 'package:nyxx_commands/nyxx_commands.dart';
@@ -12,15 +11,15 @@ final review = ChatCommand.slashOnly(
   'Submit a review',
   id('review', (
     InteractionChatContext context, [
-    @Description('The Hearizons to submit a review for') Hearizons? hearizons,
+    @Description('The Hearizon to submit a review for') Hearizon? hearizon,
   ]) async {
     final database = GetIt.I.get<Database>();
 
-    if (hearizons == null) {
-      if (database.reviewingHearizons.isEmpty) {
+    if (hearizon == null) {
+      if (database.reviewingHearizon.isEmpty) {
         final embed = EmbedBuilder()
           ..color = DiscordColor.red
-          ..title = 'No active hearizons'
+          ..title = 'No active hearizon'
           ..description =
               'There are no currently active hearizons accepting reviews. Try again in a while.';
 
@@ -28,27 +27,27 @@ final review = ChatCommand.slashOnly(
         return;
       }
 
-      if (database.reviewingHearizons.length > 1) {
+      if (database.reviewingHearizon.length > 1) {
         final embed = EmbedBuilder()
           ..color = DiscordColor.red
-          ..title = 'Unspecified hearizons'
+          ..title = 'Unspecified hearizon'
           ..description =
-              'There are currently multiple ongoing hearizons and you did not specify which hearizons to review. Try again with the `hearizons` command argument.';
+              'There are currently multiple ongoing hearizons and you did not specify which hearizon to review. Try again with the `hearizon` command argument.';
 
         await context.respond(MessageBuilder.embed(embed), private: true);
         return;
       }
 
-      hearizons = database.reviewingHearizons.first;
+      hearizon = database.reviewingHearizon.first;
     }
 
-    AssignedReviewer? toReview = database.getAssignment(context.user.id.id, hearizons);
+    AssignedReviewer? toReview = database.getAssignment(context.user.id.id, hearizon);
 
     if (toReview == null) {
       final embed = EmbedBuilder()
         ..color = DiscordColor.red
         ..title = 'No reviews assigned'
-        ..description = 'There was no review assigned to you for this Hearizons.';
+        ..description = 'There was no review assigned to you for this Hearizon.';
 
       await context.respond(MessageBuilder.embed(embed), private: true);
       return;
@@ -58,7 +57,7 @@ final review = ChatCommand.slashOnly(
       final embed = EmbedBuilder()
         ..color = DiscordColor.red
         ..title = 'Review already submitted'
-        ..description = "You've already submitted a review for this Hearizons.";
+        ..description = "You've already submitted a review for this Hearizon.";
 
       await context.respond(MessageBuilder.embed(embed), private: true);
       return;
@@ -67,7 +66,7 @@ final review = ChatCommand.slashOnly(
     await context.interactionEvent.respondModal(
       ModalBuilder(
         'review-${toReview.id}',
-        'Review for ${hearizons.name}',
+        'Review for ${hearizon.name}',
       )..componentRows = [
           ComponentRowBuilder()
             ..addComponent(

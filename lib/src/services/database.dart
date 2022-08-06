@@ -1,5 +1,5 @@
 import 'package:hearizons_bot/src/models/assigned_reviewer.dart';
-import 'package:hearizons_bot/src/models/hearizons.dart';
+import 'package:hearizons_bot/src/models/hearizon.dart';
 import 'package:hearizons_bot/src/models/review.dart';
 import 'package:hearizons_bot/src/models/submission.dart';
 import 'package:sqlite3/sqlite3.dart' hide Database;
@@ -15,18 +15,17 @@ Database initializeDatabase() {
 class Database {
   final sqlite.Database database;
 
-  final Map<int, Hearizons> _hearizonsCache = {};
+  final Map<int, Hearizon> _hearizonCache = {};
   final Map<int, Submission> _submissionCache = {};
   final Map<int, Review> _reviewCache = {};
   final Map<int, AssignedReviewer> _assignedReviewerCache = {};
 
-  Iterable<Hearizons> get hearizons => _hearizonsCache.values;
-  Iterable<Hearizons> get activeHearizons =>
-      _hearizonsCache.values.where((hearizons) => !hearizons.closed);
-  Iterable<Hearizons> get submittingHearizons =>
-      activeHearizons.where((hearizons) => !hearizons.inReview);
-  Iterable<Hearizons> get reviewingHearizons =>
-      activeHearizons.where((hearizons) => hearizons.inReview);
+  Iterable<Hearizon> get hearizon => _hearizonCache.values;
+  Iterable<Hearizon> get activeHearizon =>
+      _hearizonCache.values.where((hearizon) => !hearizon.closed);
+  Iterable<Hearizon> get submittingHearizon =>
+      activeHearizon.where((hearizon) => !hearizon.inReview);
+  Iterable<Hearizon> get reviewingHearizon => activeHearizon.where((hearizon) => hearizon.inReview);
 
   Iterable<Submission> get submissions => _submissionCache.values;
 
@@ -36,7 +35,7 @@ class Database {
   Iterable<AssignedReviewer> get missingReviews =>
       _assignedReviewerCache.values.where((assignedReviewer) => assignedReviewer.reviewId == null);
 
-  Hearizons getHearizons(int id) => _hearizonsCache[id]!;
+  Hearizon getHearizon(int id) => _hearizonCache[id]!;
   Submission getSubmission(int id) => _submissionCache[id]!;
   Review getReview(int id) => _reviewCache[id]!;
   AssignedReviewer getAssignedReviewer(int id) => _assignedReviewerCache[id]!;
@@ -91,14 +90,14 @@ class Database {
   }
 
   void populateCache() {
-    _hearizonsCache.clear();
+    _hearizonCache.clear();
     _submissionCache.clear();
     _reviewCache.clear();
     _assignedReviewerCache.clear();
 
-    _hearizonsCache.addEntries(database
+    _hearizonCache.addEntries(database
         .select('SELECT * FROM hearizons;')
-        .map((row) => MapEntry(row['id'], Hearizons.fromJson(row))));
+        .map((row) => MapEntry(row['id'], Hearizon.fromJson(row))));
     _submissionCache.addEntries(database
         .select('SELECT * FROM submissions;')
         .map((row) => MapEntry(row['id'], Submission.fromJson(row))));
@@ -110,19 +109,15 @@ class Database {
         .map((row) => MapEntry(row['id'], AssignedReviewer.fromJson(row))));
   }
 
-  void upsertHearizons(Hearizons hearizons) {
-    if (hearizons.id == null) {
-      int id = database
-          .select('''
+  void upsertHearizon(Hearizon hearizon) {
+    if (hearizon.id == null) {
+      int id = database.select('''
         INSERT INTO hearizons (name, in_review, phase, closed)
         VALUES (?, ?, ?, ?)
         RETURNING id;
-      ''', [hearizons.name, hearizons.inReview, hearizons.phase, hearizons.closed])
-          .first
-          .values
-          .first;
+      ''', [hearizon.name, hearizon.inReview, hearizon.phase, hearizon.closed]).first.values.first;
 
-      _hearizonsCache[id] = hearizons.copyWith(id: id);
+      _hearizonCache[id] = hearizon.copyWith(id: id);
     } else {
       database.execute('''
         UPDATE hearizons SET
@@ -131,9 +126,9 @@ class Database {
           phase = ?,
           closed = ?
         WHERE id = ?;
-      ''', [hearizons.name, hearizons.inReview, hearizons.phase, hearizons.closed, hearizons.id]);
+      ''', [hearizon.name, hearizon.inReview, hearizon.phase, hearizon.closed, hearizon.id]);
 
-      _hearizonsCache[hearizons.id!] = hearizons;
+      _hearizonCache[hearizon.id!] = hearizon;
     }
   }
 
@@ -151,7 +146,7 @@ class Database {
                 url = excluded.url
               RETURNING id;
             ''',
-            [submission.hearizonsId, submission.phaseId, submission.userId, submission.url],
+            [submission.hearizonId, submission.phaseId, submission.userId, submission.url],
           )
           .first
           .values
@@ -167,7 +162,7 @@ class Database {
           url = ?
         WHERE id = ?;
       ''', [
-        submission.hearizonsId,
+        submission.hearizonId,
         submission.phaseId,
         submission.userId,
         submission.url,
@@ -241,26 +236,26 @@ class Database {
     }
   }
 
-  bool hearizonsExists(String name) => hearizons.any((element) => element.name == name);
+  bool hearizonExists(String name) => hearizon.any((element) => element.name == name);
 
   bool hasExistingSubmission(Submission submission) => submissions.any(
         (element) =>
-            element.hearizonsId == submission.hearizonsId &&
+            element.hearizonId == submission.hearizonId &&
             element.phaseId == submission.phaseId &&
             element.userId == submission.userId,
       );
 
-  Iterable<Submission> getSubmissionsForHearizons(Hearizons hearizons) => submissions.where(
+  Iterable<Submission> getSubmissionsForHearizon(Hearizon hearizon) => submissions.where(
         (submission) =>
-            submission.hearizonsId == hearizons.id && submission.phaseId == hearizons.phase,
+            submission.hearizonId == hearizon.id && submission.phaseId == hearizon.phase,
       );
 
-  AssignedReviewer? getAssignment(int userId, Hearizons hearizons) {
+  AssignedReviewer? getAssignment(int userId, Hearizon hearizon) {
     final reviews = assignedReviewers.where(
       (element) =>
           element.userId == userId &&
-          getSubmission(element.submissionId).hearizonsId == hearizons.id &&
-          (getSubmission(element.submissionId).phaseId == hearizons.phase ||
+          getSubmission(element.submissionId).hearizonId == hearizon.id &&
+          (getSubmission(element.submissionId).phaseId == hearizon.phase ||
               element.reviewId == null),
     );
 
@@ -275,7 +270,7 @@ class Database {
     review = _upsertReview(review);
 
     final assignment =
-        getAssignment(review.userId, getHearizons(getSubmission(review.submissionId).hearizonsId))!;
+        getAssignment(review.userId, getHearizon(getSubmission(review.submissionId).hearizonId))!;
 
     upsertAssignedReviewer(assignment.copyWith(reviewId: review.id));
   }

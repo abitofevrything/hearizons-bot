@@ -2,8 +2,7 @@ import 'dart:math';
 
 import 'package:get_it/get_it.dart';
 import 'package:hearizons_bot/src/models/assigned_reviewer.dart';
-import 'package:hearizons_bot/src/models/hearizons.dart';
-import 'package:hearizons_bot/src/models/submission.dart';
+import 'package:hearizons_bot/src/models/hearizon.dart';
 import 'package:hearizons_bot/src/services/database.dart';
 import 'package:nyxx/nyxx.dart';
 import 'package:nyxx_commands/nyxx_commands.dart';
@@ -12,25 +11,25 @@ import 'package:nyxx_pagination/nyxx_pagination.dart';
 
 final cycle = ChatGroup(
   'cycle',
-  'Manage the Hearizons cycles',
+  'Manage the Hearizon cycles',
   children: [advance, review],
 );
 
 final advance = ChatCommand(
   'advance',
-  'Advance a Hearizons to the next cycle',
+  'Advance a Hearizon to the next cycle',
   id('admin-cycle-advance', (
     IChatContext context,
-    @Description('The Hearizons to advance') Hearizons hearizons,
+    @Description('The Hearizon to advance') Hearizon hearizon,
   ) async {
     final database = GetIt.I.get<Database>();
 
-    if (!hearizons.inReview) {
+    if (!hearizon.inReview) {
       final embed = EmbedBuilder()
         ..color = DiscordColor.orange
-        ..title = 'Hearizons not in review phase'
+        ..title = 'Hearizon not in review phase'
         ..description =
-            "This Hearizons hasn't yet had a review in its current cycle. Are you sure you want to continue? Doing so will discard all submissions to the current phase.";
+            "This Hearizon hasn't yet had a review in its current cycle. Are you sure you want to continue? Doing so will discard all submissions to the current cycle.";
 
       final updateButton = ButtonBuilder(
         'Continue',
@@ -65,14 +64,14 @@ final advance = ChatCommand(
       }
     }
 
-    database.upsertHearizons(hearizons.copyWith(
+    database.upsertHearizon(hearizon.copyWith(
       inReview: false,
-      phase: hearizons.phase + 1,
+      phase: hearizon.phase + 1,
     ));
 
     final embed = EmbedBuilder()
       ..color = DiscordColor.green
-      ..title = 'Hearizons moved to the next cycle'
+      ..title = 'Hearizon moved to the next cycle'
       ..description = 'Successfully moved to the next cycle.';
 
     await context.respond(MessageBuilder.embed(embed));
@@ -81,24 +80,24 @@ final advance = ChatCommand(
 
 final review = ChatCommand(
   'review',
-  'Move a Hearizons into the review phase',
-  id('admin-hearizons-review', (
+  'Move a Hearizon into the review phase',
+  id('admin-hearizon-review', (
     IChatContext context,
-    @Description('The Hearizons to review') Hearizons hearizons,
+    @Description('The Hearizon to review') Hearizon hearizon,
   ) async {
     final database = GetIt.I.get<Database>();
 
-    if (hearizons.inReview) {
+    if (hearizon.inReview) {
       final embed = EmbedBuilder()
         ..color = DiscordColor.red
-        ..title = 'Hearizons already in review'
-        ..description = '${hearizons.name} is already in the review phase.';
+        ..title = 'Hearizon already in review'
+        ..description = '${hearizon.name} is already in the review phase.';
 
       await context.respond(MessageBuilder.embed(embed));
       return;
     }
 
-    var submissions = database.getSubmissionsForHearizons(hearizons).toList();
+    var submissions = database.getSubmissionsForHearizon(hearizon).toList();
 
     if (submissions.length < 2) {
       final embed = EmbedBuilder()
@@ -180,11 +179,11 @@ final review = ChatCommand(
       database.upsertAssignedReviewer(assignment);
     }
 
-    database.upsertHearizons(hearizons.copyWith(inReview: true));
+    database.upsertHearizon(hearizon.copyWith(inReview: true));
 
     final embed = EmbedBuilder()
       ..color = DiscordColor.green
-      ..title = 'Hearizons in review phase'
+      ..title = 'Hearizon in review phase'
       ..description = 'Successfully moved to the review phase!';
 
     await context.respond(MessageBuilder.embed(embed));

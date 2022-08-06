@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
 
-part of 'hearizons.dart';
+part of 'hearizon.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -14,12 +14,12 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
-Hearizons _$HearizonsFromJson(Map<String, dynamic> json) {
-  return _Hearizons.fromJson(json);
+Hearizon _$HearizonFromJson(Map<String, dynamic> json) {
+  return _Hearizon.fromJson(json);
 }
 
 /// @nodoc
-mixin _$Hearizons {
+mixin _$Hearizon {
   int? get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   @JsonKey(name: 'in_review')
@@ -29,14 +29,14 @@ mixin _$Hearizons {
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $HearizonsCopyWith<Hearizons> get copyWith =>
+  $HearizonCopyWith<Hearizon> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $HearizonsCopyWith<$Res> {
-  factory $HearizonsCopyWith(Hearizons value, $Res Function(Hearizons) then) =
-      _$HearizonsCopyWithImpl<$Res>;
+abstract class $HearizonCopyWith<$Res> {
+  factory $HearizonCopyWith(Hearizon value, $Res Function(Hearizon) then) =
+      _$HearizonCopyWithImpl<$Res>;
   $Res call(
       {int? id,
       String name,
@@ -46,12 +46,12 @@ abstract class $HearizonsCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$HearizonsCopyWithImpl<$Res> implements $HearizonsCopyWith<$Res> {
-  _$HearizonsCopyWithImpl(this._value, this._then);
+class _$HearizonCopyWithImpl<$Res> implements $HearizonCopyWith<$Res> {
+  _$HearizonCopyWithImpl(this._value, this._then);
 
-  final Hearizons _value;
+  final Hearizon _value;
   // ignore: unused_field
-  final $Res Function(Hearizons) _then;
+  final $Res Function(Hearizon) _then;
 
   @override
   $Res call({
@@ -87,10 +87,10 @@ class _$HearizonsCopyWithImpl<$Res> implements $HearizonsCopyWith<$Res> {
 }
 
 /// @nodoc
-abstract class _$$_HearizonsCopyWith<$Res> implements $HearizonsCopyWith<$Res> {
-  factory _$$_HearizonsCopyWith(
-          _$_Hearizons value, $Res Function(_$_Hearizons) then) =
-      __$$_HearizonsCopyWithImpl<$Res>;
+abstract class _$$_HearizonCopyWith<$Res> implements $HearizonCopyWith<$Res> {
+  factory _$$_HearizonCopyWith(
+          _$_Hearizon value, $Res Function(_$_Hearizon) then) =
+      __$$_HearizonCopyWithImpl<$Res>;
   @override
   $Res call(
       {int? id,
@@ -101,14 +101,14 @@ abstract class _$$_HearizonsCopyWith<$Res> implements $HearizonsCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_HearizonsCopyWithImpl<$Res> extends _$HearizonsCopyWithImpl<$Res>
-    implements _$$_HearizonsCopyWith<$Res> {
-  __$$_HearizonsCopyWithImpl(
-      _$_Hearizons _value, $Res Function(_$_Hearizons) _then)
-      : super(_value, (v) => _then(v as _$_Hearizons));
+class __$$_HearizonCopyWithImpl<$Res> extends _$HearizonCopyWithImpl<$Res>
+    implements _$$_HearizonCopyWith<$Res> {
+  __$$_HearizonCopyWithImpl(
+      _$_Hearizon _value, $Res Function(_$_Hearizon) _then)
+      : super(_value, (v) => _then(v as _$_Hearizon));
 
   @override
-  _$_Hearizons get _value => super._value as _$_Hearizons;
+  _$_Hearizon get _value => super._value as _$_Hearizon;
 
   @override
   $Res call({
@@ -118,7 +118,7 @@ class __$$_HearizonsCopyWithImpl<$Res> extends _$HearizonsCopyWithImpl<$Res>
     Object? phase = freezed,
     Object? closed = freezed,
   }) {
-    return _then(_$_Hearizons(
+    return _then(_$_Hearizon(
       id: id == freezed
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -146,16 +146,16 @@ class __$$_HearizonsCopyWithImpl<$Res> extends _$HearizonsCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 @SqliteBoolConverter()
-class _$_Hearizons implements _Hearizons {
-  const _$_Hearizons(
+class _$_Hearizon implements _Hearizon {
+  const _$_Hearizon(
       {this.id,
       required this.name,
       @JsonKey(name: 'in_review') this.inReview = false,
       this.phase = 0,
       this.closed = false});
 
-  factory _$_Hearizons.fromJson(Map<String, dynamic> json) =>
-      _$$_HearizonsFromJson(json);
+  factory _$_Hearizon.fromJson(Map<String, dynamic> json) =>
+      _$$_HearizonFromJson(json);
 
   @override
   final int? id;
@@ -173,14 +173,14 @@ class _$_Hearizons implements _Hearizons {
 
   @override
   String toString() {
-    return 'Hearizons(id: $id, name: $name, inReview: $inReview, phase: $phase, closed: $closed)';
+    return 'Hearizon(id: $id, name: $name, inReview: $inReview, phase: $phase, closed: $closed)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_Hearizons &&
+            other is _$_Hearizon &&
             const DeepCollectionEquality().equals(other.id, id) &&
             const DeepCollectionEquality().equals(other.name, name) &&
             const DeepCollectionEquality().equals(other.inReview, inReview) &&
@@ -200,27 +200,26 @@ class _$_Hearizons implements _Hearizons {
 
   @JsonKey(ignore: true)
   @override
-  _$$_HearizonsCopyWith<_$_Hearizons> get copyWith =>
-      __$$_HearizonsCopyWithImpl<_$_Hearizons>(this, _$identity);
+  _$$_HearizonCopyWith<_$_Hearizon> get copyWith =>
+      __$$_HearizonCopyWithImpl<_$_Hearizon>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_HearizonsToJson(
+    return _$$_HearizonToJson(
       this,
     );
   }
 }
 
-abstract class _Hearizons implements Hearizons {
-  const factory _Hearizons(
+abstract class _Hearizon implements Hearizon {
+  const factory _Hearizon(
       {final int? id,
       required final String name,
       @JsonKey(name: 'in_review') final bool inReview,
       final int phase,
-      final bool closed}) = _$_Hearizons;
+      final bool closed}) = _$_Hearizon;
 
-  factory _Hearizons.fromJson(Map<String, dynamic> json) =
-      _$_Hearizons.fromJson;
+  factory _Hearizon.fromJson(Map<String, dynamic> json) = _$_Hearizon.fromJson;
 
   @override
   int? get id;
@@ -235,6 +234,6 @@ abstract class _Hearizons implements Hearizons {
   bool get closed;
   @override
   @JsonKey(ignore: true)
-  _$$_HearizonsCopyWith<_$_Hearizons> get copyWith =>
+  _$$_HearizonCopyWith<_$_Hearizon> get copyWith =>
       throw _privateConstructorUsedError;
 }

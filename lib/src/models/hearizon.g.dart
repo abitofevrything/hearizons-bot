@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'hearizons.dart';
+part of 'hearizon.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_Hearizons _$$_HearizonsFromJson(Map<String, dynamic> json) => _$_Hearizons(
+_$_Hearizon _$$_HearizonFromJson(Map<String, dynamic> json) => _$_Hearizon(
       id: json['id'] as int?,
       name: json['name'] as String,
       inReview: json['in_review'] == null
@@ -18,7 +18,7 @@ _$_Hearizons _$$_HearizonsFromJson(Map<String, dynamic> json) => _$_Hearizons(
           : const SqliteBoolConverter().fromJson(json['closed'] as int),
     );
 
-Map<String, dynamic> _$$_HearizonsToJson(_$_Hearizons instance) =>
+Map<String, dynamic> _$$_HearizonToJson(_$_Hearizon instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,

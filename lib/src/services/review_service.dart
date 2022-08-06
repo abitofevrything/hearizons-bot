@@ -43,7 +43,7 @@ Future<void> handleModalSubmit(IModalInteractionEvent event) async {
   final embed = EmbedBuilder()
     ..color = DiscordColor.flutterBlue
     ..title =
-        'Review for ${database.getHearizons(database.getSubmission(review.submissionId).hearizonsId).name}'
+        'Review for ${database.getHearizon(database.getSubmission(review.submissionId).hearizonId).name}'
     ..description =
         "This is <@!${review.userId}>'s review of ${database.getSubmission(review.submissionId).url}."
     ..addField(name: 'Review', content: review.content)

@@ -1,6 +1,6 @@
 import 'package:get_it/get_it.dart';
-import 'package:hearizons_bot/src/converters/hearizons.dart';
-import 'package:hearizons_bot/src/models/hearizons.dart';
+import 'package:hearizons_bot/src/converters/hearizon.dart';
+import 'package:hearizons_bot/src/models/hearizon.dart';
 import 'package:hearizons_bot/src/models/submission.dart';
 import 'package:hearizons_bot/src/services/database.dart';
 import 'package:nyxx/nyxx.dart';
@@ -9,21 +9,21 @@ import 'package:nyxx_interactions/nyxx_interactions.dart';
 
 final submit = ChatCommand(
   'submit',
-  'Submit an entry to a Hearizons',
+  'Submit an entry to a Hearizon',
   id('submit', (
     IChatContext context,
     @Description('Link or title of your submission') @Name('submission') String url, [
-    @Description('The hearizons to submit this to')
-    @UseConverter(submittingHearizonsConverter)
-        Hearizons? hearizons,
+    @Description('The hearizon to submit this to')
+    @UseConverter(submittingHearizonConverter)
+        Hearizon? hearizon,
   ]) async {
     final database = GetIt.I.get<Database>();
 
-    if (hearizons == null) {
-      if (database.submittingHearizons.isEmpty) {
+    if (hearizon == null) {
+      if (database.submittingHearizon.isEmpty) {
         final embed = EmbedBuilder()
           ..color = DiscordColor.red
-          ..title = 'No active hearizons'
+          ..title = 'No active hearizon'
           ..description =
               'There are no currently active hearizons accepting submissions. Try again in a while.';
 
@@ -31,21 +31,21 @@ final submit = ChatCommand(
         return;
       }
 
-      if (database.submittingHearizons.length > 1) {
+      if (database.submittingHearizon.length > 1) {
         final embed = EmbedBuilder()
           ..color = DiscordColor.red
-          ..title = 'Unspecified hearizons'
+          ..title = 'Unspecified hearizon'
           ..description =
-              'There are currently multiple ongoing hearizons and you did not specify which hearizons to submit to. Try again with the `hearizons` command argument.';
+              'There are currently multiple ongoing hearizons and you did not specify which hearizon to submit to. Try again with the `hearizon` command argument.';
 
         await context.respond(MessageBuilder.embed(embed), private: true);
         return;
       }
 
-      hearizons = database.submittingHearizons.first;
+      hearizon = database.submittingHearizon.first;
     }
 
-    final incompleteReview = database.getAssignment(context.user.id.id, hearizons);
+    final incompleteReview = database.getAssignment(context.user.id.id, hearizon);
     if (incompleteReview != null) {
       final embed = EmbedBuilder()
         ..color = DiscordColor.red
@@ -58,8 +58,8 @@ final submit = ChatCommand(
     }
 
     Submission submission = Submission(
-      hearizonsId: hearizons.id!,
-      phaseId: hearizons.phase,
+      hearizonId: hearizon.id!,
+      phaseId: hearizon.phase,
       userId: context.user.id.id,
       url: url,
     );
@@ -69,7 +69,7 @@ final submit = ChatCommand(
         ..color = DiscordColor.orange
         ..title = 'Submission already exists'
         ..description =
-            "You've already created a submission for this hearizons. Do you want to update your submission?";
+            "You've already created a submission for this hearizon. Do you want to update your submission?";
 
       final updateButton = ButtonBuilder(
         'Update',

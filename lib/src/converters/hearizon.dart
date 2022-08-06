@@ -1,63 +1,63 @@
 import 'package:collection/collection.dart';
 import 'package:fuzzy/fuzzy.dart';
 import 'package:get_it/get_it.dart';
-import 'package:hearizons_bot/src/models/hearizons.dart';
+import 'package:hearizons_bot/src/models/hearizon.dart';
 import 'package:hearizons_bot/src/services/database.dart';
 import 'package:nyxx_commands/nyxx_commands.dart';
 import 'package:nyxx_interactions/nyxx_interactions.dart';
 
-Iterable<Hearizons> _searchHearizons(String name, Iterable<Hearizons> source) {
-  return Fuzzy<Hearizons>(
+Iterable<Hearizon> _searchHearizons(String name, Iterable<Hearizon> source) {
+  return Fuzzy<Hearizon>(
     source.toList(),
     options: FuzzyOptions(
       keys: [
-        WeightedKey(name: 'name', getter: (hearizons) => hearizons.name, weight: 1),
+        WeightedKey(name: 'name', getter: (hearizon) => hearizon.name, weight: 1),
       ],
     ),
   ).search(name).map((e) => e.item);
 }
 
-Hearizons? _getHearizons(String name, Iterable<Hearizons> source) =>
+Hearizon? _getHearizons(String name, Iterable<Hearizon> source) =>
     _searchHearizons(name, source).firstOrNull;
 
-final activeHearizonsConverter = Converter<Hearizons>(
-  (view, context) => _getHearizons(view.getQuotedWord(), GetIt.I.get<Database>().activeHearizons),
+final activeHearizonConverter = Converter<Hearizon>(
+  (view, context) => _getHearizons(view.getQuotedWord(), GetIt.I.get<Database>().activeHearizon),
   autocompleteCallback: (context) => _searchHearizons(
     context.currentValue,
-    GetIt.I.get<Database>().activeHearizons,
+    GetIt.I.get<Database>().activeHearizon,
   ).map(
     (e) => ArgChoiceBuilder(e.name, e.name),
   ),
 );
 
-Hearizons? _getSubmittingHearizons(StringView view, IChatContext context) =>
-    _getHearizons(view.getQuotedWord(), GetIt.I.get<Database>().submittingHearizons);
+Hearizon? _getSubmittingHearizon(StringView view, IChatContext context) =>
+    _getHearizons(view.getQuotedWord(), GetIt.I.get<Database>().submittingHearizon);
 
 Iterable<ArgChoiceBuilder> _searchSubmittingHearizons(AutocompleteContext context) =>
     _searchHearizons(
       context.currentValue,
-      GetIt.I.get<Database>().submittingHearizons,
+      GetIt.I.get<Database>().submittingHearizon,
     ).map(
       (e) => ArgChoiceBuilder(e.name, e.name),
     );
 
-const submittingHearizonsConverter = Converter<Hearizons>(
-  _getSubmittingHearizons,
+const submittingHearizonConverter = Converter<Hearizon>(
+  _getSubmittingHearizon,
   autocompleteCallback: _searchSubmittingHearizons,
 );
 
-Hearizons? _getReviewingHearizons(StringView view, IChatContext context) =>
-    _getHearizons(view.getQuotedWord(), GetIt.I.get<Database>().reviewingHearizons);
+Hearizon? _getReviewingHearizon(StringView view, IChatContext context) =>
+    _getHearizons(view.getQuotedWord(), GetIt.I.get<Database>().reviewingHearizon);
 
 Iterable<ArgChoiceBuilder> _searchReviewingHearizons(AutocompleteContext context) =>
     _searchHearizons(
       context.currentValue,
-      GetIt.I.get<Database>().reviewingHearizons,
+      GetIt.I.get<Database>().reviewingHearizon,
     ).map(
       (e) => ArgChoiceBuilder(e.name, e.name),
     );
 
-const reviewingHearizonsConverter = Converter<Hearizons>(
-  _getReviewingHearizons,
+const reviewingHearizonConverter = Converter<Hearizon>(
+  _getReviewingHearizon,
   autocompleteCallback: _searchReviewingHearizons,
 );

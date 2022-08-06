@@ -22,7 +22,7 @@ Submission _$SubmissionFromJson(Map<String, dynamic> json) {
 mixin _$Submission {
   int? get id => throw _privateConstructorUsedError;
   @JsonKey(name: 'hearizons_id')
-  int get hearizonsId => throw _privateConstructorUsedError;
+  int get hearizonId => throw _privateConstructorUsedError;
   @JsonKey(name: 'phase_id')
   int get phaseId => throw _privateConstructorUsedError;
   @JsonKey(name: 'user_id')
@@ -42,7 +42,7 @@ abstract class $SubmissionCopyWith<$Res> {
       _$SubmissionCopyWithImpl<$Res>;
   $Res call(
       {int? id,
-      @JsonKey(name: 'hearizons_id') int hearizonsId,
+      @JsonKey(name: 'hearizons_id') int hearizonId,
       @JsonKey(name: 'phase_id') int phaseId,
       @JsonKey(name: 'user_id') int userId,
       String url});
@@ -59,7 +59,7 @@ class _$SubmissionCopyWithImpl<$Res> implements $SubmissionCopyWith<$Res> {
   @override
   $Res call({
     Object? id = freezed,
-    Object? hearizonsId = freezed,
+    Object? hearizonId = freezed,
     Object? phaseId = freezed,
     Object? userId = freezed,
     Object? url = freezed,
@@ -69,9 +69,9 @@ class _$SubmissionCopyWithImpl<$Res> implements $SubmissionCopyWith<$Res> {
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int?,
-      hearizonsId: hearizonsId == freezed
-          ? _value.hearizonsId
-          : hearizonsId // ignore: cast_nullable_to_non_nullable
+      hearizonId: hearizonId == freezed
+          ? _value.hearizonId
+          : hearizonId // ignore: cast_nullable_to_non_nullable
               as int,
       phaseId: phaseId == freezed
           ? _value.phaseId
@@ -98,7 +98,7 @@ abstract class _$$_SubmissionCopyWith<$Res>
   @override
   $Res call(
       {int? id,
-      @JsonKey(name: 'hearizons_id') int hearizonsId,
+      @JsonKey(name: 'hearizons_id') int hearizonId,
       @JsonKey(name: 'phase_id') int phaseId,
       @JsonKey(name: 'user_id') int userId,
       String url});
@@ -117,7 +117,7 @@ class __$$_SubmissionCopyWithImpl<$Res> extends _$SubmissionCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = freezed,
-    Object? hearizonsId = freezed,
+    Object? hearizonId = freezed,
     Object? phaseId = freezed,
     Object? userId = freezed,
     Object? url = freezed,
@@ -127,9 +127,9 @@ class __$$_SubmissionCopyWithImpl<$Res> extends _$SubmissionCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int?,
-      hearizonsId: hearizonsId == freezed
-          ? _value.hearizonsId
-          : hearizonsId // ignore: cast_nullable_to_non_nullable
+      hearizonId: hearizonId == freezed
+          ? _value.hearizonId
+          : hearizonId // ignore: cast_nullable_to_non_nullable
               as int,
       phaseId: phaseId == freezed
           ? _value.phaseId
@@ -153,7 +153,7 @@ class __$$_SubmissionCopyWithImpl<$Res> extends _$SubmissionCopyWithImpl<$Res>
 class _$_Submission implements _Submission {
   const _$_Submission(
       {this.id,
-      @JsonKey(name: 'hearizons_id') required this.hearizonsId,
+      @JsonKey(name: 'hearizons_id') required this.hearizonId,
       @JsonKey(name: 'phase_id') required this.phaseId,
       @JsonKey(name: 'user_id') required this.userId,
       required this.url});
@@ -165,7 +165,7 @@ class _$_Submission implements _Submission {
   final int? id;
   @override
   @JsonKey(name: 'hearizons_id')
-  final int hearizonsId;
+  final int hearizonId;
   @override
   @JsonKey(name: 'phase_id')
   final int phaseId;
@@ -177,7 +177,7 @@ class _$_Submission implements _Submission {
 
   @override
   String toString() {
-    return 'Submission(id: $id, hearizonsId: $hearizonsId, phaseId: $phaseId, userId: $userId, url: $url)';
+    return 'Submission(id: $id, hearizonId: $hearizonId, phaseId: $phaseId, userId: $userId, url: $url)';
   }
 
   @override
@@ -187,7 +187,7 @@ class _$_Submission implements _Submission {
             other is _$_Submission &&
             const DeepCollectionEquality().equals(other.id, id) &&
             const DeepCollectionEquality()
-                .equals(other.hearizonsId, hearizonsId) &&
+                .equals(other.hearizonId, hearizonId) &&
             const DeepCollectionEquality().equals(other.phaseId, phaseId) &&
             const DeepCollectionEquality().equals(other.userId, userId) &&
             const DeepCollectionEquality().equals(other.url, url));
@@ -198,7 +198,7 @@ class _$_Submission implements _Submission {
   int get hashCode => Object.hash(
       runtimeType,
       const DeepCollectionEquality().hash(id),
-      const DeepCollectionEquality().hash(hearizonsId),
+      const DeepCollectionEquality().hash(hearizonId),
       const DeepCollectionEquality().hash(phaseId),
       const DeepCollectionEquality().hash(userId),
       const DeepCollectionEquality().hash(url));
@@ -219,7 +219,7 @@ class _$_Submission implements _Submission {
 abstract class _Submission implements Submission {
   const factory _Submission(
       {final int? id,
-      @JsonKey(name: 'hearizons_id') required final int hearizonsId,
+      @JsonKey(name: 'hearizons_id') required final int hearizonId,
       @JsonKey(name: 'phase_id') required final int phaseId,
       @JsonKey(name: 'user_id') required final int userId,
       required final String url}) = _$_Submission;
@@ -231,7 +231,7 @@ abstract class _Submission implements Submission {
   int? get id;
   @override
   @JsonKey(name: 'hearizons_id')
-  int get hearizonsId;
+  int get hearizonId;
   @override
   @JsonKey(name: 'phase_id')
   int get phaseId;
