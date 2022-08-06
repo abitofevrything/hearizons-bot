@@ -5,8 +5,8 @@ import 'package:nyxx/nyxx.dart';
 import 'package:nyxx_interactions/nyxx_interactions.dart';
 
 // TODO: Move to configuaration file
-// final reviewChannelId = Snowflake(973333557873348699);
-final reviewChannelId = Snowflake(840651654625492993);
+final reviewChannelId = Snowflake(973333557873348699);
+// final reviewChannelId = Snowflake(840651654625492993);
 
 final _regexp = RegExp(r'^review-(\d+)$');
 
