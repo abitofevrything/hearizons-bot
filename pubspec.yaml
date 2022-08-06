@@ -1,16 +1,32 @@
 name: hearizons_bot
 description: A simple command-line application.
 version: 1.0.0
-# homepage: https://www.example.com
+publish_to: 'none'
 
 environment:
   sdk: '>=2.19.0-32.0.dev <3.0.0'
 
-# dependencies:
-#   path: ^1.8.0
+dependency_overrides:
+  analyzer: ">=4.2.0 <5.0.0"
 
 dev_dependencies:
+  build_runner: ^2.2.0
+  freezed: ^2.1.0+1
+  json_serializable: ^6.3.1
   lints: ^2.0.0
+  
 dependencies:
+  get_it: ^7.2.0
+  http: ^0.13.5
   nyxx: ^4.0.0
   nyxx_commands: ^4.3.0
+  sqlite3: ^1.7.2
+  fuzzy: ^0.4.0-nullsafety.0
+  nyxx_interactions: ^4.3.1
+  freezed_annotation: ^2.1.0
+  json_annotation: ^4.6.0
+  collection: ^1.16.0
+  nyxx_pagination:
+    git:
+      url: https://github.com/nyxx-discord/nyxx_pagination
+      ref: feat/nyxx-4.0.0

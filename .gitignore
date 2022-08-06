@@ -7,3 +7,6 @@ build/
 
 # IDE configuration folders
 .vscode/
+
+# Database files
+database.db
