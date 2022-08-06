@@ -40,6 +40,7 @@ void main() async {
     ..registerPlugin(commands);
 
   commands.interactions.events.onModalEvent.listen(handleModalSubmit);
+  commands.onCommandError.listen(handleError);
 
   GetIt.I.registerSingleton(initializeDatabase());
 
