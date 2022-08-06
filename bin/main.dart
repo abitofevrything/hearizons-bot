@@ -10,6 +10,9 @@ void main() async {
   final client = NyxxFactory.createNyxxWebsocket(
     Platform.environment['TOKEN']!,
     GatewayIntents.allUnprivileged,
+    options: ClientOptions(
+      initialPresence: PresenceBuilder.of(activity: ActivityBuilder.listening('your music!')),
+    ),
   );
 
   final commands = CommandsPlugin(
