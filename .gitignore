@@ -1,0 +1,8 @@
+# PostgreSQL data
+data/
+
+# vscode config
+.vscode/
+
+# Environment config
+*.env

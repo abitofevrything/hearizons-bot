@@ -1,0 +1,37 @@
+name: hearizons
+description: A Discord bot for the Hearizons project.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: '>=2.18.0 <3.0.0'
+
+dependency_overrides:
+  # drift_postgres doesn't like the new version
+  drift: ^2.2.0
+
+dependencies:
+  drift: ^2.2.0
+  drift_postgres:
+    git:
+      url: https://github.com/simolus3/moor.git
+      path: extras/drift_postgres
+  get_it: ^7.2.0
+  http: ^0.13.5
+  nyxx: ^4.1.0
+
+  nyxx_commands:
+    git: 
+      url: https://github.com/nyxx-discord/nyxx_commands.git
+      ref: next
+
+  postgres: ^2.5.2
+  logging: ^1.1.0
+  collection: ^1.17.0
+  
+
+dev_dependencies:
+  build_runner: ^2.3.2
+  drift_dev: ^2.2.0+1
+  lints: ^2.0.0
+  test: ^1.16.0
