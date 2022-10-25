@@ -1,7 +1,13 @@
 version: '3.9'
 services:
   bot:
-    build: .devcontainer
+    build:
+      context: .devcontainer
+      args:
+        VARIANT: latest
+        INSTALL_ZSH: true
+        UPGRADE_PACKAGES: true
+    
     volumes:
       - .:/workspace:cached
 
