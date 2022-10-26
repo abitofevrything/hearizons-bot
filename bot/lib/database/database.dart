@@ -34,5 +34,16 @@ class Database extends _$Database {
   Database() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onCreate: (m) => m.createAll(),
+        onUpgrade: (m, from, to) => transaction(() async {
+          if (from < 2) {
+            await m.addColumn(events, events.participantRoleId);
+            await m.addColumn(events, events.guildId);
+          }
+        }),
+      );
 }

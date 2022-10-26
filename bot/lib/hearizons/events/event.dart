@@ -22,15 +22,8 @@ class Event {
   Event(this.data);
 
   Future<IMessage?> sendMessageToChannel(Snowflake channelId, MessageBuilder message) async {
-    final channel = client.channels[channelId];
-
-    if (channel is! ITextChannel) {
-      logger.warning("Couldn't send message to non-text channel $channelId");
-      return null;
-    }
-
     try {
-      return channel.sendMessage(message);
+      return await client.httpEndpoints.sendMessage(channelId, message);
     } on IHttpResponseError catch (e) {
       logger.warning('Error ${e.code} sending message to channel $channelId');
     }
@@ -196,17 +189,34 @@ The next cycle starts ${TimeStampStyle.relativeTime.format(DateTime.now().add(da
     }
   }
 
+  Future<void> processSubmission(Submission submission) async {
+    // Give participant role
+    if (data.participantRoleId != null) {
+      try {
+        await client.httpEndpoints.addRoleToUser(
+          data.guildId,
+          data.participantRoleId!,
+          submission.userId,
+        );
+      } on IHttpResponseError catch (e) {
+        logger.fine('Http error ${e.code} adding role to member ${submission.userId}');
+      }
+    }
+  }
+
   Future<void> createSubmission({
     required String submission,
     required Snowflake userId,
   }) async {
     await validateSubmission(submission, userId);
 
-    await database.createSubmission(SubmissionsCompanion.insert(
+    final createdSubmission = await database.createSubmission(SubmissionsCompanion.insert(
       cycle: (await database.getCurrentCycle(this)).id,
       userId: userId,
       content: submission,
     ));
+
+    await processSubmission(createdSubmission);
   }
 
   FutureOr<void> validateReview(Assignment assignment, String review) {}
@@ -223,7 +233,24 @@ The next cycle starts ${TimeStampStyle.relativeTime.format(DateTime.now().add(da
         ..timestamp = DateTime.now()
         ..color = infoColour;
 
+  Future<void> processReview(Review review) async {
+    // Remove participant role
+    if (data.participantRoleId != null) {
+      try {
+        await client.httpEndpoints.removeRoleFromUser(
+          data.guildId,
+          data.participantRoleId!,
+          review.userId,
+        );
+      } on IHttpResponseError catch (e) {
+        logger.info('Error code ${e.code} removing role from ${review.userId}');
+      }
+    }
+  }
+
   Future<void> createReview(Assignment assignment, String review) async {
+    await validateReview(assignment, review);
+
     final submission = await database.getSubmissionFromAssignment(assignment);
 
     await sendMessageToChannel(
@@ -231,11 +258,13 @@ The next cycle starts ${TimeStampStyle.relativeTime.format(DateTime.now().add(da
       MessageBuilder.embed(await createReviewEmbed(submission, assignment, review)),
     );
 
-    await database.createReview(ReviewsCompanion.insert(
+    final createdReview = await database.createReview(ReviewsCompanion.insert(
       submission: assignment.submission,
       userId: assignment.assignedUser,
       content: review,
     ));
+
+    await processReview(createdReview);
   }
 
   @override

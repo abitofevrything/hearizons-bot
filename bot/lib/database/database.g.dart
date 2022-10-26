@@ -31,6 +31,12 @@ class EventData extends DataClass implements Insertable<EventData> {
 
   /// The id of the channel to send reviews to.
   final Snowflake reviewsChannelId;
+
+  /// The id of the role to give participants.
+  final Snowflake? participantRoleId;
+
+  /// The id of the guild in which this event occurs.
+  final Snowflake guildId;
   const EventData(
       {required this.id,
       required this.name,
@@ -39,7 +45,9 @@ class EventData extends DataClass implements Insertable<EventData> {
       required this.submissionsLength,
       required this.reviewLength,
       required this.announcementsChannelId,
-      required this.reviewsChannelId});
+      required this.reviewsChannelId,
+      this.participantRoleId,
+      required this.guildId});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -69,6 +77,15 @@ class EventData extends DataClass implements Insertable<EventData> {
       map['reviews_channel_id'] =
           Variable<int>(converter.toSql(reviewsChannelId));
     }
+    if (!nullToAbsent || participantRoleId != null) {
+      final converter = $EventsTable.$converter5n;
+      map['participant_role_id'] =
+          Variable<int>(converter.toSql(participantRoleId));
+    }
+    {
+      final converter = $EventsTable.$converter6;
+      map['guild_id'] = Variable<int>(converter.toSql(guildId));
+    }
     return map;
   }
 
@@ -82,6 +99,10 @@ class EventData extends DataClass implements Insertable<EventData> {
       reviewLength: Value(reviewLength),
       announcementsChannelId: Value(announcementsChannelId),
       reviewsChannelId: Value(reviewsChannelId),
+      participantRoleId: participantRoleId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(participantRoleId),
+      guildId: Value(guildId),
     );
   }
 
@@ -100,6 +121,9 @@ class EventData extends DataClass implements Insertable<EventData> {
           serializer.fromJson<Snowflake>(json['announcementsChannelId']),
       reviewsChannelId:
           serializer.fromJson<Snowflake>(json['reviewsChannelId']),
+      participantRoleId:
+          serializer.fromJson<Snowflake?>(json['participantRoleId']),
+      guildId: serializer.fromJson<Snowflake>(json['guildId']),
     );
   }
   @override
@@ -115,6 +139,8 @@ class EventData extends DataClass implements Insertable<EventData> {
       'announcementsChannelId':
           serializer.toJson<Snowflake>(announcementsChannelId),
       'reviewsChannelId': serializer.toJson<Snowflake>(reviewsChannelId),
+      'participantRoleId': serializer.toJson<Snowflake?>(participantRoleId),
+      'guildId': serializer.toJson<Snowflake>(guildId),
     };
   }
 
@@ -126,7 +152,9 @@ class EventData extends DataClass implements Insertable<EventData> {
           Duration? submissionsLength,
           Duration? reviewLength,
           Snowflake? announcementsChannelId,
-          Snowflake? reviewsChannelId}) =>
+          Snowflake? reviewsChannelId,
+          Value<Snowflake?> participantRoleId = const Value.absent(),
+          Snowflake? guildId}) =>
       EventData(
         id: id ?? this.id,
         name: name ?? this.name,
@@ -137,6 +165,10 @@ class EventData extends DataClass implements Insertable<EventData> {
         announcementsChannelId:
             announcementsChannelId ?? this.announcementsChannelId,
         reviewsChannelId: reviewsChannelId ?? this.reviewsChannelId,
+        participantRoleId: participantRoleId.present
+            ? participantRoleId.value
+            : this.participantRoleId,
+        guildId: guildId ?? this.guildId,
       );
   @override
   String toString() {
@@ -148,14 +180,25 @@ class EventData extends DataClass implements Insertable<EventData> {
           ..write('submissionsLength: $submissionsLength, ')
           ..write('reviewLength: $reviewLength, ')
           ..write('announcementsChannelId: $announcementsChannelId, ')
-          ..write('reviewsChannelId: $reviewsChannelId')
+          ..write('reviewsChannelId: $reviewsChannelId, ')
+          ..write('participantRoleId: $participantRoleId, ')
+          ..write('guildId: $guildId')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, active, type, submissionsLength,
-      reviewLength, announcementsChannelId, reviewsChannelId);
+  int get hashCode => Object.hash(
+      id,
+      name,
+      active,
+      type,
+      submissionsLength,
+      reviewLength,
+      announcementsChannelId,
+      reviewsChannelId,
+      participantRoleId,
+      guildId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -167,7 +210,9 @@ class EventData extends DataClass implements Insertable<EventData> {
           other.submissionsLength == this.submissionsLength &&
           other.reviewLength == this.reviewLength &&
           other.announcementsChannelId == this.announcementsChannelId &&
-          other.reviewsChannelId == this.reviewsChannelId);
+          other.reviewsChannelId == this.reviewsChannelId &&
+          other.participantRoleId == this.participantRoleId &&
+          other.guildId == this.guildId);
 }
 
 class EventsCompanion extends UpdateCompanion<EventData> {
@@ -179,6 +224,8 @@ class EventsCompanion extends UpdateCompanion<EventData> {
   final Value<Duration> reviewLength;
   final Value<Snowflake> announcementsChannelId;
   final Value<Snowflake> reviewsChannelId;
+  final Value<Snowflake?> participantRoleId;
+  final Value<Snowflake> guildId;
   const EventsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
@@ -188,6 +235,8 @@ class EventsCompanion extends UpdateCompanion<EventData> {
     this.reviewLength = const Value.absent(),
     this.announcementsChannelId = const Value.absent(),
     this.reviewsChannelId = const Value.absent(),
+    this.participantRoleId = const Value.absent(),
+    this.guildId = const Value.absent(),
   });
   EventsCompanion.insert({
     this.id = const Value.absent(),
@@ -198,6 +247,8 @@ class EventsCompanion extends UpdateCompanion<EventData> {
     required Duration reviewLength,
     required Snowflake announcementsChannelId,
     required Snowflake reviewsChannelId,
+    this.participantRoleId = const Value.absent(),
+    this.guildId = const Value.absent(),
   })  : name = Value(name),
         active = Value(active),
         type = Value(type),
@@ -214,6 +265,8 @@ class EventsCompanion extends UpdateCompanion<EventData> {
     Expression<int>? reviewLength,
     Expression<int>? announcementsChannelId,
     Expression<int>? reviewsChannelId,
+    Expression<int>? participantRoleId,
+    Expression<int>? guildId,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -225,6 +278,8 @@ class EventsCompanion extends UpdateCompanion<EventData> {
       if (announcementsChannelId != null)
         'announcements_channel_id': announcementsChannelId,
       if (reviewsChannelId != null) 'reviews_channel_id': reviewsChannelId,
+      if (participantRoleId != null) 'participant_role_id': participantRoleId,
+      if (guildId != null) 'guild_id': guildId,
     });
   }
 
@@ -236,7 +291,9 @@ class EventsCompanion extends UpdateCompanion<EventData> {
       Value<Duration>? submissionsLength,
       Value<Duration>? reviewLength,
       Value<Snowflake>? announcementsChannelId,
-      Value<Snowflake>? reviewsChannelId}) {
+      Value<Snowflake>? reviewsChannelId,
+      Value<Snowflake?>? participantRoleId,
+      Value<Snowflake>? guildId}) {
     return EventsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -247,6 +304,8 @@ class EventsCompanion extends UpdateCompanion<EventData> {
       announcementsChannelId:
           announcementsChannelId ?? this.announcementsChannelId,
       reviewsChannelId: reviewsChannelId ?? this.reviewsChannelId,
+      participantRoleId: participantRoleId ?? this.participantRoleId,
+      guildId: guildId ?? this.guildId,
     );
   }
 
@@ -285,6 +344,15 @@ class EventsCompanion extends UpdateCompanion<EventData> {
       map['reviews_channel_id'] =
           Variable<int>(converter.toSql(reviewsChannelId.value));
     }
+    if (participantRoleId.present) {
+      final converter = $EventsTable.$converter5n;
+      map['participant_role_id'] =
+          Variable<int>(converter.toSql(participantRoleId.value));
+    }
+    if (guildId.present) {
+      final converter = $EventsTable.$converter6;
+      map['guild_id'] = Variable<int>(converter.toSql(guildId.value));
+    }
     return map;
   }
 
@@ -298,7 +366,9 @@ class EventsCompanion extends UpdateCompanion<EventData> {
           ..write('submissionsLength: $submissionsLength, ')
           ..write('reviewLength: $reviewLength, ')
           ..write('announcementsChannelId: $announcementsChannelId, ')
-          ..write('reviewsChannelId: $reviewsChannelId')
+          ..write('reviewsChannelId: $reviewsChannelId, ')
+          ..write('participantRoleId: $participantRoleId, ')
+          ..write('guildId: $guildId')
           ..write(')'))
         .toString();
   }
@@ -363,6 +433,22 @@ class $EventsTable extends Events with TableInfo<$EventsTable, EventData> {
       GeneratedColumn<int>('reviews_channel_id', aliasedName, false,
               type: DriftSqlType.int, requiredDuringInsert: true)
           .withConverter<Snowflake>($EventsTable.$converter4);
+  final VerificationMeta _participantRoleIdMeta =
+      const VerificationMeta('participantRoleId');
+  @override
+  late final GeneratedColumnWithTypeConverter<Snowflake?, int>
+      participantRoleId = GeneratedColumn<int>(
+              'participant_role_id', aliasedName, true,
+              type: DriftSqlType.int, requiredDuringInsert: false)
+          .withConverter<Snowflake?>($EventsTable.$converter5n);
+  final VerificationMeta _guildIdMeta = const VerificationMeta('guildId');
+  @override
+  late final GeneratedColumnWithTypeConverter<Snowflake, int> guildId =
+      GeneratedColumn<int>('guild_id', aliasedName, false,
+              type: DriftSqlType.int,
+              requiredDuringInsert: false,
+              defaultValue: Constant(0))
+          .withConverter<Snowflake>($EventsTable.$converter6);
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -372,7 +458,9 @@ class $EventsTable extends Events with TableInfo<$EventsTable, EventData> {
         submissionsLength,
         reviewLength,
         announcementsChannelId,
-        reviewsChannelId
+        reviewsChannelId,
+        participantRoleId,
+        guildId
       ];
   @override
   String get aliasedName => _alias ?? 'events';
@@ -404,6 +492,8 @@ class $EventsTable extends Events with TableInfo<$EventsTable, EventData> {
     context.handle(
         _announcementsChannelIdMeta, const VerificationResult.success());
     context.handle(_reviewsChannelIdMeta, const VerificationResult.success());
+    context.handle(_participantRoleIdMeta, const VerificationResult.success());
+    context.handle(_guildIdMeta, const VerificationResult.success());
     return context;
   }
 
@@ -433,6 +523,11 @@ class $EventsTable extends Events with TableInfo<$EventsTable, EventData> {
       reviewsChannelId: $EventsTable.$converter4.fromSql(
           attachedDatabase.options.types.read(
               DriftSqlType.int, data['${effectivePrefix}reviews_channel_id'])!),
+      participantRoleId: $EventsTable.$converter5n.fromSql(
+          attachedDatabase.options.types.read(
+              DriftSqlType.int, data['${effectivePrefix}participant_role_id'])),
+      guildId: $EventsTable.$converter6.fromSql(attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}guild_id'])!),
     );
   }
 
@@ -447,6 +542,10 @@ class $EventsTable extends Events with TableInfo<$EventsTable, EventData> {
   static TypeConverter<Duration, int> $converter2 = const DurationConverter();
   static TypeConverter<Snowflake, int> $converter3 = const SnowflakeConverter();
   static TypeConverter<Snowflake, int> $converter4 = const SnowflakeConverter();
+  static TypeConverter<Snowflake, int> $converter5 = const SnowflakeConverter();
+  static TypeConverter<Snowflake, int> $converter6 = const SnowflakeConverter();
+  static TypeConverter<Snowflake?, int?> $converter5n =
+      NullAwareTypeConverter.wrap($converter5);
 }
 
 class Cycle extends DataClass implements Insertable<Cycle> {
