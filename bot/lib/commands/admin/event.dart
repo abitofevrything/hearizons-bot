@@ -15,6 +15,7 @@ final event = ChatGroup(
   children: [create, details],
 );
 
+// Keep in sync with [update]!
 final create = ChatCommand(
   'create',
   'Create a new event',
@@ -26,6 +27,7 @@ final create = ChatCommand(
     @Description('The length of the review phase') Duration reviewLength,
     @Description('The channel to send announcements to') ITextGuildChannel announcementsChannel,
     @Description('The channel to send reviews to') ITextGuildChannel reviewsChannel,
+    @Description('The role to give to participants') IRole participantRole,
   ) async {
     final database = GetIt.I.get<Database>();
 
@@ -38,6 +40,7 @@ final create = ChatCommand(
       announcementsChannelId: announcementsChannel.id,
       reviewsChannelId: reviewsChannel.id,
       guildId: Value(context.guild!.id),
+      participantRoleId: Value(participantRole.id),
     ));
 
     await event.startEvent();
@@ -77,5 +80,32 @@ Current cycle started at: ${cycle.startedAt}
 Current cycle status: ${cycle.status.name}
 ''',
     );
+  }),
+);
+
+final update = ChatCommand(
+  'update',
+  'Update an event',
+  id('admin-event-update', (
+    IChatContext context, [
+    @Description('The name of the event') String? name,
+    @Description('The type of the event') @UseConverter(eventTypeConverter) EventType? type,
+    @Description('The length of the submissions phase') Duration? submissionsLength,
+    @Description('The length of the review phase') Duration? reviewLength,
+    @Description('The channel to send announcements to') ITextGuildChannel? announcementsChannel,
+    @Description('The channel to send reviews to') ITextGuildChannel? reviewsChannel,
+    @Description('The role to give to participants') IRole? participantRole,
+  ]) async {
+    final database = GetIt.I.get<Database>();
+
+    await database.updateEvent(EventsCompanion(
+      name: Value.ofNullable(name),
+      announcementsChannelId: Value.ofNullable(announcementsChannel?.id),
+      participantRoleId: Value.ofNullable(participantRole?.id),
+      reviewLength: Value.ofNullable(reviewLength),
+      reviewsChannelId: Value.ofNullable(reviewsChannel?.id),
+      submissionsLength: Value.ofNullable(submissionsLength),
+      type: Value.ofNullable(type),
+    ));
   }),
 );

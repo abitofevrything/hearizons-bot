@@ -161,4 +161,13 @@ extension EventUtils on Database {
 
     return _toEvent(await into(events).insertReturning(event));
   }
+
+  Future<Event> updateEvent(EventsCompanion event) async {
+    _logger.fine('Updating event $event');
+
+    final update = this.update(events)..whereSamePrimaryKey(event);
+
+    final rawResult = await update.writeReturning(event);
+    return _toEvent(rawResult.single);
+  }
 }
