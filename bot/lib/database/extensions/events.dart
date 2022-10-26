@@ -74,11 +74,21 @@ extension EventUtils on Database {
   Future<Cycle> moveEventToNextCycle(Event event) => transaction(() async {
         _logger.fine('Moving event ${event.data.id} to new cycle');
 
+        final previousCycleStart = (await getCurrentCycle(event)).startedAt;
+        final nextCycleStart =
+            previousCycleStart.add(event.data.submissionsLength).add(event.data.reviewLength);
+
+        // Don't allow short cycles to build up
+        final minimumStartTime = DateTime.now().subtract(const Duration(hours: 1));
+
+        final actualStartTime =
+            minimumStartTime.isAfter(nextCycleStart) ? minimumStartTime : nextCycleStart;
+
         // Create a new cycle
         final cycle = await into(cycles).insertReturning(CyclesCompanion.insert(
           event: event.data.id,
           status: CycleStatus.review,
-          startedAt: DateTime.now(),
+          startedAt: actualStartTime,
         ));
 
         // Update the entry in the current cycles table
