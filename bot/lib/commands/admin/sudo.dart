@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:get_it/get_it.dart';
 import 'package:hearizons/error_handler.dart';
 import 'package:nyxx/nyxx.dart';
@@ -19,6 +21,7 @@ final sudo = ChatCommand(
   'sudo',
   'Run a command as another user',
   options: CommandOptions(type: CommandType.slashOnly),
+  checks: [GuildCheck.id(Snowflake(Platform.environment['SUDO_GUILD_ID']))],
   id('admin-sudo', (
     InteractionChatContext context,
     @Description('The user to run the command as') IUser user,
