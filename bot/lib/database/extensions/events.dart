@@ -42,7 +42,10 @@ extension EventUtils on Database {
       innerJoin(currentCycles, currentCycles.event.equalsExp(events.id)),
       innerJoin(cycles, currentCycles.cycle.equalsExp(cycles.id)),
     ])
-      ..where(reviewStartTime.isSmallerThan(currentTime));
+      ..where(
+        reviewStartTime.isSmallerThan(currentTime) &
+            cycles.status.equalsValue(CycleStatus.submissions),
+      );
 
     _logger.fine('Getting events pending review phases');
 
@@ -59,7 +62,7 @@ extension EventUtils on Database {
       innerJoin(currentCycles, currentCycles.event.equalsExp(events.id)),
       innerJoin(cycles, currentCycles.cycle.equalsExp(cycles.id)),
     ])
-      ..where(cycles.status.equalsValue(CycleStatus.sumbissions));
+      ..where(cycles.status.equalsValue(CycleStatus.submissions));
 
     _logger.fine('Getting events with open submissions');
 

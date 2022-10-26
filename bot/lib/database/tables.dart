@@ -38,7 +38,7 @@ class CurrentCycles extends Table {
 
 enum CycleStatus {
   /// The cycle is currently open for submissions.
-  sumbissions,
+  submissions,
 
   /// The cycle is currently open for reviews.
   review,
