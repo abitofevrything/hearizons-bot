@@ -64,6 +64,8 @@ Submissions close ${TimeStampStyle.relativeTime.format(DateTime.now().add(data.s
     logger.fine('Moved to next cycle');
   }
 
+  Future<void> startEvent() => startNewCycle();
+
   FutureOr<bool> canMoveToReviews(List<Submission> submissions) => submissions.length >= 2;
 
   Future<void> sendStartingReviewsAnnouncement() async => sendMessageToChannel(
@@ -191,16 +193,14 @@ The next cycle starts ${TimeStampStyle.relativeTime.format(DateTime.now().add(da
 
   Future<void> processSubmission(Submission submission) async {
     // Give participant role
-    if (data.participantRoleId != null) {
-      try {
-        await client.httpEndpoints.addRoleToUser(
-          data.guildId,
-          data.participantRoleId!,
-          submission.userId,
-        );
-      } on IHttpResponseError catch (e) {
-        logger.fine('Http error ${e.code} adding role to member ${submission.userId}');
-      }
+    try {
+      await client.httpEndpoints.addRoleToUser(
+        data.guildId,
+        data.participantRoleId,
+        submission.userId,
+      );
+    } on IHttpResponseError catch (e) {
+      logger.fine('Http error ${e.code} adding role to member ${submission.userId}');
     }
   }
 
@@ -235,16 +235,14 @@ The next cycle starts ${TimeStampStyle.relativeTime.format(DateTime.now().add(da
 
   Future<void> processReview(Review review) async {
     // Remove participant role
-    if (data.participantRoleId != null) {
-      try {
-        await client.httpEndpoints.removeRoleFromUser(
-          data.guildId,
-          data.participantRoleId!,
-          review.userId,
-        );
-      } on IHttpResponseError catch (e) {
-        logger.info('Error code ${e.code} removing role from ${review.userId}');
-      }
+    try {
+      await client.httpEndpoints.removeRoleFromUser(
+        data.guildId,
+        data.participantRoleId,
+        review.userId,
+      );
+    } on IHttpResponseError catch (e) {
+      logger.info('Error code ${e.code} removing role from ${review.userId}');
     }
   }
 

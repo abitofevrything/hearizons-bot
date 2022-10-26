@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:get_it/get_it.dart';
+import 'package:hearizons/commands/admin/admin.dart';
+import 'package:hearizons/commands/converters/duration.dart';
 import 'package:hearizons/commands/ping.dart';
 import 'package:hearizons/commands/review.dart';
 import 'package:hearizons/commands/submit.dart';
@@ -28,9 +30,12 @@ void main() async {
   commands
     ..addCommand(ping)
     ..addCommand(submit)
-    ..addCommand(review);
+    ..addCommand(review)
+    ..addCommand(admin);
 
   commands.onCommandError.listen(handleError);
+
+  commands.addConverter(durationConverter);
 
   client
     ..registerPlugin(Logging())

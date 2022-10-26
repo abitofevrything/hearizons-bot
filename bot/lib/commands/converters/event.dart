@@ -13,3 +13,11 @@ const acceptingSubmissionEventConverter = SimpleConverter(
   stringify: _eventToString,
   sensitivity: 0,
 );
+
+Future<Iterable<Event>> _getManageableEvents(IContextData context) =>
+    GetIt.I.get<Database>().getManageableEvents(context.guild!.id);
+
+const manageableEventConverter = SimpleConverter(
+  provider: _getManageableEvents,
+  stringify: _eventToString,
+);

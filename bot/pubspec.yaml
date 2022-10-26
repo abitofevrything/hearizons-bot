@@ -28,6 +28,9 @@ dependencies:
   postgres: ^2.5.2
   logging: ^1.1.0
   collection: ^1.17.0
+  nyxx_interactions: ^4.3.1
+  fuzzywuzzy: ^0.2.0
+  human_duration_parser: ^2.0.1
   
 
 dev_dependencies:
