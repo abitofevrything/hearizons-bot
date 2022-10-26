@@ -29,6 +29,12 @@ class Events extends Table {
 
   /// The id of the channel to send reviews to.
   IntColumn get reviewsChannelId => integer().map(const SnowflakeConverter())();
+
+  /// The id of the role to give participants.
+  IntColumn get participantRoleId => integer().map(const SnowflakeConverter()).nullable()();
+
+  /// The id of the guild in which this event occurs.
+  IntColumn get guildId => integer().map(const SnowflakeConverter()).withDefault(Constant(0))();
 }
 
 class CurrentCycles extends Table {
