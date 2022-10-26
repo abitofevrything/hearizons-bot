@@ -1,6 +1,9 @@
 import 'package:hearizons/errors.dart';
 import 'package:hearizons/utils/context_extension.dart';
+import 'package:logging/logging.dart';
 import 'package:nyxx_commands/nyxx_commands.dart';
+
+final Logger logger = Logger('Errors');
 
 Future<void> handleError(CommandsException error) async {
   if (error is CommandInvocationException) {
@@ -12,6 +15,9 @@ Future<void> handleError(CommandsException error) async {
       if (exception is UserDisplayedException) {
         return exception.handle(context);
       }
+
+      logger.severe('Unhandled exception');
+      logger.severe(exception.toString());
 
       await context.error(
         title: 'Sorry, an unexpected error has occurred.',
