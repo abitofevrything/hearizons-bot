@@ -221,7 +221,7 @@ packages:
     source: hosted
     version: "3.1.0"
   fuzzywuzzy:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: fuzzywuzzy
       url: "https://pub.dartlang.org"
@@ -269,6 +269,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.2"
+  human_duration_parser:
+    dependency: "direct main"
+    description:
+      name: human_duration_parser
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1"
   io:
     dependency: transitive
     description:
@@ -349,7 +356,7 @@ packages:
     source: git
     version: "5.0.0-dev.0"
   nyxx_interactions:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: nyxx_interactions
       url: "https://pub.dartlang.org"

@@ -5,6 +5,7 @@ import 'package:hearizons/database/database.dart';
 import 'package:hearizons/database/tables.dart';
 import 'package:hearizons/hearizons/events/event.dart';
 import 'package:logging/logging.dart';
+import 'package:nyxx/nyxx.dart';
 
 Expression<DateTime> get currentTime => Variable(DateTime.now());
 final Logger _logger = Logger('Database.Events');
@@ -74,12 +75,37 @@ extension EventUtils on Database {
     return results;
   }
 
+  Future<List<Event>> getManageableEvents(Snowflake guildId) async {
+    final query = select(events)..where((_) => events.guildId.equalsValue(guildId));
+
+    _logger.fine('Getting manageable events => guildId: $guildId');
+
+    final rawResult = await query.get();
+    final results = rawResult.map(_toEvent).toList();
+
+    _logger.fine(
+      'Got ${results.length} manageable events => guildId: $guildId results: ${results.join(', ')}',
+    );
+
+    return results;
+  }
+
   Future<Cycle> moveEventToNextCycle(Event event) => transaction(() async {
         _logger.fine('Moving event ${event.data.id} to new cycle');
 
-        final previousCycleStart = (await getCurrentCycle(event)).startedAt;
-        final nextCycleStart =
-            previousCycleStart.add(event.data.submissionsLength).add(event.data.reviewLength);
+        DateTime nextCycleStart;
+        bool isFirstCycle;
+
+        try {
+          final previousCycleStart = (await getCurrentCycle(event)).startedAt;
+          nextCycleStart =
+              previousCycleStart.add(event.data.submissionsLength).add(event.data.reviewLength);
+          isFirstCycle = false;
+        } on StateError {
+          // 1st cycle
+          nextCycleStart = DateTime.now();
+          isFirstCycle = true;
+        }
 
         // Don't allow short cycles to build up
         final minimumStartTime = DateTime.now().subtract(const Duration(hours: 1));
@@ -90,16 +116,23 @@ extension EventUtils on Database {
         // Create a new cycle
         final cycle = await into(cycles).insertReturning(CyclesCompanion.insert(
           event: event.data.id,
-          status: CycleStatus.review,
+          status: CycleStatus.submissions,
           startedAt: actualStartTime,
         ));
 
         // Update the entry in the current cycles table
-        final update = this.update(
-          currentCycles,
-        )..where((_) => currentCycles.event.equals(event.data.id));
+        if (!isFirstCycle) {
+          final update = this.update(
+            currentCycles,
+          )..where((_) => currentCycles.event.equals(event.data.id));
 
-        await update.write(CurrentCyclesCompanion(cycle: Value(cycle.id)));
+          await update.write(CurrentCyclesCompanion(cycle: Value(cycle.id)));
+        } else {
+          await into(currentCycles).insert(CurrentCyclesCompanion.insert(
+            event: event.data.id,
+            cycle: cycle.id,
+          ));
+        }
 
         _logger.fine('Moved event ${event.data.id} to new cycle => $cycle');
 
@@ -121,5 +154,11 @@ extension EventUtils on Database {
     _logger.fine('Moved event ${event.data.id} to review phase => $result');
 
     return result;
+  }
+
+  Future<Event> createEvent(EventsCompanion event) async {
+    _logger.fine('Creating event $event');
+
+    return _toEvent(await into(events).insertReturning(event));
   }
 }

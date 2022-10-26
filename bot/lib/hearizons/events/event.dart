@@ -64,6 +64,8 @@ Submissions close ${TimeStampStyle.relativeTime.format(DateTime.now().add(data.s
     logger.fine('Moved to next cycle');
   }
 
+  Future<void> startEvent() => startNewCycle();
+
   FutureOr<bool> canMoveToReviews(List<Submission> submissions) => submissions.length >= 2;
 
   Future<void> sendStartingReviewsAnnouncement() async => sendMessageToChannel(
