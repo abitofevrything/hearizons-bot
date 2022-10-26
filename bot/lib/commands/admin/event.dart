@@ -39,8 +39,8 @@ final create = ChatCommand(
       reviewLength: reviewLength,
       announcementsChannelId: announcementsChannel.id,
       reviewsChannelId: reviewsChannel.id,
-      guildId: Value(context.guild!.id),
-      participantRoleId: Value(participantRole.id),
+      guildId: context.guild!.id,
+      participantRoleId: participantRole.id,
     ));
 
     await event.startEvent();

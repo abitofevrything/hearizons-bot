@@ -31,10 +31,10 @@ class Events extends Table {
   IntColumn get reviewsChannelId => integer().map(const SnowflakeConverter())();
 
   /// The id of the role to give participants.
-  IntColumn get participantRoleId => integer().map(const SnowflakeConverter()).nullable()();
+  IntColumn get participantRoleId => integer().map(const SnowflakeConverter())();
 
   /// The id of the guild in which this event occurs.
-  IntColumn get guildId => integer().map(const SnowflakeConverter()).withDefault(Constant(0))();
+  IntColumn get guildId => integer().map(const SnowflakeConverter())();
 }
 
 class CurrentCycles extends Table {

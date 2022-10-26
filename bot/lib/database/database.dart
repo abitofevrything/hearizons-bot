@@ -34,7 +34,7 @@ class Database extends _$Database {
   Database() : super(_openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -43,6 +43,20 @@ class Database extends _$Database {
           if (from < 2) {
             await m.addColumn(events, events.participantRoleId);
             await m.addColumn(events, events.guildId);
+          }
+          if (from < 3) {
+            await (update(events)..where((_) => events.participantRoleId.isNull()))
+                .write(EventsCompanion(
+              participantRoleId: Value(Snowflake(0)),
+            ));
+
+            await (update(events)..where((_) => events.guildId.isNull())).write(EventsCompanion(
+              guildId: Value(Snowflake(0)),
+            ));
+
+            await customStatement(
+                'ALTER TABLE events ALTER COLUMN participant_role_id SET NOT NULL;');
+            await customStatement('ALTER TABLE events ALTER COLUMN guild_id DROP DEFAULT;');
           }
         }),
       );
