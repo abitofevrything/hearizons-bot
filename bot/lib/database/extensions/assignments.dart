@@ -23,7 +23,20 @@ extension AssignmentUtils on Database {
       innerJoin(submissions, assignments.submission.equalsExp(submissions.id)),
       innerJoin(cycles, submissions.cycle.equalsExp(cycles.id)),
     ])
-      ..where(cycles.event.equals(event.data.id) & assignments.assignedUser.equalsValue(userId));
+      ..where(
+        // Ensure event matches
+        cycles.event.equals(event.data.id) &
+            // Ensure user matches
+            assignments.assignedUser.equalsValue(userId) &
+            // Ensure assignment has no corresponding review
+            subqueryExpression(selectOnly(reviews)
+                  ..addColumns([countAll()])
+                  ..where(
+                    reviews.submission.equalsExp(assignments.submission) &
+                        reviews.userId.equalsExp(assignments.assignedUser),
+                  ))
+                .equals(0),
+      );
 
     _logger.fine('Getting incomplete assignments for user => user: $userId event: $event');
 
