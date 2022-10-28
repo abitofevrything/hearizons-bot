@@ -22,7 +22,7 @@ extension EventUtils on Database {
       innerJoin(currentCycles, currentCycles.event.equalsExp(events.id)),
       innerJoin(cycles, currentCycles.cycle.equalsExp(cycles.id)),
     ])
-      ..where(cycleEndTime.isSmallerThan(currentTime));
+      ..where(cycleEndTime.isSmallerThan(currentTime) & events.active);
 
     _logger.fine('Getting events pending new cycles');
 
@@ -45,7 +45,8 @@ extension EventUtils on Database {
     ])
       ..where(
         reviewStartTime.isSmallerThan(currentTime) &
-            cycles.status.equalsValue(CycleStatus.submissions),
+            cycles.status.equalsValue(CycleStatus.submissions) &
+            events.active,
       );
 
     _logger.fine('Getting events pending review phases');
@@ -63,7 +64,7 @@ extension EventUtils on Database {
       innerJoin(currentCycles, currentCycles.event.equalsExp(events.id)),
       innerJoin(cycles, currentCycles.cycle.equalsExp(cycles.id)),
     ])
-      ..where(cycles.status.equalsValue(CycleStatus.submissions));
+      ..where(cycles.status.equalsValue(CycleStatus.submissions) & events.active);
 
     _logger.fine('Getting events with open submissions');
 
@@ -93,19 +94,9 @@ extension EventUtils on Database {
   Future<Cycle> moveEventToNextCycle(Event event) => transaction(() async {
         _logger.fine('Moving event ${event.data.id} to new cycle');
 
-        DateTime nextCycleStart;
-        bool isFirstCycle;
-
-        try {
-          final previousCycleStart = (await getCurrentCycle(event)).startedAt;
-          nextCycleStart =
-              previousCycleStart.add(event.data.submissionsLength).add(event.data.reviewLength);
-          isFirstCycle = false;
-        } on StateError {
-          // 1st cycle
-          nextCycleStart = DateTime.now();
-          isFirstCycle = true;
-        }
+        final previousCycleStart = (await getCurrentCycle(event)).startedAt;
+        final nextCycleStart =
+            previousCycleStart.add(event.data.submissionsLength).add(event.data.reviewLength);
 
         // Don't allow short cycles to build up
         final minimumStartTime = DateTime.now().subtract(const Duration(hours: 1));
@@ -121,18 +112,12 @@ extension EventUtils on Database {
         ));
 
         // Update the entry in the current cycles table
-        if (!isFirstCycle) {
-          final update = this.update(
-            currentCycles,
-          )..where((_) => currentCycles.event.equals(event.data.id));
 
-          await update.write(CurrentCyclesCompanion(cycle: Value(cycle.id)));
-        } else {
-          await into(currentCycles).insert(CurrentCyclesCompanion.insert(
-            event: event.data.id,
-            cycle: cycle.id,
-          ));
-        }
+        final update = this.update(
+          currentCycles,
+        )..where((_) => currentCycles.event.equals(event.data.id));
+
+        await update.write(CurrentCyclesCompanion(cycle: Value(cycle.id)));
 
         _logger.fine('Moved event ${event.data.id} to new cycle => $cycle');
 

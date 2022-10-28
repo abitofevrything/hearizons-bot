@@ -32,7 +32,8 @@ Future<Iterable<TypedResult>> _getCombinedAssignments(IContextData context) =>
                           database.reviews.userId.equalsValue(context.user.id),
                     )
                     ..addColumns([countAll()]))
-                  .equals(0)))
+                  .equals(0) &
+              database.events.active))
         .get();
 
 String _combinedAssignmentToString(TypedResult result) {
