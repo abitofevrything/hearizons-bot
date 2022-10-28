@@ -31,9 +31,9 @@ final create = ChatCommand(
   ) async {
     final database = GetIt.I.get<Database>();
 
-    final event = await database.createEvent(EventsCompanion.insert(
+    await database.createEvent(EventsCompanion.insert(
       name: name,
-      active: true,
+      active: false,
       type: type,
       submissionsLength: submissionsLength,
       reviewLength: reviewLength,
@@ -42,8 +42,6 @@ final create = ChatCommand(
       guildId: context.guild!.id,
       participantRoleId: participantRole.id,
     ));
-
-    await event.startEvent();
 
     await context.success(
       title: 'Event created',
