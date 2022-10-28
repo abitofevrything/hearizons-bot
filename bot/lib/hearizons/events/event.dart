@@ -194,8 +194,6 @@ Submissions close ${TimeStampStyle.relativeTime.format(DateTime.now().add(data.s
     ..color = infoColour
     ..timestamp = DateTime.now();
 
-  Future<void> startEvent() => startNewCycle();
-
   FutureOr<EmbedBuilder> createStartingReviewsAnnouncement() => EmbedBuilder()
     ..title = 'Reviews open'
     ..description = '''
