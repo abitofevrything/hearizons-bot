@@ -90,6 +90,9 @@ class Assignments extends Table {
 
   /// The user who should perform the review.
   IntColumn get assignedUser => integer().map(const SnowflakeConverter())();
+
+  /// Whether this assignment was discarded despite not being completed.
+  BoolColumn get discarded => boolean().withDefault(Constant(false))();
 }
 
 /// A review of a submission.

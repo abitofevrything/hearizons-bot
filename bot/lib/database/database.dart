@@ -34,7 +34,7 @@ class Database extends _$Database {
   Database() : super(_openConnection());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -44,6 +44,7 @@ class Database extends _$Database {
             await m.addColumn(events, events.participantRoleId);
             await m.addColumn(events, events.guildId);
           }
+
           if (from < 3) {
             await (update(events)..where((_) => events.participantRoleId.isNull()))
                 .write(EventsCompanion(
@@ -57,6 +58,14 @@ class Database extends _$Database {
             await customStatement(
                 'ALTER TABLE events ALTER COLUMN participant_role_id SET NOT NULL;');
             await customStatement('ALTER TABLE events ALTER COLUMN guild_id DROP DEFAULT;');
+          }
+
+          if (from < 4) {
+            await m.addColumn(assignments, assignments.discarded);
+
+            await update(assignments).write(AssignmentsCompanion(
+              discarded: Value(false),
+            ));
           }
         }),
       );

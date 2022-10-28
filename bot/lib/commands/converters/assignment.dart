@@ -25,15 +25,18 @@ Future<Iterable<TypedResult>> _getCombinedAssignments(IContextData context) =>
         database.cycles.event.equalsExp(database.events.id),
       ),
     ])
-          ..where(database.assignments.assignedUser.equalsValue(context.user.id) &
-              subqueryExpression(database.selectOnly(database.reviews)
-                    ..where(
-                      database.reviews.submission.equalsExp(database.assignments.submission) &
-                          database.reviews.userId.equalsValue(context.user.id),
-                    )
-                    ..addColumns([countAll()]))
-                  .equals(0) &
-              database.events.active))
+          ..where(
+            database.assignments.assignedUser.equalsValue(context.user.id) &
+                database.events.active &
+                database.assignments.discarded.not() &
+                subqueryExpression(database.selectOnly(database.reviews)
+                      ..where(
+                        database.reviews.submission.equalsExp(database.assignments.submission) &
+                            database.reviews.userId.equalsValue(context.user.id),
+                      )
+                      ..addColumns([countAll()]))
+                    .equals(0),
+          ))
         .get();
 
 String _combinedAssignmentToString(TypedResult result) {

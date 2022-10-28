@@ -1235,8 +1235,14 @@ class Assignment extends DataClass implements Insertable<Assignment> {
 
   /// The user who should perform the review.
   final Snowflake assignedUser;
+
+  /// Whether this assignment was discarded despite not being completed.
+  final bool discarded;
   const Assignment(
-      {required this.id, required this.submission, required this.assignedUser});
+      {required this.id,
+      required this.submission,
+      required this.assignedUser,
+      required this.discarded});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1246,6 +1252,7 @@ class Assignment extends DataClass implements Insertable<Assignment> {
       final converter = $AssignmentsTable.$converter0;
       map['assigned_user'] = Variable<int>(converter.toSql(assignedUser));
     }
+    map['discarded'] = Variable<bool>(discarded);
     return map;
   }
 
@@ -1254,6 +1261,7 @@ class Assignment extends DataClass implements Insertable<Assignment> {
       id: Value(id),
       submission: Value(submission),
       assignedUser: Value(assignedUser),
+      discarded: Value(discarded),
     );
   }
 
@@ -1264,6 +1272,7 @@ class Assignment extends DataClass implements Insertable<Assignment> {
       id: serializer.fromJson<int>(json['id']),
       submission: serializer.fromJson<int>(json['submission']),
       assignedUser: serializer.fromJson<Snowflake>(json['assignedUser']),
+      discarded: serializer.fromJson<bool>(json['discarded']),
     );
   }
   @override
@@ -1273,71 +1282,86 @@ class Assignment extends DataClass implements Insertable<Assignment> {
       'id': serializer.toJson<int>(id),
       'submission': serializer.toJson<int>(submission),
       'assignedUser': serializer.toJson<Snowflake>(assignedUser),
+      'discarded': serializer.toJson<bool>(discarded),
     };
   }
 
-  Assignment copyWith({int? id, int? submission, Snowflake? assignedUser}) =>
+  Assignment copyWith(
+          {int? id,
+          int? submission,
+          Snowflake? assignedUser,
+          bool? discarded}) =>
       Assignment(
         id: id ?? this.id,
         submission: submission ?? this.submission,
         assignedUser: assignedUser ?? this.assignedUser,
+        discarded: discarded ?? this.discarded,
       );
   @override
   String toString() {
     return (StringBuffer('Assignment(')
           ..write('id: $id, ')
           ..write('submission: $submission, ')
-          ..write('assignedUser: $assignedUser')
+          ..write('assignedUser: $assignedUser, ')
+          ..write('discarded: $discarded')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, submission, assignedUser);
+  int get hashCode => Object.hash(id, submission, assignedUser, discarded);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Assignment &&
           other.id == this.id &&
           other.submission == this.submission &&
-          other.assignedUser == this.assignedUser);
+          other.assignedUser == this.assignedUser &&
+          other.discarded == this.discarded);
 }
 
 class AssignmentsCompanion extends UpdateCompanion<Assignment> {
   final Value<int> id;
   final Value<int> submission;
   final Value<Snowflake> assignedUser;
+  final Value<bool> discarded;
   const AssignmentsCompanion({
     this.id = const Value.absent(),
     this.submission = const Value.absent(),
     this.assignedUser = const Value.absent(),
+    this.discarded = const Value.absent(),
   });
   AssignmentsCompanion.insert({
     this.id = const Value.absent(),
     required int submission,
     required Snowflake assignedUser,
+    this.discarded = const Value.absent(),
   })  : submission = Value(submission),
         assignedUser = Value(assignedUser);
   static Insertable<Assignment> custom({
     Expression<int>? id,
     Expression<int>? submission,
     Expression<int>? assignedUser,
+    Expression<bool>? discarded,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (submission != null) 'submission': submission,
       if (assignedUser != null) 'assigned_user': assignedUser,
+      if (discarded != null) 'discarded': discarded,
     });
   }
 
   AssignmentsCompanion copyWith(
       {Value<int>? id,
       Value<int>? submission,
-      Value<Snowflake>? assignedUser}) {
+      Value<Snowflake>? assignedUser,
+      Value<bool>? discarded}) {
     return AssignmentsCompanion(
       id: id ?? this.id,
       submission: submission ?? this.submission,
       assignedUser: assignedUser ?? this.assignedUser,
+      discarded: discarded ?? this.discarded,
     );
   }
 
@@ -1354,6 +1378,9 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
       final converter = $AssignmentsTable.$converter0;
       map['assigned_user'] = Variable<int>(converter.toSql(assignedUser.value));
     }
+    if (discarded.present) {
+      map['discarded'] = Variable<bool>(discarded.value);
+    }
     return map;
   }
 
@@ -1362,7 +1389,8 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
     return (StringBuffer('AssignmentsCompanion(')
           ..write('id: $id, ')
           ..write('submission: $submission, ')
-          ..write('assignedUser: $assignedUser')
+          ..write('assignedUser: $assignedUser, ')
+          ..write('discarded: $discarded')
           ..write(')'))
         .toString();
   }
@@ -1395,8 +1423,17 @@ class $AssignmentsTable extends Assignments
       GeneratedColumn<int>('assigned_user', aliasedName, false,
               type: DriftSqlType.int, requiredDuringInsert: true)
           .withConverter<Snowflake>($AssignmentsTable.$converter0);
+  final VerificationMeta _discardedMeta = const VerificationMeta('discarded');
   @override
-  List<GeneratedColumn> get $columns => [id, submission, assignedUser];
+  late final GeneratedColumn<bool> discarded = GeneratedColumn<bool>(
+      'discarded', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: 'CHECK ("discarded" IN (0, 1))',
+      defaultValue: Constant(false));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, submission, assignedUser, discarded];
   @override
   String get aliasedName => _alias ?? 'assignments';
   @override
@@ -1418,6 +1455,10 @@ class $AssignmentsTable extends Assignments
       context.missing(_submissionMeta);
     }
     context.handle(_assignedUserMeta, const VerificationResult.success());
+    if (data.containsKey('discarded')) {
+      context.handle(_discardedMeta,
+          discarded.isAcceptableOrUnknown(data['discarded']!, _discardedMeta));
+    }
     return context;
   }
 
@@ -1434,6 +1475,8 @@ class $AssignmentsTable extends Assignments
       assignedUser: $AssignmentsTable.$converter0.fromSql(attachedDatabase
           .options.types
           .read(DriftSqlType.int, data['${effectivePrefix}assigned_user'])!),
+      discarded: attachedDatabase.options.types
+          .read(DriftSqlType.bool, data['${effectivePrefix}discarded'])!,
     );
   }
 
