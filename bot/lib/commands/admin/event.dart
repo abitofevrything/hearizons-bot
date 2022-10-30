@@ -64,7 +64,16 @@ final details = ChatCommand(
     final database = GetIt.I.get<Database>();
 
     final data = event.data;
-    final cycle = await database.getCurrentCycle(event);
+
+    String cycleStatus = '';
+    if (data.active) {
+      final cycle = await database.getCurrentCycle(event);
+
+      cycleStatus = '''
+Current cycle started at: ${cycle.startedAt}
+Current cycle status: ${cycle.status.name}
+''';
+    }
 
     await context.info(
       title: 'Event: ${data.name}',
@@ -76,8 +85,7 @@ Reviews length: ${data.reviewLength}
 Announcement channel: <#${data.announcementsChannelId}>
 Reviews channel: <#${data.reviewsChannelId}>
 
-Current cycle started at: ${cycle.startedAt}
-Current cycle status: ${cycle.status.name}
+$cycleStatus
 ''',
     );
   }),
