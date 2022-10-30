@@ -12,7 +12,7 @@ import 'package:nyxx_commands/nyxx_commands.dart';
 final event = ChatGroup(
   'event',
   'Manage events',
-  children: [create, details],
+  children: [create, details, deactivate],
 );
 
 // Keep in sync with [update]!
@@ -106,4 +106,51 @@ final update = ChatCommand(
       type: Value.ofNullable(type),
     ));
   }),
+);
+
+final deactivate = ChatCommand(
+  'deactivate',
+  'Deactivate an event, preventing cycles, submissions & reviews',
+  id(
+    'admin-event-deactivate',
+    (
+      IChatContext context,
+      @Description('The event to deactivate')
+      @UseConverter(deactivateableEventConverter)
+          Event event,
+    ) async {
+      final confirmation = await context.getConfirmation(
+        MessageBuilder.embed(
+          EmbedBuilder()
+            ..color = warningColour
+            ..title = 'Are you sure?'
+            ..description = '''
+Deactivating an event will remove all uncompleted assignments and will prevent anyone from submitting or reviewing in this event. Are you sure you want to deactivate this event?
+''',
+        ),
+        values: {
+          true: 'Yes, deactivate this event',
+          false: 'No, cancel this',
+        },
+        styles: {
+          true: ButtonStyle.danger,
+          false: ButtonStyle.secondary,
+        },
+      );
+
+      if (!confirmation) {
+        await (context.latestContext as IInteractionInteractiveContext).acknowledge();
+        return;
+      }
+
+      await event.deactivate();
+
+      await context.success(
+        title: 'Event deactivated',
+        content: '''
+Successfully deactivated event ${event.data.name}. Run `/admin event activate event:${event.data.name}` to reactivate id.
+''',
+      );
+    },
+  ),
 );
