@@ -28,6 +28,8 @@ extension AssignmentUtils on Database {
         cycles.event.equals(event.data.id) &
             // Ensure user matches
             assignments.assignedUser.equalsValue(userId) &
+            // Ensure assignment was not discarded
+            assignments.discarded.not() &
             // Ensure assignment has no corresponding review
             subqueryExpression(selectOnly(reviews)
                   ..addColumns([countAll()])
@@ -48,5 +50,34 @@ extension AssignmentUtils on Database {
     );
 
     return result;
+  }
+
+  Future<void> discardAssignments(Event event) async {
+    final update = this.update(assignments)
+      ..where(
+        (_) =>
+            // Assignment is not discarded
+            assignments.discarded.not() &
+            // Assignment belongs to [event]
+            subqueryExpression(
+              selectOnly(submissions)
+                ..join([
+                  innerJoin(cycles, submissions.cycle.equalsExp(cycles.id)),
+                  innerJoin(events, cycles.event.equalsExp(events.id)),
+                ])
+                ..where(assignments.submission.equalsExp(submissions.id))
+                ..addColumns([events.id]),
+            ).equals(event.data.id) &
+            // Assignment is not completed
+            subqueryExpression(selectOnly(reviews)
+                  ..addColumns([countAll()])
+                  ..where(
+                    reviews.submission.equalsExp(assignments.submission) &
+                        reviews.userId.equalsExp(assignments.assignedUser),
+                  ))
+                .equals(0),
+      );
+
+    await update.write(AssignmentsCompanion(discarded: Value(true)));
   }
 }

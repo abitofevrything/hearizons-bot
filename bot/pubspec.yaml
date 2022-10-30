@@ -7,11 +7,20 @@ environment:
   sdk: '>=2.18.0 <3.0.0'
 
 dependency_overrides:
-  # drift_postgres doesn't like the new version
-  drift: ^2.2.0
+  # Force drift_dev to use drift from git
+  drift:
+    git:
+      url: https://github.com/abitofevrything/drift.git
+      ref: postgres-types
+      path: drift
 
 dependencies:
-  drift: ^2.2.0
+  drift:
+    git:
+      url: https://github.com/abitofevrything/drift.git
+      ref: postgres-types
+      path: drift
+
   drift_postgres:
     git:
       url: https://github.com/simolus3/moor.git
@@ -23,7 +32,7 @@ dependencies:
   nyxx_commands:
     git: 
       url: https://github.com/nyxx-discord/nyxx_commands.git
-      ref: next
+      ref: bug/button-id
 
   postgres: ^2.5.2
   logging: ^1.1.0
@@ -35,6 +44,11 @@ dependencies:
 
 dev_dependencies:
   build_runner: ^2.3.2
-  drift_dev: ^2.2.0+1
   lints: ^2.0.0
   test: ^1.16.0
+
+  drift_dev:
+    git:
+      url: https://github.com/abitofevrything/drift.git
+      ref: postgres-types
+      path: drift_dev

@@ -12,7 +12,7 @@ import 'package:nyxx_commands/nyxx_commands.dart';
 final event = ChatGroup(
   'event',
   'Manage events',
-  children: [create, details],
+  children: [create, details, activate, deactivate],
 );
 
 // Keep in sync with [update]!
@@ -31,9 +31,9 @@ final create = ChatCommand(
   ) async {
     final database = GetIt.I.get<Database>();
 
-    final event = await database.createEvent(EventsCompanion.insert(
+    await database.createEvent(EventsCompanion.insert(
       name: name,
-      active: true,
+      active: false,
       type: type,
       submissionsLength: submissionsLength,
       reviewLength: reviewLength,
@@ -43,12 +43,12 @@ final create = ChatCommand(
       participantRoleId: participantRole.id,
     ));
 
-    await event.startEvent();
-
     await context.success(
       title: 'Event created',
       content: '''
 Event $name successfully created!
+
+Run `/admin event activate event:$name` to activate this event.
 ''',
     );
   }),
@@ -107,5 +107,96 @@ final update = ChatCommand(
       submissionsLength: Value.ofNullable(submissionsLength),
       type: Value.ofNullable(type),
     ));
+  }),
+);
+
+final deactivate = ChatCommand(
+  'deactivate',
+  'Deactivate an event, preventing cycles, submissions & reviews',
+  id(
+    'admin-event-deactivate',
+    (
+      IChatContext context,
+      @Description('The event to deactivate')
+      @UseConverter(deactivateableEventConverter)
+          Event event,
+    ) async {
+      final confirmation = await context.getConfirmation(
+        MessageBuilder.embed(
+          EmbedBuilder()
+            ..color = warningColour
+            ..title = 'Are you sure?'
+            ..description = '''
+Deactivating an event will remove all uncompleted assignments and will prevent anyone from submitting or reviewing in this event. Are you sure you want to deactivate this event?
+''',
+        ),
+        values: {
+          true: 'Yes, deactivate this event',
+          false: 'No, cancel this',
+        },
+        styles: {
+          true: ButtonStyle.danger,
+          false: ButtonStyle.secondary,
+        },
+      );
+
+      if (!confirmation) {
+        await (context.latestContext as IInteractionInteractiveContext).acknowledge();
+        return;
+      }
+
+      await event.deactivate();
+
+      await context.success(
+        title: 'Event deactivated',
+        content: '''
+Successfully deactivated event ${event.data.name}. Run `/admin event activate event:${event.data.name}` to reactivate it.
+''',
+      );
+    },
+  ),
+);
+
+final activate = ChatCommand(
+  'activate',
+  'Activate an event, starting a cycle immediately',
+  id('admin-event-activate', (
+    IChatContext context,
+    @Description('The event to activate') @UseConverter(activateableEventConverter) Event event,
+  ) async {
+    final confirmation = await context.getConfirmation(
+      MessageBuilder.embed(
+        EmbedBuilder()
+          ..color = warningColour
+          ..title = 'Are you sure?'
+          ..description = '''
+Activating an event will open submissions and start phase/cycle timers immediately. Are you sure you want to activate this event?
+''',
+      ),
+      values: {
+        true: 'Yes, activate this event',
+        false: 'No, cancel this',
+      },
+      styles: {
+        true: ButtonStyle.danger,
+        false: ButtonStyle.secondary,
+      },
+    );
+
+    if (!confirmation) {
+      await (context.latestContext as IInteractionInteractiveContext).acknowledge();
+      return;
+    }
+
+    await event.activate();
+
+    await context.success(
+      title: 'Event activated',
+      content: '''
+Successfully activated event ${event.data.name}. Run `/admin event deactivate event:${event.data.name}` to deactivate it.
+
+Submissions are now open and will be closed in ${TimeStampStyle.relativeTime.format(DateTime.now().add(event.data.submissionsLength))}.
+''',
+    );
   }),
 );
