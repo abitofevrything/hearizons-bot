@@ -47,6 +47,8 @@ final create = ChatCommand(
       title: 'Event created',
       content: '''
 Event $name successfully created!
+
+Run `/admin event activate event:$name` to activate this event.
 ''',
     );
   }),
@@ -193,7 +195,7 @@ Activating an event will open submissions and start phase/cycle timers immediate
       content: '''
 Successfully activated event ${event.data.name}. Run `/admin event deactivate event:${event.data.name}` to deactivate it.
 
-Submissions are now open (the announcement may take a while to be sent) and will be closed in ${TimeStampStyle.relativeTime.format(DateTime.now().add(event.data.submissionsLength))}.
+Submissions are now open and will be closed in ${TimeStampStyle.relativeTime.format(DateTime.now().add(event.data.submissionsLength))}.
 ''',
     );
   }),

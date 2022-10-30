@@ -63,6 +63,7 @@ class Event {
     logger.info('Activating event');
 
     await database.startCycleForEvent(this);
+    await database.updateEvent(data.copyWith(active: true));
     await sendNewCycleAnnouncement();
 
     logger.info('Activated event');
