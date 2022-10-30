@@ -91,6 +91,31 @@ extension EventUtils on Database {
     return results;
   }
 
+  Future<Cycle> startCycleForEvent(Event event) => transaction(() async {
+        _logger.fine('Creating new cycle for event ${event.data.id}');
+
+        final cycle = await into(cycles).insertReturning(CyclesCompanion.insert(
+          event: event.data.id,
+          status: CycleStatus.submissions,
+          startedAt: DateTime.now(),
+        ));
+
+        final update = this.update(currentCycles)
+          ..where((_) => currentCycles.event.equals(event.data.id));
+
+        int updated = await update.write(CurrentCyclesCompanion(cycle: Value(cycle.id)));
+        if (updated == 0) {
+          await into(currentCycles).insert(CurrentCyclesCompanion.insert(
+            event: event.data.id,
+            cycle: cycle.id,
+          ));
+        }
+
+        _logger.fine('Created new cycle for event ${event.data.id} => $cycle');
+
+        return cycle;
+      });
+
   Future<Cycle> moveEventToNextCycle(Event event) => transaction(() async {
         _logger.fine('Moving event ${event.data.id} to new cycle');
 

@@ -29,3 +29,11 @@ const deactivateableEventConverter = SimpleConverter(
   provider: _getDeactivateableEvents,
   stringify: _eventToString,
 );
+
+Future<Iterable<Event>> _getActivateableEvents(IContextData context) async =>
+    (await _getManageableEvents(context)).where((event) => !event.data.active);
+
+const activateableEventConverter = SimpleConverter(
+  provider: _getActivateableEvents,
+  stringify: _eventToString,
+);

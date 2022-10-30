@@ -59,9 +59,22 @@ class Event {
     logger.info('Moved to review phase');
   }
 
+  Future<void> activate() async {
+    logger.info('Activating event');
+
+    await database.startCycleForEvent(this);
+    await sendNewCycleAnnouncement();
+
+    logger.info('Activated event');
+  }
+
   Future<void> deactivate() => database.transaction(() async {
+        logger.info('Deactivating event');
+
         await database.discardAssignments(this);
         await database.updateEvent(data.copyWith(active: false));
+
+        logger.info('Event deactivated');
       });
 
   Future<void> createReview(Assignment assignment, String review) async {
