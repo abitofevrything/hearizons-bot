@@ -32,7 +32,7 @@ dependencies:
   nyxx_commands:
     git: 
       url: https://github.com/nyxx-discord/nyxx_commands.git
-      ref: next
+      ref: bug/button-id
 
   postgres: ^2.5.2
   logging: ^1.1.0

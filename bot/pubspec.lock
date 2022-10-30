@@ -354,8 +354,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: next
-      resolved-ref: "08834087a193c614f2990da52884c1e0225da008"
+      ref: "bug/button-id"
+      resolved-ref: "3bab7c335876b73065732063c99757acfb236be2"
       url: "https://github.com/nyxx-discord/nyxx_commands.git"
     source: git
     version: "5.0.0-dev.0"
