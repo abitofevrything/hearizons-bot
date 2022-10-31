@@ -232,7 +232,7 @@ The next cycle starts ${TimeStampStyle.relativeTime.format(DateTime.now().add(da
     final assignmentMessageLines = [
       '**The assignments for this cycle are**:\n',
       ...assignments.map(
-        (assignment) => 'User ${assignment.assignedUser.value}: ${submissions.firstWhere(
+        (assignment) => '<@${assignment.assignedUser.value}>: ${submissions.firstWhere(
               (submission) => submission.id == assignment.submission.value,
             ).content}\n',
       ),
