@@ -266,8 +266,8 @@ The next cycle starts ${TimeStampStyle.relativeTime.format(DateTime.now().add(da
     String review,
   ) async =>
       EmbedBuilder()
-        ..title = 'Review by ${(await client.fetchUser(assignment.assignedUser)).username}>'
-        ..description = 'This is <@!${assignment.assignedUser}\'s review of ${submission.content}'
+        ..title = 'Review by ${(await client.fetchUser(assignment.assignedUser)).username}'
+        ..description = 'This is <@!${assignment.assignedUser}>\'s review of ${submission.content}'
         ..addField(name: 'Review', content: review)
         ..timestamp = DateTime.now()
         ..color = infoColour;
