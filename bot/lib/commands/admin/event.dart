@@ -95,7 +95,8 @@ final update = ChatCommand(
   'update',
   'Update an event',
   id('admin-event-update', (
-    IChatContext context, [
+    IChatContext context,
+    @Description('The event to update') @UseConverter(manageableEventConverter) Event event, [
     @Description('The name of the event') String? name,
     @Description('The type of the event') @UseConverter(eventTypeConverter) EventType? type,
     @Description('The length of the submissions phase') Duration? submissionsLength,
@@ -107,6 +108,7 @@ final update = ChatCommand(
     final database = GetIt.I.get<Database>();
 
     await database.updateEvent(EventsCompanion(
+      id: Value(event.data.id),
       name: Value.ofNullable(name),
       announcementsChannelId: Value.ofNullable(announcementsChannel?.id),
       participantRoleId: Value.ofNullable(participantRole?.id),
