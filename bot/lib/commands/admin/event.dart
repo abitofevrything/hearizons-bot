@@ -117,6 +117,15 @@ final update = ChatCommand(
       submissionsLength: Value.ofNullable(submissionsLength),
       type: Value.ofNullable(type),
     ));
+
+    await context.success(
+      title: 'Updated event',
+      content: '''
+Event updated successfully.
+
+Run `/admin event details event:${name ?? event.data.name}` to see the new configuration.
+''',
+    );
   }),
 );
 

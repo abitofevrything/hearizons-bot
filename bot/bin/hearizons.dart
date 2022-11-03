@@ -35,7 +35,9 @@ void main() async {
 
   commands.onCommandError.listen(handleError);
 
-  commands.addConverter(durationConverter);
+  commands
+    ..addConverter(durationConverter)
+    ..addConverter<Duration?>(durationConverter);
 
   client
     ..registerPlugin(Logging())
