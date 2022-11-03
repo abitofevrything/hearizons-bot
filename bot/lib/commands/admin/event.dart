@@ -12,7 +12,7 @@ import 'package:nyxx_commands/nyxx_commands.dart';
 final event = ChatGroup(
   'event',
   'Manage events',
-  children: [create, details, activate, deactivate],
+  children: [create, details, update, activate, deactivate],
 );
 
 // Keep in sync with [update]!
