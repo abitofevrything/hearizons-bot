@@ -382,22 +382,10 @@ class $EventsTable extends Events with TableInfo<$EventsTable, EventData> {
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
       type: DriftSqlType.int,
-      requiredDuringInsert: false, defaultConstraints: (context) {
-    const dialectConstraints = {
-      SqlDialect.sqlite: 'PRIMARY KEY AUTOINCREMENT',
-      SqlDialect.mysql: 'PRIMARY KEY AUTOINCREMENT',
-      SqlDialect.postgres: 'PRIMARY KEY AUTOINCREMENT',
-    };
-
-    final constraints = dialectConstraints[context.dialect]!;
-    if (constraints.isEmpty) {
-      return;
-    }
-
-    context.buffer
-      ..write(' ')
-      ..write(constraints);
-  }, hasAutoIncrement: true);
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'),
+      hasAutoIncrement: true);
   final VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
@@ -405,25 +393,15 @@ class $EventsTable extends Events with TableInfo<$EventsTable, EventData> {
       type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _activeMeta = const VerificationMeta('active');
   @override
-  late final GeneratedColumn<bool> active = GeneratedColumn<bool>(
-      'active', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: true, defaultConstraints: (context) {
-    const dialectConstraints = {
-      SqlDialect.sqlite: 'CHECK ("active" IN (0, 1))',
-      SqlDialect.mysql: '',
-      SqlDialect.postgres: '',
-    };
-
-    final constraints = dialectConstraints[context.dialect]!;
-    if (constraints.isEmpty) {
-      return;
-    }
-
-    context.buffer
-      ..write(' ')
-      ..write(constraints);
-  });
+  late final GeneratedColumn<bool> active =
+      GeneratedColumn<bool>('active', aliasedName, false,
+          type: DriftSqlType.bool,
+          requiredDuringInsert: true,
+          defaultConstraints: GeneratedColumn.constraintsDependsOnDialect({
+            SqlDialect.sqlite: 'CHECK ("active" IN (0, 1))',
+            SqlDialect.mysql: '',
+            SqlDialect.postgres: '',
+          }));
   final VerificationMeta _typeMeta = const VerificationMeta('type');
   @override
   late final GeneratedColumnWithTypeConverter<EventType, int> type =
@@ -527,43 +505,31 @@ class $EventsTable extends Events with TableInfo<$EventsTable, EventData> {
   EventData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return EventData(
-      id: attachedDatabase.options.types.read(DriftSqlType.int,
-          data['${effectivePrefix}id'], attachedDatabase.executor.dialect)!,
-      name: attachedDatabase.options.types.read(DriftSqlType.string,
-          data['${effectivePrefix}name'], attachedDatabase.executor.dialect)!,
-      active: attachedDatabase.options.types.read(DriftSqlType.bool,
-          data['${effectivePrefix}active'], attachedDatabase.executor.dialect)!,
-      type: $EventsTable.$converter0.fromSql(attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}type'],
-              attachedDatabase.executor.dialect)!),
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      active: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}active'])!,
+      type: $EventsTable.$converter0.fromSql(attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}type'])!),
       submissionsLength: $EventsTable.$converter1.fromSql(
-          attachedDatabase.options.types.read(
-              DriftSqlType.int,
-              data['${effectivePrefix}submissions_length'],
-              attachedDatabase.executor.dialect)!),
-      reviewLength: $EventsTable.$converter2.fromSql(
-          attachedDatabase.options.types.read(
-              DriftSqlType.int,
-              data['${effectivePrefix}review_length'],
-              attachedDatabase.executor.dialect)!),
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.int, data['${effectivePrefix}submissions_length'])!),
+      reviewLength: $EventsTable.$converter2.fromSql(attachedDatabase
+          .typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}review_length'])!),
       announcementsChannelId: $EventsTable.$converter3.fromSql(
-          attachedDatabase.options.types.read(
-              DriftSqlType.int,
-              data['${effectivePrefix}announcements_channel_id'],
-              attachedDatabase.executor.dialect)!),
+          attachedDatabase.typeMapping.read(DriftSqlType.int,
+              data['${effectivePrefix}announcements_channel_id'])!),
       reviewsChannelId: $EventsTable.$converter4.fromSql(
-          attachedDatabase.options.types.read(
-              DriftSqlType.int,
-              data['${effectivePrefix}reviews_channel_id'],
-              attachedDatabase.executor.dialect)!),
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.int, data['${effectivePrefix}reviews_channel_id'])!),
       participantRoleId: $EventsTable.$converter5.fromSql(
-          attachedDatabase.options.types.read(
-              DriftSqlType.int,
-              data['${effectivePrefix}participant_role_id'],
-              attachedDatabase.executor.dialect)!),
-      guildId: $EventsTable.$converter6.fromSql(attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}guild_id'],
-              attachedDatabase.executor.dialect)!),
+          attachedDatabase.typeMapping.read(DriftSqlType.int,
+              data['${effectivePrefix}participant_role_id'])!),
+      guildId: $EventsTable.$converter6.fromSql(attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}guild_id'])!),
     );
   }
 
@@ -760,43 +726,18 @@ class $CyclesTable extends Cycles with TableInfo<$CyclesTable, Cycle> {
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
       type: DriftSqlType.int,
-      requiredDuringInsert: false, defaultConstraints: (context) {
-    const dialectConstraints = {
-      SqlDialect.sqlite: 'PRIMARY KEY AUTOINCREMENT',
-      SqlDialect.mysql: 'PRIMARY KEY AUTOINCREMENT',
-      SqlDialect.postgres: 'PRIMARY KEY AUTOINCREMENT',
-    };
-
-    final constraints = dialectConstraints[context.dialect]!;
-    if (constraints.isEmpty) {
-      return;
-    }
-
-    context.buffer
-      ..write(' ')
-      ..write(constraints);
-  }, hasAutoIncrement: true);
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'),
+      hasAutoIncrement: true);
   final VerificationMeta _eventMeta = const VerificationMeta('event');
   @override
   late final GeneratedColumn<int> event = GeneratedColumn<int>(
       'event', aliasedName, false,
       type: DriftSqlType.int,
-      requiredDuringInsert: true, defaultConstraints: (context) {
-    const dialectConstraints = {
-      SqlDialect.sqlite: 'REFERENCES "events" ("id")',
-      SqlDialect.mysql: 'REFERENCES "events" ("id")',
-      SqlDialect.postgres: 'REFERENCES "events" ("id")',
-    };
-
-    final constraints = dialectConstraints[context.dialect]!;
-    if (constraints.isEmpty) {
-      return;
-    }
-
-    context.buffer
-      ..write(' ')
-      ..write(constraints);
-  });
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES "events" ("id")'));
   final VerificationMeta _statusMeta = const VerificationMeta('status');
   @override
   late final GeneratedColumnWithTypeConverter<CycleStatus, int> status =
@@ -844,17 +785,14 @@ class $CyclesTable extends Cycles with TableInfo<$CyclesTable, Cycle> {
   Cycle map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return Cycle(
-      id: attachedDatabase.options.types.read(DriftSqlType.int,
-          data['${effectivePrefix}id'], attachedDatabase.executor.dialect)!,
-      event: attachedDatabase.options.types.read(DriftSqlType.int,
-          data['${effectivePrefix}event'], attachedDatabase.executor.dialect)!,
-      status: $CyclesTable.$converter0.fromSql(attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}status'],
-              attachedDatabase.executor.dialect)!),
-      startedAt: attachedDatabase.options.types.read(
-          DriftSqlType.dateTime,
-          data['${effectivePrefix}started_at'],
-          attachedDatabase.executor.dialect)!,
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      event: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}event'])!,
+      status: $CyclesTable.$converter0.fromSql(attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}status'])!),
+      startedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}started_at'])!,
     );
   }
 
@@ -988,43 +926,17 @@ class $CurrentCyclesTable extends CurrentCycles
   late final GeneratedColumn<int> event = GeneratedColumn<int>(
       'event', aliasedName, false,
       type: DriftSqlType.int,
-      requiredDuringInsert: true, defaultConstraints: (context) {
-    const dialectConstraints = {
-      SqlDialect.sqlite: 'REFERENCES "events" ("id")',
-      SqlDialect.mysql: 'REFERENCES "events" ("id")',
-      SqlDialect.postgres: 'REFERENCES "events" ("id")',
-    };
-
-    final constraints = dialectConstraints[context.dialect]!;
-    if (constraints.isEmpty) {
-      return;
-    }
-
-    context.buffer
-      ..write(' ')
-      ..write(constraints);
-  });
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES "events" ("id")'));
   final VerificationMeta _cycleMeta = const VerificationMeta('cycle');
   @override
   late final GeneratedColumn<int> cycle = GeneratedColumn<int>(
       'cycle', aliasedName, false,
       type: DriftSqlType.int,
-      requiredDuringInsert: true, defaultConstraints: (context) {
-    const dialectConstraints = {
-      SqlDialect.sqlite: 'REFERENCES "cycles" ("id")',
-      SqlDialect.mysql: 'REFERENCES "cycles" ("id")',
-      SqlDialect.postgres: 'REFERENCES "cycles" ("id")',
-    };
-
-    final constraints = dialectConstraints[context.dialect]!;
-    if (constraints.isEmpty) {
-      return;
-    }
-
-    context.buffer
-      ..write(' ')
-      ..write(constraints);
-  });
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES "cycles" ("id")'));
   @override
   List<GeneratedColumn> get $columns => [event, cycle];
   @override
@@ -1057,10 +969,10 @@ class $CurrentCyclesTable extends CurrentCycles
   CurrentCycle map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return CurrentCycle(
-      event: attachedDatabase.options.types.read(DriftSqlType.int,
-          data['${effectivePrefix}event'], attachedDatabase.executor.dialect)!,
-      cycle: attachedDatabase.options.types.read(DriftSqlType.int,
-          data['${effectivePrefix}cycle'], attachedDatabase.executor.dialect)!,
+      event: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}event'])!,
+      cycle: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}cycle'])!,
     );
   }
 
@@ -1249,43 +1161,18 @@ class $SubmissionsTable extends Submissions
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
       type: DriftSqlType.int,
-      requiredDuringInsert: false, defaultConstraints: (context) {
-    const dialectConstraints = {
-      SqlDialect.sqlite: 'PRIMARY KEY AUTOINCREMENT',
-      SqlDialect.mysql: 'PRIMARY KEY AUTOINCREMENT',
-      SqlDialect.postgres: 'PRIMARY KEY AUTOINCREMENT',
-    };
-
-    final constraints = dialectConstraints[context.dialect]!;
-    if (constraints.isEmpty) {
-      return;
-    }
-
-    context.buffer
-      ..write(' ')
-      ..write(constraints);
-  }, hasAutoIncrement: true);
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'),
+      hasAutoIncrement: true);
   final VerificationMeta _cycleMeta = const VerificationMeta('cycle');
   @override
   late final GeneratedColumn<int> cycle = GeneratedColumn<int>(
       'cycle', aliasedName, false,
       type: DriftSqlType.int,
-      requiredDuringInsert: true, defaultConstraints: (context) {
-    const dialectConstraints = {
-      SqlDialect.sqlite: 'REFERENCES "cycles" ("id")',
-      SqlDialect.mysql: 'REFERENCES "cycles" ("id")',
-      SqlDialect.postgres: 'REFERENCES "cycles" ("id")',
-    };
-
-    final constraints = dialectConstraints[context.dialect]!;
-    if (constraints.isEmpty) {
-      return;
-    }
-
-    context.buffer
-      ..write(' ')
-      ..write(constraints);
-  });
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES "cycles" ("id")'));
   final VerificationMeta _userIdMeta = const VerificationMeta('userId');
   @override
   late final GeneratedColumnWithTypeConverter<Snowflake, int> userId =
@@ -1333,19 +1220,14 @@ class $SubmissionsTable extends Submissions
   Submission map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return Submission(
-      id: attachedDatabase.options.types.read(DriftSqlType.int,
-          data['${effectivePrefix}id'], attachedDatabase.executor.dialect)!,
-      cycle: attachedDatabase.options.types.read(DriftSqlType.int,
-          data['${effectivePrefix}cycle'], attachedDatabase.executor.dialect)!,
-      userId: $SubmissionsTable.$converter0.fromSql(
-          attachedDatabase.options.types.read(
-              DriftSqlType.int,
-              data['${effectivePrefix}user_id'],
-              attachedDatabase.executor.dialect)!),
-      content: attachedDatabase.options.types.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}content'],
-          attachedDatabase.executor.dialect)!,
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      cycle: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}cycle'])!,
+      userId: $SubmissionsTable.$converter0.fromSql(attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}user_id'])!),
+      content: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}content'])!,
     );
   }
 
@@ -1538,43 +1420,18 @@ class $AssignmentsTable extends Assignments
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
       type: DriftSqlType.int,
-      requiredDuringInsert: false, defaultConstraints: (context) {
-    const dialectConstraints = {
-      SqlDialect.sqlite: 'PRIMARY KEY AUTOINCREMENT',
-      SqlDialect.mysql: 'PRIMARY KEY AUTOINCREMENT',
-      SqlDialect.postgres: 'PRIMARY KEY AUTOINCREMENT',
-    };
-
-    final constraints = dialectConstraints[context.dialect]!;
-    if (constraints.isEmpty) {
-      return;
-    }
-
-    context.buffer
-      ..write(' ')
-      ..write(constraints);
-  }, hasAutoIncrement: true);
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'),
+      hasAutoIncrement: true);
   final VerificationMeta _submissionMeta = const VerificationMeta('submission');
   @override
   late final GeneratedColumn<int> submission = GeneratedColumn<int>(
       'submission', aliasedName, false,
       type: DriftSqlType.int,
-      requiredDuringInsert: true, defaultConstraints: (context) {
-    const dialectConstraints = {
-      SqlDialect.sqlite: 'REFERENCES "submissions" ("id")',
-      SqlDialect.mysql: 'REFERENCES "submissions" ("id")',
-      SqlDialect.postgres: 'REFERENCES "submissions" ("id")',
-    };
-
-    final constraints = dialectConstraints[context.dialect]!;
-    if (constraints.isEmpty) {
-      return;
-    }
-
-    context.buffer
-      ..write(' ')
-      ..write(constraints);
-  });
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES "submissions" ("id")'));
   final VerificationMeta _assignedUserMeta =
       const VerificationMeta('assignedUser');
   @override
@@ -1584,25 +1441,16 @@ class $AssignmentsTable extends Assignments
           .withConverter<Snowflake>($AssignmentsTable.$converter0);
   final VerificationMeta _discardedMeta = const VerificationMeta('discarded');
   @override
-  late final GeneratedColumn<bool> discarded = GeneratedColumn<bool>(
-      'discarded', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false, defaultConstraints: (context) {
-    const dialectConstraints = {
-      SqlDialect.sqlite: 'CHECK ("discarded" IN (0, 1))',
-      SqlDialect.mysql: '',
-      SqlDialect.postgres: '',
-    };
-
-    final constraints = dialectConstraints[context.dialect]!;
-    if (constraints.isEmpty) {
-      return;
-    }
-
-    context.buffer
-      ..write(' ')
-      ..write(constraints);
-  }, defaultValue: Constant(false));
+  late final GeneratedColumn<bool> discarded =
+      GeneratedColumn<bool>('discarded', aliasedName, false,
+          type: DriftSqlType.bool,
+          requiredDuringInsert: false,
+          defaultConstraints: GeneratedColumn.constraintsDependsOnDialect({
+            SqlDialect.sqlite: 'CHECK ("discarded" IN (0, 1))',
+            SqlDialect.mysql: '',
+            SqlDialect.postgres: '',
+          }),
+          defaultValue: Constant(false));
   @override
   List<GeneratedColumn> get $columns =>
       [id, submission, assignedUser, discarded];
@@ -1640,21 +1488,15 @@ class $AssignmentsTable extends Assignments
   Assignment map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return Assignment(
-      id: attachedDatabase.options.types.read(DriftSqlType.int,
-          data['${effectivePrefix}id'], attachedDatabase.executor.dialect)!,
-      submission: attachedDatabase.options.types.read(
-          DriftSqlType.int,
-          data['${effectivePrefix}submission'],
-          attachedDatabase.executor.dialect)!,
-      assignedUser: $AssignmentsTable.$converter0.fromSql(
-          attachedDatabase.options.types.read(
-              DriftSqlType.int,
-              data['${effectivePrefix}assigned_user'],
-              attachedDatabase.executor.dialect)!),
-      discarded: attachedDatabase.options.types.read(
-          DriftSqlType.bool,
-          data['${effectivePrefix}discarded'],
-          attachedDatabase.executor.dialect)!,
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      submission: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}submission'])!,
+      assignedUser: $AssignmentsTable.$converter0.fromSql(attachedDatabase
+          .typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}assigned_user'])!),
+      discarded: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}discarded'])!,
     );
   }
 
@@ -1844,43 +1686,18 @@ class $ReviewsTable extends Reviews with TableInfo<$ReviewsTable, Review> {
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
       type: DriftSqlType.int,
-      requiredDuringInsert: false, defaultConstraints: (context) {
-    const dialectConstraints = {
-      SqlDialect.sqlite: 'PRIMARY KEY AUTOINCREMENT',
-      SqlDialect.mysql: 'PRIMARY KEY AUTOINCREMENT',
-      SqlDialect.postgres: 'PRIMARY KEY AUTOINCREMENT',
-    };
-
-    final constraints = dialectConstraints[context.dialect]!;
-    if (constraints.isEmpty) {
-      return;
-    }
-
-    context.buffer
-      ..write(' ')
-      ..write(constraints);
-  }, hasAutoIncrement: true);
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'),
+      hasAutoIncrement: true);
   final VerificationMeta _submissionMeta = const VerificationMeta('submission');
   @override
   late final GeneratedColumn<int> submission = GeneratedColumn<int>(
       'submission', aliasedName, false,
       type: DriftSqlType.int,
-      requiredDuringInsert: true, defaultConstraints: (context) {
-    const dialectConstraints = {
-      SqlDialect.sqlite: 'REFERENCES "submissions" ("id")',
-      SqlDialect.mysql: 'REFERENCES "submissions" ("id")',
-      SqlDialect.postgres: 'REFERENCES "submissions" ("id")',
-    };
-
-    final constraints = dialectConstraints[context.dialect]!;
-    if (constraints.isEmpty) {
-      return;
-    }
-
-    context.buffer
-      ..write(' ')
-      ..write(constraints);
-  });
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES "submissions" ("id")'));
   final VerificationMeta _userIdMeta = const VerificationMeta('userId');
   @override
   late final GeneratedColumnWithTypeConverter<Snowflake, int> userId =
@@ -1930,19 +1747,14 @@ class $ReviewsTable extends Reviews with TableInfo<$ReviewsTable, Review> {
   Review map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return Review(
-      id: attachedDatabase.options.types.read(DriftSqlType.int,
-          data['${effectivePrefix}id'], attachedDatabase.executor.dialect)!,
-      submission: attachedDatabase.options.types.read(
-          DriftSqlType.int,
-          data['${effectivePrefix}submission'],
-          attachedDatabase.executor.dialect)!,
-      userId: $ReviewsTable.$converter0.fromSql(attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}user_id'],
-              attachedDatabase.executor.dialect)!),
-      content: attachedDatabase.options.types.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}content'],
-          attachedDatabase.executor.dialect)!,
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      submission: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}submission'])!,
+      userId: $ReviewsTable.$converter0.fromSql(attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}user_id'])!),
+      content: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}content'])!,
     );
   }
 

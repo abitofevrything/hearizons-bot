@@ -173,18 +173,18 @@ packages:
     dependency: "direct main"
     description:
       path: drift
-      ref: postgres-types
-      resolved-ref: "897f8c10ad2af89c13379300cc62012b1c4464ac"
-      url: "https://github.com/abitofevrything/drift.git"
+      ref: develop
+      resolved-ref: "75fe463a9fa5d344cff623828aec4b6bd5409205"
+      url: "https://github.com/simolus3/moor.git"
     source: git
     version: "2.3.0-dev"
   drift_dev:
     dependency: "direct dev"
     description:
       path: drift_dev
-      ref: postgres-types
-      resolved-ref: "897f8c10ad2af89c13379300cc62012b1c4464ac"
-      url: "https://github.com/abitofevrything/drift.git"
+      ref: develop
+      resolved-ref: "75fe463a9fa5d344cff623828aec4b6bd5409205"
+      url: "https://github.com/simolus3/moor.git"
     source: git
     version: "2.3.0-dev"
   drift_postgres:
@@ -192,7 +192,7 @@ packages:
     description:
       path: "extras/drift_postgres"
       ref: HEAD
-      resolved-ref: fdd1d2c66e4ba5d9e7b107cbdec8af9a800230ff
+      resolved-ref: "75fe463a9fa5d344cff623828aec4b6bd5409205"
       url: "https://github.com/simolus3/moor.git"
     source: git
     version: "1.0.0"
@@ -244,7 +244,7 @@ packages:
       name: glob
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0"
+    version: "2.1.1"
   graphs:
     dependency: transitive
     description:
@@ -349,13 +349,13 @@ packages:
       name: nyxx
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.1.1"
+    version: "4.2.0"
   nyxx_commands:
     dependency: "direct main"
     description:
       path: "."
-      ref: "bug/button-id"
-      resolved-ref: "3bab7c335876b73065732063c99757acfb236be2"
+      ref: next
+      resolved-ref: "26ea11345d22194b71c33a284e922d17120d7324"
       url: "https://github.com/nyxx-discord/nyxx_commands.git"
     source: git
     version: "5.0.0-dev.0"
@@ -365,7 +365,7 @@ packages:
       name: nyxx_interactions
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.3.1"
+    version: "4.4.0"
   package_config:
     dependency: transitive
     description:
@@ -407,7 +407,7 @@ packages:
       name: pub_semver
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.2"
+    version: "2.1.3"
   pubspec_parse:
     dependency: transitive
     description:
@@ -470,7 +470,7 @@ packages:
       name: shelf_web_socket
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.2"
+    version: "1.0.3"
   source_gen:
     dependency: transitive
     description:
@@ -533,14 +533,14 @@ packages:
       name: stream_transform
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.1"
+    version: "2.1.0"
   string_scanner:
     dependency: transitive
     description:
       name: string_scanner
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.1"
+    version: "1.2.0"
   term_glyph:
     dependency: transitive
     description:
@@ -554,21 +554,21 @@ packages:
       name: test
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.21.7"
+    version: "1.22.0"
   test_api:
     dependency: transitive
     description:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.15"
+    version: "0.4.16"
   test_core:
     dependency: transitive
     description:
       name: test_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.19"
+    version: "0.4.20"
   timing:
     dependency: transitive
     description:

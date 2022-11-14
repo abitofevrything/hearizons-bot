@@ -77,5 +77,6 @@ class _ProxyChatContext extends InteractionChatContext {
           interaction: original.interaction,
           interactionEvent: original.interactionEvent,
           rawArguments: fakeArguments,
+          interactions: original.interactions,
         );
 }

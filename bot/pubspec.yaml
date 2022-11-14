@@ -10,15 +10,15 @@ dependency_overrides:
   # Force drift_dev to use drift from git
   drift:
     git:
-      url: https://github.com/abitofevrything/drift.git
-      ref: postgres-types
+      url: https://github.com/simolus3/moor.git
+      ref: develop
       path: drift
 
 dependencies:
   drift:
     git:
-      url: https://github.com/abitofevrything/drift.git
-      ref: postgres-types
+      url: https://github.com/simolus3/moor.git
+      ref: develop
       path: drift
 
   drift_postgres:
@@ -32,7 +32,7 @@ dependencies:
   nyxx_commands:
     git: 
       url: https://github.com/nyxx-discord/nyxx_commands.git
-      ref: bug/button-id
+      ref: next
 
   postgres: ^2.5.2
   logging: ^1.1.0
@@ -49,6 +49,6 @@ dev_dependencies:
 
   drift_dev:
     git:
-      url: https://github.com/abitofevrything/drift.git
-      ref: postgres-types
+      url: https://github.com/simolus3/moor.git
+      ref: develop
       path: drift_dev
