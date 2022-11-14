@@ -548,6 +548,225 @@ class $EventsTable extends Events with TableInfo<$EventsTable, EventData> {
   static TypeConverter<Snowflake, int> $converter6 = const SnowflakeConverter();
 }
 
+class EventDependencie extends DataClass
+    implements Insertable<EventDependencie> {
+  final int id;
+
+  /// The event for which this dependency is declared.
+  final int event;
+
+  /// The depdencency.
+  final int dependency;
+  const EventDependencie(
+      {required this.id, required this.event, required this.dependency});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['event'] = Variable<int>(event);
+    map['dependency'] = Variable<int>(dependency);
+    return map;
+  }
+
+  EventDependenciesCompanion toCompanion(bool nullToAbsent) {
+    return EventDependenciesCompanion(
+      id: Value(id),
+      event: Value(event),
+      dependency: Value(dependency),
+    );
+  }
+
+  factory EventDependencie.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return EventDependencie(
+      id: serializer.fromJson<int>(json['id']),
+      event: serializer.fromJson<int>(json['event']),
+      dependency: serializer.fromJson<int>(json['dependency']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'event': serializer.toJson<int>(event),
+      'dependency': serializer.toJson<int>(dependency),
+    };
+  }
+
+  EventDependencie copyWith({int? id, int? event, int? dependency}) =>
+      EventDependencie(
+        id: id ?? this.id,
+        event: event ?? this.event,
+        dependency: dependency ?? this.dependency,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('EventDependencie(')
+          ..write('id: $id, ')
+          ..write('event: $event, ')
+          ..write('dependency: $dependency')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, event, dependency);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is EventDependencie &&
+          other.id == this.id &&
+          other.event == this.event &&
+          other.dependency == this.dependency);
+}
+
+class EventDependenciesCompanion extends UpdateCompanion<EventDependencie> {
+  final Value<int> id;
+  final Value<int> event;
+  final Value<int> dependency;
+  const EventDependenciesCompanion({
+    this.id = const Value.absent(),
+    this.event = const Value.absent(),
+    this.dependency = const Value.absent(),
+  });
+  EventDependenciesCompanion.insert({
+    this.id = const Value.absent(),
+    required int event,
+    required int dependency,
+  })  : event = Value(event),
+        dependency = Value(dependency);
+  static Insertable<EventDependencie> custom({
+    Expression<int>? id,
+    Expression<int>? event,
+    Expression<int>? dependency,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (event != null) 'event': event,
+      if (dependency != null) 'dependency': dependency,
+    });
+  }
+
+  EventDependenciesCompanion copyWith(
+      {Value<int>? id, Value<int>? event, Value<int>? dependency}) {
+    return EventDependenciesCompanion(
+      id: id ?? this.id,
+      event: event ?? this.event,
+      dependency: dependency ?? this.dependency,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (event.present) {
+      map['event'] = Variable<int>(event.value);
+    }
+    if (dependency.present) {
+      map['dependency'] = Variable<int>(dependency.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EventDependenciesCompanion(')
+          ..write('id: $id, ')
+          ..write('event: $event, ')
+          ..write('dependency: $dependency')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $EventDependenciesTable extends EventDependencies
+    with TableInfo<$EventDependenciesTable, EventDependencie> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $EventDependenciesTable(this.attachedDatabase, [this._alias]);
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'),
+      hasAutoIncrement: true);
+  final VerificationMeta _eventMeta = const VerificationMeta('event');
+  @override
+  late final GeneratedColumn<int> event = GeneratedColumn<int>(
+      'event', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES "events" ("id")'));
+  final VerificationMeta _dependencyMeta = const VerificationMeta('dependency');
+  @override
+  late final GeneratedColumn<int> dependency = GeneratedColumn<int>(
+      'dependency', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES "events" ("id")'));
+  @override
+  List<GeneratedColumn> get $columns => [id, event, dependency];
+  @override
+  String get aliasedName => _alias ?? 'event_dependencies';
+  @override
+  String get actualTableName => 'event_dependencies';
+  @override
+  VerificationContext validateIntegrity(Insertable<EventDependencie> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('event')) {
+      context.handle(
+          _eventMeta, event.isAcceptableOrUnknown(data['event']!, _eventMeta));
+    } else if (isInserting) {
+      context.missing(_eventMeta);
+    }
+    if (data.containsKey('dependency')) {
+      context.handle(
+          _dependencyMeta,
+          dependency.isAcceptableOrUnknown(
+              data['dependency']!, _dependencyMeta));
+    } else if (isInserting) {
+      context.missing(_dependencyMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  EventDependencie map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return EventDependencie(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      event: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}event'])!,
+      dependency: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}dependency'])!,
+    );
+  }
+
+  @override
+  $EventDependenciesTable createAlias(String alias) {
+    return $EventDependenciesTable(attachedDatabase, alias);
+  }
+}
+
 class Cycle extends DataClass implements Insertable<Cycle> {
   /// The id of the cycle.
   final int id;
@@ -1769,6 +1988,8 @@ class $ReviewsTable extends Reviews with TableInfo<$ReviewsTable, Review> {
 abstract class _$Database extends GeneratedDatabase {
   _$Database(QueryExecutor e) : super(e);
   late final $EventsTable events = $EventsTable(this);
+  late final $EventDependenciesTable eventDependencies =
+      $EventDependenciesTable(this);
   late final $CyclesTable cycles = $CyclesTable(this);
   late final $CurrentCyclesTable currentCycles = $CurrentCyclesTable(this);
   late final $SubmissionsTable submissions = $SubmissionsTable(this);
@@ -1778,6 +1999,13 @@ abstract class _$Database extends GeneratedDatabase {
   Iterable<TableInfo<Table, dynamic>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [events, cycles, currentCycles, submissions, assignments, reviews];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+        events,
+        eventDependencies,
+        cycles,
+        currentCycles,
+        submissions,
+        assignments,
+        reviews
+      ];
 }

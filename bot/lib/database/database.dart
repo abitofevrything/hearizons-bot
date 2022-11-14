@@ -29,12 +29,20 @@ LazyDatabase _openConnection() => LazyDatabase(dialect: SqlDialect.postgres, () 
       return PgDatabase(connection);
     });
 
-@DriftDatabase(tables: [Events, CurrentCycles, Cycles, Submissions, Assignments, Reviews])
+@DriftDatabase(tables: [
+  Events,
+  EventDependencies,
+  CurrentCycles,
+  Cycles,
+  Submissions,
+  Assignments,
+  Reviews,
+])
 class Database extends _$Database {
   Database() : super(_openConnection());
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(

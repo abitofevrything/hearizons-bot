@@ -37,6 +37,16 @@ class Events extends Table {
   IntColumn get guildId => integer().map(const SnowflakeConverter())();
 }
 
+class EventDependencies extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  /// The event for which this dependency is declared.
+  IntColumn get event => integer().references(Events, #id)();
+
+  /// The depdencency.
+  IntColumn get dependency => integer().references(Events, #id)();
+}
+
 class CurrentCycles extends Table {
   IntColumn get event => integer().references(Events, #id)();
   IntColumn get cycle => integer().references(Cycles, #id)();
