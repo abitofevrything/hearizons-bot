@@ -264,13 +264,18 @@ The next cycle starts ${TimeStampStyle.relativeTime.format(DateTime.now().add(da
     Submission submission,
     Assignment assignment,
     String review,
-  ) async =>
-      EmbedBuilder()
-        ..title = 'Review by ${(await client.fetchUser(assignment.assignedUser)).username}'
-        ..description = 'This is <@!${assignment.assignedUser}>\'s review of ${submission.content}'
-        ..addField(name: 'Review', content: review)
-        ..timestamp = DateTime.now()
-        ..color = infoColour;
+  ) async {
+    if (review.length > 1024) {
+      review = '${review.substring(0, 1021)}...';
+    }
+
+    return EmbedBuilder()
+      ..title = 'Review by ${(await client.fetchUser(assignment.assignedUser)).username}'
+      ..description = 'This is <@!${assignment.assignedUser}>\'s review of ${submission.content}'
+      ..addField(name: 'Review', content: review)
+      ..timestamp = DateTime.now()
+      ..color = infoColour;
+  }
 
   @override
   String toString() => data.toString();
