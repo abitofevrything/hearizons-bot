@@ -180,4 +180,20 @@ extension EventUtils on Database {
     final rawResult = await update.writeReturning(event);
     return _toEvent(rawResult.single);
   }
+
+  Future<List<Event>> getDependenciesOf(Event event) async {
+    _logger.fine('Getting dependencies for event ${event.data.id}');
+
+    final query = select(eventDependencies).join([
+      innerJoin(events, eventDependencies.dependency.equalsExp(events.id)),
+    ])
+      ..where(eventDependencies.event.equals(event.data.id));
+
+    final rawResult = await query.get();
+    final result = rawResult.map((row) => _toEvent(row.readTable(events))).toList();
+
+    _logger.fine('Got dependencies for event ${event.data.id} => [${result.join(', ')}]');
+
+    return result;
+  }
 }

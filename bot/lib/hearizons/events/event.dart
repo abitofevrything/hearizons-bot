@@ -79,7 +79,7 @@ class Event {
       });
 
   Future<void> createReview(Assignment assignment, String review) async {
-    await validateReview(assignment, review);
+    await _forAllDependencies((event) => event.validateReview(assignment, review));
 
     final submission = await database.getSubmissionFromAssignment(assignment);
 
@@ -116,7 +116,7 @@ class Event {
     required String submission,
     required Snowflake userId,
   }) async {
-    await validateSubmission(submission, userId);
+    await _forAllDependencies((event) => event.validateSubmission(submission, userId));
 
     final createdSubmission = await database.createSubmission(SubmissionsCompanion.insert(
       cycle: (await database.getCurrentCycle(this)).id,
@@ -279,6 +279,29 @@ The next cycle starts ${TimeStampStyle.relativeTime.format(DateTime.now().add(da
 
   @override
   String toString() => data.toString();
+
+  Future<List<T>> _forAllDependencies<T>(
+    FutureOr<T> Function(Event) computation,
+  ) async {
+    final seen = <int>[];
+    final toProcess = [this];
+
+    final result = <T>[];
+
+    while (toProcess.isNotEmpty) {
+      final event = toProcess.removeAt(0);
+
+      if (seen.contains(event.data.id)) {
+        continue;
+      }
+      seen.add(event.data.id);
+
+      result.add(await computation(event));
+      toProcess.addAll(await database.getDependenciesOf(event));
+    }
+
+    return result;
+  }
 
   Future<IMessage?> _sendMessageToChannel(Snowflake channelId, MessageBuilder message) async {
     try {
