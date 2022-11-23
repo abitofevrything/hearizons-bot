@@ -44,7 +44,7 @@ class Database extends _$Database {
   Database() : super(_openConnection());
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -117,6 +117,29 @@ class Database extends _$Database {
                    ALTER COLUMN reviews_event_id SET NOT NULL,
                    ALTER COLUMN next_cycle_submissions_event_id SET NOT NULL;''',
             );
+          }
+
+          if (from < 7) {
+            await customStatement(
+              '''ALTER TABLE events
+                   ALTER COLUMN announcements_channel_id SET DATA TYPE bigint,
+                   ALTER COLUMN reviews_channel_id SET DATA TYPE bigint,
+                   ALTER COLUMN participant_role_id SET DATA TYPE bigint,
+                   ALTER COLUMN guild_id SET DATA TYPE bigint;''',
+            );
+
+            await customStatement(
+              '''ALTER TABLE cycles
+                   ALTER COLUMN submissions_event_id SET DATA TYPE bigint,
+                   ALTER COLUMN reviews_event_id SET DATA TYPE bigint,
+                   ALTER COLUMN next_cycle_submissions_event_id SET DATA TYPE bigint;''',
+            );
+
+            await customStatement(
+                'ALTER TABLE submissions ALTER COLUMN user_id SET DATA TYPE bigint;');
+            await customStatement(
+                'ALTER TABLE assignments ALTER COLUMN assigned_user SET DATA TYPE bigint;');
+            await customStatement('ALTER TABLE reviews ALTER COLUMN user_id SET DATA TYPE bigint;');
           }
         }),
       );

@@ -25,16 +25,16 @@ class Events extends Table {
   IntColumn get reviewLength => integer().map(const DurationConverter())();
 
   /// The id of the channel to send announcements to.
-  IntColumn get announcementsChannelId => integer().map(const SnowflakeConverter())();
+  Int64Column get announcementsChannelId => int64().map(const SnowflakeConverter())();
 
   /// The id of the channel to send reviews to.
-  IntColumn get reviewsChannelId => integer().map(const SnowflakeConverter())();
+  Int64Column get reviewsChannelId => int64().map(const SnowflakeConverter())();
 
   /// The id of the role to give participants.
-  IntColumn get participantRoleId => integer().map(const SnowflakeConverter())();
+  Int64Column get participantRoleId => int64().map(const SnowflakeConverter())();
 
   /// The id of the guild in which this event occurs.
-  IntColumn get guildId => integer().map(const SnowflakeConverter())();
+  Int64Column get guildId => int64().map(const SnowflakeConverter())();
 }
 
 class EventDependencies extends Table {
@@ -75,13 +75,13 @@ class Cycles extends Table {
   DateTimeColumn get startedAt => dateTime()();
 
   /// The ID of the guild event representing this cycle's submissions
-  IntColumn get submissionsEventId => integer().map(const SnowflakeConverter())();
+  Int64Column get submissionsEventId => int64().map(const SnowflakeConverter())();
 
   /// The ID of the guild event representing this cycle's reviews
-  IntColumn get reviewsEventId => integer().map(const SnowflakeConverter())();
+  Int64Column get reviewsEventId => int64().map(const SnowflakeConverter())();
 
   /// The ID of the guild event representing the next cycle's submissions
-  IntColumn get nextCycleSubmissionsEventId => integer().map(const SnowflakeConverter())();
+  Int64Column get nextCycleSubmissionsEventId => int64().map(const SnowflakeConverter())();
 }
 
 /// A submission to a cycle.
@@ -93,7 +93,7 @@ class Submissions extends Table {
   IntColumn get cycle => integer().references(Cycles, #id)();
 
   /// The ID of the user who submitted this content.
-  IntColumn get userId => integer().map(const SnowflakeConverter())();
+  Int64Column get userId => int64().map(const SnowflakeConverter())();
 
   /// The content of the submission.
   TextColumn get content => text()();
@@ -108,7 +108,7 @@ class Assignments extends Table {
   IntColumn get submission => integer().references(Submissions, #id)();
 
   /// The user who should perform the review.
-  IntColumn get assignedUser => integer().map(const SnowflakeConverter())();
+  Int64Column get assignedUser => int64().map(const SnowflakeConverter())();
 
   /// Whether this assignment was discarded despite not being completed.
   BoolColumn get discarded => boolean().withDefault(Constant(false))();
@@ -123,7 +123,7 @@ class Reviews extends Table {
   IntColumn get submission => integer().references(Submissions, #id)();
 
   /// The ID of the user who submitted this review.
-  IntColumn get userId => integer().map(const SnowflakeConverter())();
+  Int64Column get userId => int64().map(const SnowflakeConverter())();
 
   /// The content of the review.
   TextColumn get content => text()();

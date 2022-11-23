@@ -66,21 +66,21 @@ class EventData extends DataClass implements Insertable<EventData> {
     {
       final converter = $EventsTable.$converterannouncementsChannelId;
       map['announcements_channel_id'] =
-          Variable<int>(converter.toSql(announcementsChannelId));
+          Variable<BigInt>(converter.toSql(announcementsChannelId));
     }
     {
       final converter = $EventsTable.$converterreviewsChannelId;
       map['reviews_channel_id'] =
-          Variable<int>(converter.toSql(reviewsChannelId));
+          Variable<BigInt>(converter.toSql(reviewsChannelId));
     }
     {
       final converter = $EventsTable.$converterparticipantRoleId;
       map['participant_role_id'] =
-          Variable<int>(converter.toSql(participantRoleId));
+          Variable<BigInt>(converter.toSql(participantRoleId));
     }
     {
       final converter = $EventsTable.$converterguildId;
-      map['guild_id'] = Variable<int>(converter.toSql(guildId));
+      map['guild_id'] = Variable<BigInt>(converter.toSql(guildId));
     }
     return map;
   }
@@ -257,10 +257,10 @@ class EventsCompanion extends UpdateCompanion<EventData> {
     Expression<int>? type,
     Expression<int>? submissionsLength,
     Expression<int>? reviewLength,
-    Expression<int>? announcementsChannelId,
-    Expression<int>? reviewsChannelId,
-    Expression<int>? participantRoleId,
-    Expression<int>? guildId,
+    Expression<BigInt>? announcementsChannelId,
+    Expression<BigInt>? reviewsChannelId,
+    Expression<BigInt>? participantRoleId,
+    Expression<BigInt>? guildId,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -331,21 +331,21 @@ class EventsCompanion extends UpdateCompanion<EventData> {
     if (announcementsChannelId.present) {
       final converter = $EventsTable.$converterannouncementsChannelId;
       map['announcements_channel_id'] =
-          Variable<int>(converter.toSql(announcementsChannelId.value));
+          Variable<BigInt>(converter.toSql(announcementsChannelId.value));
     }
     if (reviewsChannelId.present) {
       final converter = $EventsTable.$converterreviewsChannelId;
       map['reviews_channel_id'] =
-          Variable<int>(converter.toSql(reviewsChannelId.value));
+          Variable<BigInt>(converter.toSql(reviewsChannelId.value));
     }
     if (participantRoleId.present) {
       final converter = $EventsTable.$converterparticipantRoleId;
       map['participant_role_id'] =
-          Variable<int>(converter.toSql(participantRoleId.value));
+          Variable<BigInt>(converter.toSql(participantRoleId.value));
     }
     if (guildId.present) {
       final converter = $EventsTable.$converterguildId;
-      map['guild_id'] = Variable<int>(converter.toSql(guildId.value));
+      map['guild_id'] = Variable<BigInt>(converter.toSql(guildId.value));
     }
     return map;
   }
@@ -421,33 +421,34 @@ class $EventsTable extends Events with TableInfo<$EventsTable, EventData> {
   static const VerificationMeta _announcementsChannelIdMeta =
       const VerificationMeta('announcementsChannelId');
   @override
-  late final GeneratedColumnWithTypeConverter<Snowflake, int>
-      announcementsChannelId = GeneratedColumn<int>(
+  late final GeneratedColumnWithTypeConverter<Snowflake, BigInt>
+      announcementsChannelId = GeneratedColumn<BigInt>(
               'announcements_channel_id', aliasedName, false,
-              type: DriftSqlType.int, requiredDuringInsert: true)
+              type: DriftSqlType.bigInt, requiredDuringInsert: true)
           .withConverter<Snowflake>(
               $EventsTable.$converterannouncementsChannelId);
   static const VerificationMeta _reviewsChannelIdMeta =
       const VerificationMeta('reviewsChannelId');
   @override
-  late final GeneratedColumnWithTypeConverter<Snowflake, int> reviewsChannelId =
-      GeneratedColumn<int>('reviews_channel_id', aliasedName, false,
-              type: DriftSqlType.int, requiredDuringInsert: true)
+  late final GeneratedColumnWithTypeConverter<Snowflake, BigInt>
+      reviewsChannelId = GeneratedColumn<BigInt>(
+              'reviews_channel_id', aliasedName, false,
+              type: DriftSqlType.bigInt, requiredDuringInsert: true)
           .withConverter<Snowflake>($EventsTable.$converterreviewsChannelId);
   static const VerificationMeta _participantRoleIdMeta =
       const VerificationMeta('participantRoleId');
   @override
-  late final GeneratedColumnWithTypeConverter<Snowflake, int>
-      participantRoleId = GeneratedColumn<int>(
+  late final GeneratedColumnWithTypeConverter<Snowflake, BigInt>
+      participantRoleId = GeneratedColumn<BigInt>(
               'participant_role_id', aliasedName, false,
-              type: DriftSqlType.int, requiredDuringInsert: true)
+              type: DriftSqlType.bigInt, requiredDuringInsert: true)
           .withConverter<Snowflake>($EventsTable.$converterparticipantRoleId);
   static const VerificationMeta _guildIdMeta =
       const VerificationMeta('guildId');
   @override
-  late final GeneratedColumnWithTypeConverter<Snowflake, int> guildId =
-      GeneratedColumn<int>('guild_id', aliasedName, false,
-              type: DriftSqlType.int, requiredDuringInsert: true)
+  late final GeneratedColumnWithTypeConverter<Snowflake, BigInt> guildId =
+      GeneratedColumn<BigInt>('guild_id', aliasedName, false,
+              type: DriftSqlType.bigInt, requiredDuringInsert: true)
           .withConverter<Snowflake>($EventsTable.$converterguildId);
   @override
   List<GeneratedColumn> get $columns => [
@@ -518,17 +519,17 @@ class $EventsTable extends Events with TableInfo<$EventsTable, EventData> {
           .typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}review_length'])!),
       announcementsChannelId: $EventsTable.$converterannouncementsChannelId
-          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.int,
+          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.bigInt,
               data['${effectivePrefix}announcements_channel_id'])!),
       reviewsChannelId: $EventsTable.$converterreviewsChannelId.fromSql(
-          attachedDatabase.typeMapping.read(
-              DriftSqlType.int, data['${effectivePrefix}reviews_channel_id'])!),
+          attachedDatabase.typeMapping.read(DriftSqlType.bigInt,
+              data['${effectivePrefix}reviews_channel_id'])!),
       participantRoleId: $EventsTable.$converterparticipantRoleId.fromSql(
-          attachedDatabase.typeMapping.read(DriftSqlType.int,
+          attachedDatabase.typeMapping.read(DriftSqlType.bigInt,
               data['${effectivePrefix}participant_role_id'])!),
       guildId: $EventsTable.$converterguildId.fromSql(attachedDatabase
           .typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}guild_id'])!),
+          .read(DriftSqlType.bigInt, data['${effectivePrefix}guild_id'])!),
     );
   }
 
@@ -543,13 +544,13 @@ class $EventsTable extends Events with TableInfo<$EventsTable, EventData> {
       const DurationConverter();
   static TypeConverter<Duration, int> $converterreviewLength =
       const DurationConverter();
-  static TypeConverter<Snowflake, int> $converterannouncementsChannelId =
+  static TypeConverter<Snowflake, BigInt> $converterannouncementsChannelId =
       const SnowflakeConverter();
-  static TypeConverter<Snowflake, int> $converterreviewsChannelId =
+  static TypeConverter<Snowflake, BigInt> $converterreviewsChannelId =
       const SnowflakeConverter();
-  static TypeConverter<Snowflake, int> $converterparticipantRoleId =
+  static TypeConverter<Snowflake, BigInt> $converterparticipantRoleId =
       const SnowflakeConverter();
-  static TypeConverter<Snowflake, int> $converterguildId =
+  static TypeConverter<Snowflake, BigInt> $converterguildId =
       const SnowflakeConverter();
 }
 
@@ -815,16 +816,17 @@ class Cycle extends DataClass implements Insertable<Cycle> {
     {
       final converter = $CyclesTable.$convertersubmissionsEventId;
       map['submissions_event_id'] =
-          Variable<int>(converter.toSql(submissionsEventId));
+          Variable<BigInt>(converter.toSql(submissionsEventId));
     }
     {
       final converter = $CyclesTable.$converterreviewsEventId;
-      map['reviews_event_id'] = Variable<int>(converter.toSql(reviewsEventId));
+      map['reviews_event_id'] =
+          Variable<BigInt>(converter.toSql(reviewsEventId));
     }
     {
       final converter = $CyclesTable.$converternextCycleSubmissionsEventId;
       map['next_cycle_submissions_event_id'] =
-          Variable<int>(converter.toSql(nextCycleSubmissionsEventId));
+          Variable<BigInt>(converter.toSql(nextCycleSubmissionsEventId));
     }
     return map;
   }
@@ -956,9 +958,9 @@ class CyclesCompanion extends UpdateCompanion<Cycle> {
     Expression<int>? event,
     Expression<int>? status,
     Expression<DateTime>? startedAt,
-    Expression<int>? submissionsEventId,
-    Expression<int>? reviewsEventId,
-    Expression<int>? nextCycleSubmissionsEventId,
+    Expression<BigInt>? submissionsEventId,
+    Expression<BigInt>? reviewsEventId,
+    Expression<BigInt>? nextCycleSubmissionsEventId,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1012,17 +1014,17 @@ class CyclesCompanion extends UpdateCompanion<Cycle> {
     if (submissionsEventId.present) {
       final converter = $CyclesTable.$convertersubmissionsEventId;
       map['submissions_event_id'] =
-          Variable<int>(converter.toSql(submissionsEventId.value));
+          Variable<BigInt>(converter.toSql(submissionsEventId.value));
     }
     if (reviewsEventId.present) {
       final converter = $CyclesTable.$converterreviewsEventId;
       map['reviews_event_id'] =
-          Variable<int>(converter.toSql(reviewsEventId.value));
+          Variable<BigInt>(converter.toSql(reviewsEventId.value));
     }
     if (nextCycleSubmissionsEventId.present) {
       final converter = $CyclesTable.$converternextCycleSubmissionsEventId;
       map['next_cycle_submissions_event_id'] =
-          Variable<int>(converter.toSql(nextCycleSubmissionsEventId.value));
+          Variable<BigInt>(converter.toSql(nextCycleSubmissionsEventId.value));
     }
     return map;
   }
@@ -1079,25 +1081,26 @@ class $CyclesTable extends Cycles with TableInfo<$CyclesTable, Cycle> {
   static const VerificationMeta _submissionsEventIdMeta =
       const VerificationMeta('submissionsEventId');
   @override
-  late final GeneratedColumnWithTypeConverter<Snowflake, int>
-      submissionsEventId = GeneratedColumn<int>(
+  late final GeneratedColumnWithTypeConverter<Snowflake, BigInt>
+      submissionsEventId = GeneratedColumn<BigInt>(
               'submissions_event_id', aliasedName, false,
-              type: DriftSqlType.int, requiredDuringInsert: true)
+              type: DriftSqlType.bigInt, requiredDuringInsert: true)
           .withConverter<Snowflake>($CyclesTable.$convertersubmissionsEventId);
   static const VerificationMeta _reviewsEventIdMeta =
       const VerificationMeta('reviewsEventId');
   @override
-  late final GeneratedColumnWithTypeConverter<Snowflake, int> reviewsEventId =
-      GeneratedColumn<int>('reviews_event_id', aliasedName, false,
-              type: DriftSqlType.int, requiredDuringInsert: true)
+  late final GeneratedColumnWithTypeConverter<Snowflake, BigInt>
+      reviewsEventId = GeneratedColumn<BigInt>(
+              'reviews_event_id', aliasedName, false,
+              type: DriftSqlType.bigInt, requiredDuringInsert: true)
           .withConverter<Snowflake>($CyclesTable.$converterreviewsEventId);
   static const VerificationMeta _nextCycleSubmissionsEventIdMeta =
       const VerificationMeta('nextCycleSubmissionsEventId');
   @override
-  late final GeneratedColumnWithTypeConverter<Snowflake, int>
-      nextCycleSubmissionsEventId = GeneratedColumn<int>(
+  late final GeneratedColumnWithTypeConverter<Snowflake, BigInt>
+      nextCycleSubmissionsEventId = GeneratedColumn<BigInt>(
               'next_cycle_submissions_event_id', aliasedName, false,
-              type: DriftSqlType.int, requiredDuringInsert: true)
+              type: DriftSqlType.bigInt, requiredDuringInsert: true)
           .withConverter<Snowflake>(
               $CyclesTable.$converternextCycleSubmissionsEventId);
   @override
@@ -1157,14 +1160,14 @@ class $CyclesTable extends Cycles with TableInfo<$CyclesTable, Cycle> {
       startedAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}started_at'])!,
       submissionsEventId: $CyclesTable.$convertersubmissionsEventId.fromSql(
-          attachedDatabase.typeMapping.read(DriftSqlType.int,
+          attachedDatabase.typeMapping.read(DriftSqlType.bigInt,
               data['${effectivePrefix}submissions_event_id'])!),
       reviewsEventId: $CyclesTable.$converterreviewsEventId.fromSql(
-          attachedDatabase.typeMapping.read(
-              DriftSqlType.int, data['${effectivePrefix}reviews_event_id'])!),
+          attachedDatabase.typeMapping.read(DriftSqlType.bigInt,
+              data['${effectivePrefix}reviews_event_id'])!),
       nextCycleSubmissionsEventId: $CyclesTable
           .$converternextCycleSubmissionsEventId
-          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.int,
+          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.bigInt,
               data['${effectivePrefix}next_cycle_submissions_event_id'])!),
     );
   }
@@ -1176,12 +1179,12 @@ class $CyclesTable extends Cycles with TableInfo<$CyclesTable, Cycle> {
 
   static TypeConverter<CycleStatus, int> $converterstatus =
       const EnumIndexConverter<CycleStatus>(CycleStatus.values);
-  static TypeConverter<Snowflake, int> $convertersubmissionsEventId =
+  static TypeConverter<Snowflake, BigInt> $convertersubmissionsEventId =
       const SnowflakeConverter();
-  static TypeConverter<Snowflake, int> $converterreviewsEventId =
+  static TypeConverter<Snowflake, BigInt> $converterreviewsEventId =
       const SnowflakeConverter();
-  static TypeConverter<Snowflake, int> $converternextCycleSubmissionsEventId =
-      const SnowflakeConverter();
+  static TypeConverter<Snowflake, BigInt>
+      $converternextCycleSubmissionsEventId = const SnowflakeConverter();
 }
 
 class CurrentCycle extends DataClass implements Insertable<CurrentCycle> {
@@ -1385,7 +1388,7 @@ class Submission extends DataClass implements Insertable<Submission> {
     map['cycle'] = Variable<int>(cycle);
     {
       final converter = $SubmissionsTable.$converteruserId;
-      map['user_id'] = Variable<int>(converter.toSql(userId));
+      map['user_id'] = Variable<BigInt>(converter.toSql(userId));
     }
     map['content'] = Variable<String>(content);
     return map;
@@ -1474,7 +1477,7 @@ class SubmissionsCompanion extends UpdateCompanion<Submission> {
   static Insertable<Submission> custom({
     Expression<int>? id,
     Expression<int>? cycle,
-    Expression<int>? userId,
+    Expression<BigInt>? userId,
     Expression<String>? content,
   }) {
     return RawValuesInsertable({
@@ -1509,7 +1512,7 @@ class SubmissionsCompanion extends UpdateCompanion<Submission> {
     }
     if (userId.present) {
       final converter = $SubmissionsTable.$converteruserId;
-      map['user_id'] = Variable<int>(converter.toSql(userId.value));
+      map['user_id'] = Variable<BigInt>(converter.toSql(userId.value));
     }
     if (content.present) {
       map['content'] = Variable<String>(content.value);
@@ -1554,9 +1557,9 @@ class $SubmissionsTable extends Submissions
           GeneratedColumn.constraintIsAlways('REFERENCES cycles (id)'));
   static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
   @override
-  late final GeneratedColumnWithTypeConverter<Snowflake, int> userId =
-      GeneratedColumn<int>('user_id', aliasedName, false,
-              type: DriftSqlType.int, requiredDuringInsert: true)
+  late final GeneratedColumnWithTypeConverter<Snowflake, BigInt> userId =
+      GeneratedColumn<BigInt>('user_id', aliasedName, false,
+              type: DriftSqlType.bigInt, requiredDuringInsert: true)
           .withConverter<Snowflake>($SubmissionsTable.$converteruserId);
   static const VerificationMeta _contentMeta =
       const VerificationMeta('content');
@@ -1606,7 +1609,7 @@ class $SubmissionsTable extends Submissions
           .read(DriftSqlType.int, data['${effectivePrefix}cycle'])!,
       userId: $SubmissionsTable.$converteruserId.fromSql(attachedDatabase
           .typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}user_id'])!),
+          .read(DriftSqlType.bigInt, data['${effectivePrefix}user_id'])!),
       content: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}content'])!,
     );
@@ -1617,7 +1620,7 @@ class $SubmissionsTable extends Submissions
     return $SubmissionsTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<Snowflake, int> $converteruserId =
+  static TypeConverter<Snowflake, BigInt> $converteruserId =
       const SnowflakeConverter();
 }
 
@@ -1645,7 +1648,7 @@ class Assignment extends DataClass implements Insertable<Assignment> {
     map['submission'] = Variable<int>(submission);
     {
       final converter = $AssignmentsTable.$converterassignedUser;
-      map['assigned_user'] = Variable<int>(converter.toSql(assignedUser));
+      map['assigned_user'] = Variable<BigInt>(converter.toSql(assignedUser));
     }
     map['discarded'] = Variable<bool>(discarded);
     return map;
@@ -1736,7 +1739,7 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
   static Insertable<Assignment> custom({
     Expression<int>? id,
     Expression<int>? submission,
-    Expression<int>? assignedUser,
+    Expression<BigInt>? assignedUser,
     Expression<bool>? discarded,
   }) {
     return RawValuesInsertable({
@@ -1771,7 +1774,8 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
     }
     if (assignedUser.present) {
       final converter = $AssignmentsTable.$converterassignedUser;
-      map['assigned_user'] = Variable<int>(converter.toSql(assignedUser.value));
+      map['assigned_user'] =
+          Variable<BigInt>(converter.toSql(assignedUser.value));
     }
     if (discarded.present) {
       map['discarded'] = Variable<bool>(discarded.value);
@@ -1818,9 +1822,9 @@ class $AssignmentsTable extends Assignments
   static const VerificationMeta _assignedUserMeta =
       const VerificationMeta('assignedUser');
   @override
-  late final GeneratedColumnWithTypeConverter<Snowflake, int> assignedUser =
-      GeneratedColumn<int>('assigned_user', aliasedName, false,
-              type: DriftSqlType.int, requiredDuringInsert: true)
+  late final GeneratedColumnWithTypeConverter<Snowflake, BigInt> assignedUser =
+      GeneratedColumn<BigInt>('assigned_user', aliasedName, false,
+              type: DriftSqlType.bigInt, requiredDuringInsert: true)
           .withConverter<Snowflake>($AssignmentsTable.$converterassignedUser);
   static const VerificationMeta _discardedMeta =
       const VerificationMeta('discarded');
@@ -1878,7 +1882,7 @@ class $AssignmentsTable extends Assignments
           .read(DriftSqlType.int, data['${effectivePrefix}submission'])!,
       assignedUser: $AssignmentsTable.$converterassignedUser.fromSql(
           attachedDatabase.typeMapping.read(
-              DriftSqlType.int, data['${effectivePrefix}assigned_user'])!),
+              DriftSqlType.bigInt, data['${effectivePrefix}assigned_user'])!),
       discarded: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}discarded'])!,
     );
@@ -1889,7 +1893,7 @@ class $AssignmentsTable extends Assignments
     return $AssignmentsTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<Snowflake, int> $converterassignedUser =
+  static TypeConverter<Snowflake, BigInt> $converterassignedUser =
       const SnowflakeConverter();
 }
 
@@ -1917,7 +1921,7 @@ class Review extends DataClass implements Insertable<Review> {
     map['submission'] = Variable<int>(submission);
     {
       final converter = $ReviewsTable.$converteruserId;
-      map['user_id'] = Variable<int>(converter.toSql(userId));
+      map['user_id'] = Variable<BigInt>(converter.toSql(userId));
     }
     map['content'] = Variable<String>(content);
     return map;
@@ -2006,7 +2010,7 @@ class ReviewsCompanion extends UpdateCompanion<Review> {
   static Insertable<Review> custom({
     Expression<int>? id,
     Expression<int>? submission,
-    Expression<int>? userId,
+    Expression<BigInt>? userId,
     Expression<String>? content,
   }) {
     return RawValuesInsertable({
@@ -2041,7 +2045,7 @@ class ReviewsCompanion extends UpdateCompanion<Review> {
     }
     if (userId.present) {
       final converter = $ReviewsTable.$converteruserId;
-      map['user_id'] = Variable<int>(converter.toSql(userId.value));
+      map['user_id'] = Variable<BigInt>(converter.toSql(userId.value));
     }
     if (content.present) {
       map['content'] = Variable<String>(content.value);
@@ -2086,9 +2090,9 @@ class $ReviewsTable extends Reviews with TableInfo<$ReviewsTable, Review> {
           GeneratedColumn.constraintIsAlways('REFERENCES submissions (id)'));
   static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
   @override
-  late final GeneratedColumnWithTypeConverter<Snowflake, int> userId =
-      GeneratedColumn<int>('user_id', aliasedName, false,
-              type: DriftSqlType.int, requiredDuringInsert: true)
+  late final GeneratedColumnWithTypeConverter<Snowflake, BigInt> userId =
+      GeneratedColumn<BigInt>('user_id', aliasedName, false,
+              type: DriftSqlType.bigInt, requiredDuringInsert: true)
           .withConverter<Snowflake>($ReviewsTable.$converteruserId);
   static const VerificationMeta _contentMeta =
       const VerificationMeta('content');
@@ -2140,7 +2144,7 @@ class $ReviewsTable extends Reviews with TableInfo<$ReviewsTable, Review> {
           .read(DriftSqlType.int, data['${effectivePrefix}submission'])!,
       userId: $ReviewsTable.$converteruserId.fromSql(attachedDatabase
           .typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}user_id'])!),
+          .read(DriftSqlType.bigInt, data['${effectivePrefix}user_id'])!),
       content: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}content'])!,
     );
@@ -2151,7 +2155,7 @@ class $ReviewsTable extends Reviews with TableInfo<$ReviewsTable, Review> {
     return $ReviewsTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<Snowflake, int> $converteruserId =
+  static TypeConverter<Snowflake, BigInt> $converteruserId =
       const SnowflakeConverter();
 }
 
