@@ -355,8 +355,13 @@ The next cycle starts ${TimeStampStyle.relativeTime.format(DateTime.now().add(da
     ].map(Future.value));
 
     return Future.wait(builders.map((builder) async {
-      if (builder.startDate!.isBefore(DateTime.now())) {
+      if (builder.endDate!.isBefore(DateTime.now())) {
         return Snowflake.zero();
+      }
+
+      final lateStartTime = DateTime.now().add(const Duration(minutes: 1));
+      if (builder.startDate!.isBefore(lateStartTime)) {
+        builder.startDate = lateStartTime;
       }
 
       return (await client.httpEndpoints.createGuildEvent(data.guildId, builder)).id;
@@ -396,13 +401,28 @@ The next cycle starts ${TimeStampStyle.relativeTime.format(DateTime.now().add(da
         continue;
       }
 
-      await client.httpEndpoints.editGuildEvent(
-        data.guildId,
-        id,
-        GuildEventBuilder()
-          ..status = GuildEventStatus.canceled
-          ..channelId = null,
-      );
+      try {
+        await client.httpEndpoints.editGuildEvent(
+          data.guildId,
+          id,
+          GuildEventBuilder()
+            ..status = GuildEventStatus.canceled
+            ..channelId = null,
+        );
+      } on IHttpResponseError {
+        // Started
+        try {
+          await client.httpEndpoints.editGuildEvent(
+            data.guildId,
+            id,
+            GuildEventBuilder()
+              ..status = GuildEventStatus.completed
+              ..channelId = null,
+          );
+        } on IHttpResponseError {
+          // In the past
+        }
+      }
     }
   }
 
