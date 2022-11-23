@@ -392,6 +392,10 @@ The next cycle starts ${TimeStampStyle.relativeTime.format(DateTime.now().add(da
       cycle.reviewsEventId,
       cycle.nextCycleSubmissionsEventId
     ]) {
+      if (id == Snowflake.zero()) {
+        continue;
+      }
+
       await client.httpEndpoints.editGuildEvent(
         data.guildId,
         id,
