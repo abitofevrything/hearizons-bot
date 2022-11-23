@@ -399,7 +399,9 @@ The next cycle starts ${TimeStampStyle.relativeTime.format(DateTime.now().add(da
       await client.httpEndpoints.editGuildEvent(
         data.guildId,
         id,
-        GuildEventBuilder()..status = GuildEventStatus.canceled,
+        GuildEventBuilder()
+          ..status = GuildEventStatus.canceled
+          ..channelId = null,
       );
     }
   }
