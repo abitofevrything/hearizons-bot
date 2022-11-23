@@ -76,6 +76,12 @@ Current cycle status: ${cycle.status.name}
 ''';
     }
 
+    String linkedEventsStatus = '';
+    final linkedEvents = await event.getLinkedEvents();
+    if (linkedEvents.isNotEmpty) {
+      linkedEventsStatus = 'Linked events: ${linkedEvents.map((e) => e.data.name).join(', ')}';
+    }
+
     await context.info(
       title: 'Event: ${data.name}',
       content: '''
@@ -85,6 +91,7 @@ Submissions length: ${data.submissionsLength}
 Reviews length: ${data.reviewLength}
 Announcement channel: <#${data.announcementsChannelId}>
 Reviews channel: <#${data.reviewsChannelId}>
+$linkedEventsStatus
 
 $cycleStatus
 ''',
