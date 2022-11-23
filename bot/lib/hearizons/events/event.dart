@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:collection/collection.dart';
+import 'package:drift/drift.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hearizons/database/database.dart';
 import 'package:hearizons/errors.dart';
@@ -88,6 +89,34 @@ class Event {
     await database.updateEvent(data.copyWith(active: true));
 
     logger.info('Activated event');
+  }
+
+  Future<void> update(EventsCompanion companion) async {
+    final newEvent = await database.updateEvent(companion.copyWith(id: Value(data.id)));
+
+    if (data.active) {
+      await newEvent.applyUpdate();
+    }
+  }
+
+  Future<void> applyUpdate() async {
+    final cycle = await database.getCurrentCycle(this);
+    final events = await Future.wait([
+      createSubmissionsEventBuilder(cycle.startedAt),
+      createReviewsEventBuilder(cycle.startedAt),
+      createSubmissionsEventBuilder(
+          cycle.startedAt.add(data.submissionsLength + data.reviewLength)),
+    ].map(Future.value));
+
+    for (final data in IterableZip([
+      [cycle.submissionsEventId, cycle.reviewsEventId, cycle.nextCycleSubmissionsEventId],
+      events,
+    ])) {
+      final id = data[0] as Snowflake;
+      final event = data[1] as GuildEventBuilder;
+
+      await _updateEvent(id, event);
+    }
   }
 
   Future<void> deactivate() => database.transaction(() async {
@@ -429,27 +458,35 @@ The next cycle starts ${TimeStampStyle.relativeTime.format(DateTime.now().add(da
   Future<void> updateSubmissionsEvent(Snowflake eventId, DateTime cycleStart) async {
     final eventBuilder = await createSubmissionsEventBuilder(cycleStart);
 
-    if (eventBuilder.endDate!.isBefore(DateTime.now())) {
-      return;
-    }
-
     if (eventId == Snowflake.zero()) {
       return;
     }
 
-    await client.httpEndpoints.editGuildEvent(
-      data.guildId,
-      eventId,
-      // Don't change start time, it might be in the past
-      eventBuilder..startDate = null,
-    );
+    await _updateEvent(eventId, eventBuilder);
+  }
+
+  Future<void> _updateEvent(Snowflake eventId, GuildEventBuilder builder) async {
+    if (builder.startDate?.isBefore(DateTime.now()) == true) {
+      builder.startDate = null;
+    }
+
+    if (builder.endDate?.isBefore(DateTime.now()) != false) {
+      builder.endDate = null;
+      builder.status = GuildEventStatus.completed;
+    }
+
+    try {
+      await client.httpEndpoints.editGuildEvent(data.guildId, eventId, builder);
+    } on IHttpResponseError {
+      // Event was completed before we updated it
+    }
   }
 
   Future<IMessage?> _sendMessageToChannel(Snowflake channelId, MessageBuilder message) async {
     try {
       return await client.httpEndpoints.sendMessage(channelId, message);
     } on IHttpResponseError catch (e) {
-      logger.warning('Error ${e.code} sending message to channel $channelId');
+      logger.warning('Error ${e.errorCode} sending message to channel $channelId');
     }
 
     return null;

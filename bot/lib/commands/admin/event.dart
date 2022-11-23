@@ -113,10 +113,7 @@ final update = ChatCommand(
     @Description('The channel to send reviews to') ITextGuildChannel? reviewsChannel,
     @Description('The role to give to participants') IRole? participantRole,
   ]) async {
-    final database = GetIt.I.get<Database>();
-
-    await database.updateEvent(EventsCompanion(
-      id: Value(event.data.id),
+    await event.update(EventsCompanion(
       name: Value.ofNullable(name),
       announcementsChannelId: Value.ofNullable(announcementsChannel?.id),
       participantRoleId: Value.ofNullable(participantRole?.id),
