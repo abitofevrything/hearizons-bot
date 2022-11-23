@@ -50,6 +50,8 @@ class Database extends _$Database {
   MigrationStrategy get migration => MigrationStrategy(
         onCreate: (m) => m.createAll(),
         onUpgrade: (m, from, to) => transaction(() async {
+          final postUpgradeCallbacks = <Future<void> Function()>[];
+
           if (from < 2) {
             await m.addColumn(events, events.participantRoleId);
             await m.addColumn(events, events.guildId);
@@ -72,10 +74,7 @@ class Database extends _$Database {
 
           if (from < 4) {
             await m.addColumn(assignments, assignments.discarded);
-
-            await update(assignments).write(AssignmentsCompanion(
-              discarded: Value(false),
-            ));
+            await customStatement('UPDATE assignments SET discarded = false;');
           }
 
           if (from < 5) {
@@ -97,19 +96,21 @@ class Database extends _$Database {
                    next_cycle_submissions_event_id = 0;''',
             );
 
-            for (final event in await getActiveEvents()) {
-              final currentCycle = await getCurrentCycle(event);
-              final events = await event.createSubmissionsReviewsAndNextCycleEvents(
-                currentCycle.startedAt,
-              );
+            postUpgradeCallbacks.add(() async {
+              for (final event in await getActiveEvents()) {
+                final currentCycle = await getCurrentCycle(event);
+                final events = await event.createSubmissionsReviewsAndNextCycleEvents(
+                  currentCycle.startedAt,
+                );
 
-              final update = this.update(cycles)..whereSamePrimaryKey(currentCycle);
-              await update.write(CyclesCompanion(
-                submissionsEventId: Value(events[0]),
-                reviewsEventId: Value(events[1]),
-                nextCycleSubmissionsEventId: Value(events[2]),
-              ));
-            }
+                final update = this.update(cycles)..whereSamePrimaryKey(currentCycle);
+                await update.write(CyclesCompanion(
+                  submissionsEventId: Value(events[0]),
+                  reviewsEventId: Value(events[1]),
+                  nextCycleSubmissionsEventId: Value(events[2]),
+                ));
+              }
+            });
 
             await customStatement(
               '''ALTER TABLE cycles
@@ -155,6 +156,8 @@ class Database extends _$Database {
             await customStatement(
                 'ALTER TABLE events ALTER COLUMN announcement_role_id SET NOT NULL;');
           }
+
+          await Future.wait(postUpgradeCallbacks.map((f) => f()));
         }),
       );
 }
