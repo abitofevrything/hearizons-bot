@@ -25,6 +25,11 @@ dependency_overrides:
       url: https://github.com/nyxx-discord/nyxx.git
       ref: dev
 
+  nyxx_interactions:
+    git:
+      url: https://github.com/nyxx-discord/nyxx_interactions.git
+      ref: bug/http-error-change
+
 dependencies:
   drift:
     git:

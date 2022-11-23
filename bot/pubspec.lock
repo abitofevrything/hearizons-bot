@@ -364,9 +364,11 @@ packages:
   nyxx_interactions:
     dependency: "direct main"
     description:
-      name: nyxx_interactions
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: "bug/http-error-change"
+      resolved-ref: "6d16bad6df0bc50533214fd6fc360ccc4b907c0c"
+      url: "https://github.com/nyxx-discord/nyxx_interactions.git"
+    source: git
     version: "4.4.0"
   package_config:
     dependency: transitive
