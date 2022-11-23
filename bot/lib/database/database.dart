@@ -44,7 +44,7 @@ class Database extends _$Database {
   Database() : super(_openConnection());
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -147,6 +147,13 @@ class Database extends _$Database {
             await customStatement('UPDATE cycles SET status_message_id = 0;');
             await customStatement(
                 'ALTER TABLE cycles ALTER COLUMN status_message_id SET NOT NULL;');
+          }
+
+          if (from < 9) {
+            await customStatement('ALTER TABLE events ADD COLUMN announcement_role_id bigint;');
+            await customStatement('UPDATE events SET announcement_role_id = 0;');
+            await customStatement(
+                'ALTER TABLE events ALTER COLUMN announcement_role_id SET NOT NULL;');
           }
         }),
       );

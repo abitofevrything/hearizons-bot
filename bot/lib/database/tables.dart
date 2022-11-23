@@ -33,6 +33,9 @@ class Events extends Table {
   /// The id of the role to give participants.
   Int64Column get participantRoleId => int64().map(const SnowflakeConverter())();
 
+  /// The id of the role to mention in announcements.
+  Int64Column get announcementRoleId => int64().map(const SnowflakeConverter())();
+
   /// The id of the guild in which this event occurs.
   Int64Column get guildId => int64().map(const SnowflakeConverter())();
 }

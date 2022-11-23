@@ -126,18 +126,15 @@ class Event {
 
     if (cycle.statusMessageId != Snowflake.zero()) {
       try {
-        EmbedBuilder embed;
+        MessageBuilder message;
         if (cycle.status == CycleStatus.submissions) {
-          embed = await createNewCycleAnnouncement();
+          message = await createNewCycleAnnouncement();
         } else {
-          embed = await createStartingReviewsAnnouncement();
+          message = await createStartingReviewsAnnouncement();
         }
 
-        await client.httpEndpoints.editMessage(
-          data.announcementsChannelId,
-          cycle.statusMessageId,
-          MessageBuilder.embed(embed),
-        );
+        await client.httpEndpoints
+            .editMessage(data.announcementsChannelId, cycle.statusMessageId, message);
       } on IHttpResponseError {
         // ignore: Message was probably deleted
       }
@@ -271,36 +268,48 @@ class Event {
 
   Future<IMessage?> sendNewCycleAnnouncement() async => _sendMessageToChannel(
         data.announcementsChannelId,
-        MessageBuilder.embed(await createNewCycleAnnouncement()),
+        await createNewCycleAnnouncement(),
       );
 
   Future<IMessage?> sendStartingReviewsAnnouncement() async => _sendMessageToChannel(
         data.announcementsChannelId,
-        MessageBuilder.embed(await createStartingReviewsAnnouncement()),
+        await createStartingReviewsAnnouncement(),
       );
 
-  FutureOr<EmbedBuilder> createNewCycleAnnouncement() => EmbedBuilder()
-    ..title = 'New cycle'
-    ..description = '''
+  FutureOr<MessageBuilder> createNewCycleAnnouncement() => MessageBuilder()
+    ..append(
+      data.announcementRoleId == data.guildId ? '@everyone' : '<@&${data.announcementRoleId}>',
+    )
+    ..addEmbed((embed) {
+      embed
+        ..title = 'New cycle'
+        ..description = '''
 Submissions are now open for ${data.name}!
 Add your submission with `/submit event:${data.name}`!
 
 Submissions close ${TimeStampStyle.relativeTime.format(DateTime.now().add(data.submissionsLength))}.
 '''
-    ..color = infoColour
-    ..timestamp = DateTime.now();
+        ..color = infoColour
+        ..timestamp = DateTime.now();
+    });
 
-  FutureOr<EmbedBuilder> createStartingReviewsAnnouncement() => EmbedBuilder()
-    ..title = 'Reviews open'
-    ..description = '''
+  FutureOr<MessageBuilder> createStartingReviewsAnnouncement() => MessageBuilder()
+    ..append(
+      data.participantRoleId == data.guildId ? '@everyone' : '<@&${data.participantRoleId}>',
+    )
+    ..addEmbed((embed) {
+      embed
+        ..title = 'Reviews open'
+        ..description = '''
 The review phase for ${data.name} is now open!
 Create a review by running `/review event:${data.name}` and completing the form that appears with
 the content of your review.
 
 The next cycle starts ${TimeStampStyle.relativeTime.format(DateTime.now().add(data.reviewLength))}.
 '''
-    ..color = infoColour
-    ..timestamp = DateTime.now();
+        ..color = infoColour
+        ..timestamp = DateTime.now();
+    });
 
   Future<void> sendAssignmentMessages(
     List<Submission> submissions,

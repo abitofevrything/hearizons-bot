@@ -29,6 +29,7 @@ final create = ChatCommand(
     @Description('The channel to send announcements to') ITextGuildChannel announcementsChannel,
     @Description('The channel to send reviews to') ITextGuildChannel reviewsChannel,
     @Description('The role to give to participants') IRole participantRole,
+    @Description('The role to mention in announcements') IRole announcementsRole,
   ) async {
     final database = GetIt.I.get<Database>();
 
@@ -42,6 +43,7 @@ final create = ChatCommand(
       reviewsChannelId: reviewsChannel.id,
       guildId: context.guild!.id,
       participantRoleId: participantRole.id,
+      announcementRoleId: announcementsRole.id,
     ));
 
     await context.success(
@@ -91,6 +93,8 @@ Submissions length: ${data.submissionsLength}
 Reviews length: ${data.reviewLength}
 Announcement channel: <#${data.announcementsChannelId}>
 Reviews channel: <#${data.reviewsChannelId}>
+Participant role: <@&${data.participantRoleId}>
+Announcement role: <@&${data.announcementRoleId}>
 $linkedEventsStatus
 
 $cycleStatus
@@ -112,6 +116,7 @@ final update = ChatCommand(
     @Description('The channel to send announcements to') ITextGuildChannel? announcementsChannel,
     @Description('The channel to send reviews to') ITextGuildChannel? reviewsChannel,
     @Description('The role to give to participants') IRole? participantRole,
+    @Description('The role to mention in announcements') IRole? announcementsRole,
   ]) async {
     await event.update(EventsCompanion(
       name: Value.ofNullable(name),
@@ -121,6 +126,7 @@ final update = ChatCommand(
       reviewsChannelId: Value.ofNullable(reviewsChannel?.id),
       submissionsLength: Value.ofNullable(submissionsLength),
       type: Value.ofNullable(type),
+      announcementRoleId: Value.ofNullable(announcementsRole?.id),
     ));
 
     await context.success(
