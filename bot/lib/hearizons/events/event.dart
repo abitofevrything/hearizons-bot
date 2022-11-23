@@ -305,6 +305,10 @@ The next cycle starts ${TimeStampStyle.relativeTime.format(DateTime.now().add(da
     return result;
   }
 
+  Future<List<Event>> getLinkedEvents() => database.getDependenciesOf(this);
+
+  Future<void> unlink(Event other) => database.unlink(this, other);
+
   Future<IMessage?> _sendMessageToChannel(Snowflake channelId, MessageBuilder message) async {
     try {
       return await client.httpEndpoints.sendMessage(channelId, message);

@@ -226,4 +226,13 @@ extension EventUtils on Database {
       dependency: dependency.data.id,
     ));
   }
+
+  Future<void> unlink(Event event, Event dependency) async {
+    final query = delete(eventDependencies)
+      ..where((_) =>
+          eventDependencies.event.equals(event.data.id) &
+          eventDependencies.dependency.equals(dependency.data.id));
+
+    await query.go();
+  }
 }

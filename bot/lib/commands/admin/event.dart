@@ -13,7 +13,7 @@ import 'package:nyxx_interactions/nyxx_interactions.dart';
 final event = ChatGroup(
   'event',
   'Manage events',
-  children: [create, details, update, activate, deactivate, link],
+  children: [create, details, update, activate, deactivate, link, unlink],
 );
 
 // Keep in sync with [update]!
@@ -241,7 +241,7 @@ final link = ChatCommand(
           ..description = '''
 Select an event to link to ${event.data.name}.
 
-This link is one way, the event you select will not be affected by this event.          
+This link is one way, the event you select will not be affected by this event.
 ''',
       ),
     );
@@ -251,6 +251,46 @@ This link is one way, the event you select will not be affected by this event.
     await context.success(
       title: 'Linked event',
       content: 'Successfully linked event ${toLink.data.name} to ${event.data.name}',
+    );
+  }),
+);
+
+final unlink = ChatCommand(
+  'unlink',
+  'Remove a link from an event',
+  id('admin-event-unlink', (
+    IChatContext context,
+    @Description('The event that will be unlinked')
+    @UseConverter(manageableEventConverter)
+        Event event,
+  ) async {
+    final linkedEvents = await event.getLinkedEvents();
+
+    if (linkedEvents.isEmpty) {
+      await context.error(
+        title: 'No linked events',
+        content: "${event.data.name} isn't linked to any events",
+      );
+      return;
+    }
+
+    final toUnlink = await context.getSelection(
+      linkedEvents,
+      toMultiSelect: (e) => MultiselectOptionBuilder(e.data.name, e.data.id.toString()),
+      MessageBuilder.embed(
+        EmbedBuilder()
+          ..title = 'Select event'
+          ..description = '''
+Select an event to unlink from ${event.data.name}.
+''',
+      ),
+    );
+
+    await event.unlink(toUnlink);
+
+    await context.success(
+      title: 'Linked event',
+      content: 'Successfully unlinked event ${toUnlink.data.name} from ${event.data.name}',
     );
   }),
 );
