@@ -8,11 +8,12 @@ import 'package:hearizons/database/database.dart';
 import 'package:hearizons/hearizons/event_type.dart';
 import 'package:nyxx/nyxx.dart';
 import 'package:nyxx_commands/nyxx_commands.dart';
+import 'package:nyxx_interactions/nyxx_interactions.dart';
 
 final event = ChatGroup(
   'event',
   'Manage events',
-  children: [create, details, update, activate, deactivate],
+  children: [create, details, update, activate, deactivate, link],
 );
 
 // Keep in sync with [update]!
@@ -216,6 +217,40 @@ Successfully activated event ${event.data.name}. Run `/admin event deactivate ev
 
 Submissions are now open and will be closed in ${TimeStampStyle.relativeTime.format(DateTime.now().add(event.data.submissionsLength))}.
 ''',
+    );
+  }),
+);
+
+final link = ChatCommand(
+  'link',
+  'Link an event to another event. Joins submission & review restrictions.',
+  id('admin-event-link', (
+    IChatContext context,
+    @UseConverter(manageableEventConverter)
+    @Description('The event that will be linked')
+        Event event,
+  ) async {
+    final database = GetIt.I.get<Database>();
+
+    final toLink = await context.getSelection(
+      await database.getLinkeableEvents(event),
+      toMultiSelect: (event) => MultiselectOptionBuilder(event.data.name, event.data.id.toString()),
+      MessageBuilder.embed(
+        EmbedBuilder()
+          ..title = 'Select event'
+          ..description = '''
+Select an event to link to ${event.data.name}.
+
+This link is one way, the event you select will not be affected by this event.          
+''',
+      ),
+    );
+
+    await event.link(toLink);
+
+    await context.success(
+      title: 'Linked event',
+      content: 'Successfully linked event ${toLink.data.name} to ${event.data.name}',
     );
   }),
 );

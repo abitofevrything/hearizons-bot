@@ -196,4 +196,34 @@ extension EventUtils on Database {
 
     return result;
   }
+
+  Future<List<Event>> getLinkeableEvents(Event event) async {
+    _logger.fine('Getting linkeable events for event ${event.data.id}');
+
+    final query = select(events)
+      ..where(
+        (_) =>
+            events.guildId.equalsValue(event.data.guildId) &
+            events.id.equals(event.data.id).not() &
+            events.id.isNotInQuery(
+              selectOnly(eventDependencies)
+                ..addColumns([eventDependencies.dependency])
+                ..where(eventDependencies.event.equalsExp(events.id)),
+            ),
+      );
+
+    final rawResult = await query.get();
+    final result = rawResult.map((row) => _toEvent(row)).toList();
+
+    _logger.fine('Got linkeable events for event ${event.data.id} => [${result.join(', ')}]');
+
+    return result;
+  }
+
+  Future<void> link(Event event, Event dependency) async {
+    await into(eventDependencies).insert(EventDependenciesCompanion.insert(
+      event: event.data.id,
+      dependency: dependency.data.id,
+    ));
+  }
 }

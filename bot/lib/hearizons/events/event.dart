@@ -277,6 +277,8 @@ The next cycle starts ${TimeStampStyle.relativeTime.format(DateTime.now().add(da
       ..color = infoColour;
   }
 
+  Future<void> link(Event other) => database.link(this, other);
+
   @override
   String toString() => data.toString();
 
