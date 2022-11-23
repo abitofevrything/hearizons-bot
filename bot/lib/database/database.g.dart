@@ -2,10 +2,6 @@
 
 part of 'database.dart';
 
-// **************************************************************************
-// DriftDatabaseGenerator
-// **************************************************************************
-
 // ignore_for_file: type=lint
 class EventData extends DataClass implements Insertable<EventData> {
   /// The id of the event.
@@ -55,35 +51,35 @@ class EventData extends DataClass implements Insertable<EventData> {
     map['name'] = Variable<String>(name);
     map['active'] = Variable<bool>(active);
     {
-      final converter = $EventsTable.$converter0;
+      final converter = $EventsTable.$convertertype;
       map['type'] = Variable<int>(converter.toSql(type));
     }
     {
-      final converter = $EventsTable.$converter1;
+      final converter = $EventsTable.$convertersubmissionsLength;
       map['submissions_length'] =
           Variable<int>(converter.toSql(submissionsLength));
     }
     {
-      final converter = $EventsTable.$converter2;
+      final converter = $EventsTable.$converterreviewLength;
       map['review_length'] = Variable<int>(converter.toSql(reviewLength));
     }
     {
-      final converter = $EventsTable.$converter3;
+      final converter = $EventsTable.$converterannouncementsChannelId;
       map['announcements_channel_id'] =
           Variable<int>(converter.toSql(announcementsChannelId));
     }
     {
-      final converter = $EventsTable.$converter4;
+      final converter = $EventsTable.$converterreviewsChannelId;
       map['reviews_channel_id'] =
           Variable<int>(converter.toSql(reviewsChannelId));
     }
     {
-      final converter = $EventsTable.$converter5;
+      final converter = $EventsTable.$converterparticipantRoleId;
       map['participant_role_id'] =
           Variable<int>(converter.toSql(participantRoleId));
     }
     {
-      final converter = $EventsTable.$converter6;
+      final converter = $EventsTable.$converterguildId;
       map['guild_id'] = Variable<int>(converter.toSql(guildId));
     }
     return map;
@@ -320,35 +316,35 @@ class EventsCompanion extends UpdateCompanion<EventData> {
       map['active'] = Variable<bool>(active.value);
     }
     if (type.present) {
-      final converter = $EventsTable.$converter0;
+      final converter = $EventsTable.$convertertype;
       map['type'] = Variable<int>(converter.toSql(type.value));
     }
     if (submissionsLength.present) {
-      final converter = $EventsTable.$converter1;
+      final converter = $EventsTable.$convertersubmissionsLength;
       map['submissions_length'] =
           Variable<int>(converter.toSql(submissionsLength.value));
     }
     if (reviewLength.present) {
-      final converter = $EventsTable.$converter2;
+      final converter = $EventsTable.$converterreviewLength;
       map['review_length'] = Variable<int>(converter.toSql(reviewLength.value));
     }
     if (announcementsChannelId.present) {
-      final converter = $EventsTable.$converter3;
+      final converter = $EventsTable.$converterannouncementsChannelId;
       map['announcements_channel_id'] =
           Variable<int>(converter.toSql(announcementsChannelId.value));
     }
     if (reviewsChannelId.present) {
-      final converter = $EventsTable.$converter4;
+      final converter = $EventsTable.$converterreviewsChannelId;
       map['reviews_channel_id'] =
           Variable<int>(converter.toSql(reviewsChannelId.value));
     }
     if (participantRoleId.present) {
-      final converter = $EventsTable.$converter5;
+      final converter = $EventsTable.$converterparticipantRoleId;
       map['participant_role_id'] =
           Variable<int>(converter.toSql(participantRoleId.value));
     }
     if (guildId.present) {
-      final converter = $EventsTable.$converter6;
+      final converter = $EventsTable.$converterguildId;
       map['guild_id'] = Variable<int>(converter.toSql(guildId.value));
     }
     return map;
@@ -377,21 +373,21 @@ class $EventsTable extends Events with TableInfo<$EventsTable, EventData> {
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $EventsTable(this.attachedDatabase, [this._alias]);
-  final VerificationMeta _idMeta = const VerificationMeta('id');
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
+      hasAutoIncrement: true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'),
-      hasAutoIncrement: true);
-  final VerificationMeta _nameMeta = const VerificationMeta('name');
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
       'name', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  final VerificationMeta _activeMeta = const VerificationMeta('active');
+  static const VerificationMeta _activeMeta = const VerificationMeta('active');
   @override
   late final GeneratedColumn<bool> active =
       GeneratedColumn<bool>('active', aliasedName, false,
@@ -402,55 +398,57 @@ class $EventsTable extends Events with TableInfo<$EventsTable, EventData> {
             SqlDialect.mysql: '',
             SqlDialect.postgres: '',
           }));
-  final VerificationMeta _typeMeta = const VerificationMeta('type');
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
   @override
   late final GeneratedColumnWithTypeConverter<EventType, int> type =
       GeneratedColumn<int>('type', aliasedName, false,
               type: DriftSqlType.int, requiredDuringInsert: true)
-          .withConverter<EventType>($EventsTable.$converter0);
-  final VerificationMeta _submissionsLengthMeta =
+          .withConverter<EventType>($EventsTable.$convertertype);
+  static const VerificationMeta _submissionsLengthMeta =
       const VerificationMeta('submissionsLength');
   @override
   late final GeneratedColumnWithTypeConverter<Duration, int> submissionsLength =
       GeneratedColumn<int>('submissions_length', aliasedName, false,
               type: DriftSqlType.int, requiredDuringInsert: true)
-          .withConverter<Duration>($EventsTable.$converter1);
-  final VerificationMeta _reviewLengthMeta =
+          .withConverter<Duration>($EventsTable.$convertersubmissionsLength);
+  static const VerificationMeta _reviewLengthMeta =
       const VerificationMeta('reviewLength');
   @override
   late final GeneratedColumnWithTypeConverter<Duration, int> reviewLength =
       GeneratedColumn<int>('review_length', aliasedName, false,
               type: DriftSqlType.int, requiredDuringInsert: true)
-          .withConverter<Duration>($EventsTable.$converter2);
-  final VerificationMeta _announcementsChannelIdMeta =
+          .withConverter<Duration>($EventsTable.$converterreviewLength);
+  static const VerificationMeta _announcementsChannelIdMeta =
       const VerificationMeta('announcementsChannelId');
   @override
   late final GeneratedColumnWithTypeConverter<Snowflake, int>
       announcementsChannelId = GeneratedColumn<int>(
               'announcements_channel_id', aliasedName, false,
               type: DriftSqlType.int, requiredDuringInsert: true)
-          .withConverter<Snowflake>($EventsTable.$converter3);
-  final VerificationMeta _reviewsChannelIdMeta =
+          .withConverter<Snowflake>(
+              $EventsTable.$converterannouncementsChannelId);
+  static const VerificationMeta _reviewsChannelIdMeta =
       const VerificationMeta('reviewsChannelId');
   @override
   late final GeneratedColumnWithTypeConverter<Snowflake, int> reviewsChannelId =
       GeneratedColumn<int>('reviews_channel_id', aliasedName, false,
               type: DriftSqlType.int, requiredDuringInsert: true)
-          .withConverter<Snowflake>($EventsTable.$converter4);
-  final VerificationMeta _participantRoleIdMeta =
+          .withConverter<Snowflake>($EventsTable.$converterreviewsChannelId);
+  static const VerificationMeta _participantRoleIdMeta =
       const VerificationMeta('participantRoleId');
   @override
   late final GeneratedColumnWithTypeConverter<Snowflake, int>
       participantRoleId = GeneratedColumn<int>(
               'participant_role_id', aliasedName, false,
               type: DriftSqlType.int, requiredDuringInsert: true)
-          .withConverter<Snowflake>($EventsTable.$converter5);
-  final VerificationMeta _guildIdMeta = const VerificationMeta('guildId');
+          .withConverter<Snowflake>($EventsTable.$converterparticipantRoleId);
+  static const VerificationMeta _guildIdMeta =
+      const VerificationMeta('guildId');
   @override
   late final GeneratedColumnWithTypeConverter<Snowflake, int> guildId =
       GeneratedColumn<int>('guild_id', aliasedName, false,
               type: DriftSqlType.int, requiredDuringInsert: true)
-          .withConverter<Snowflake>($EventsTable.$converter6);
+          .withConverter<Snowflake>($EventsTable.$converterguildId);
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -511,24 +509,25 @@ class $EventsTable extends Events with TableInfo<$EventsTable, EventData> {
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       active: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}active'])!,
-      type: $EventsTable.$converter0.fromSql(attachedDatabase.typeMapping
+      type: $EventsTable.$convertertype.fromSql(attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}type'])!),
-      submissionsLength: $EventsTable.$converter1.fromSql(
+      submissionsLength: $EventsTable.$convertersubmissionsLength.fromSql(
           attachedDatabase.typeMapping.read(
               DriftSqlType.int, data['${effectivePrefix}submissions_length'])!),
-      reviewLength: $EventsTable.$converter2.fromSql(attachedDatabase
+      reviewLength: $EventsTable.$converterreviewLength.fromSql(attachedDatabase
           .typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}review_length'])!),
-      announcementsChannelId: $EventsTable.$converter3.fromSql(
-          attachedDatabase.typeMapping.read(DriftSqlType.int,
+      announcementsChannelId: $EventsTable.$converterannouncementsChannelId
+          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.int,
               data['${effectivePrefix}announcements_channel_id'])!),
-      reviewsChannelId: $EventsTable.$converter4.fromSql(
+      reviewsChannelId: $EventsTable.$converterreviewsChannelId.fromSql(
           attachedDatabase.typeMapping.read(
               DriftSqlType.int, data['${effectivePrefix}reviews_channel_id'])!),
-      participantRoleId: $EventsTable.$converter5.fromSql(
+      participantRoleId: $EventsTable.$converterparticipantRoleId.fromSql(
           attachedDatabase.typeMapping.read(DriftSqlType.int,
               data['${effectivePrefix}participant_role_id'])!),
-      guildId: $EventsTable.$converter6.fromSql(attachedDatabase.typeMapping
+      guildId: $EventsTable.$converterguildId.fromSql(attachedDatabase
+          .typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}guild_id'])!),
     );
   }
@@ -538,14 +537,20 @@ class $EventsTable extends Events with TableInfo<$EventsTable, EventData> {
     return $EventsTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<EventType, int> $converter0 =
+  static TypeConverter<EventType, int> $convertertype =
       const EnumIndexConverter<EventType>(EventType.values);
-  static TypeConverter<Duration, int> $converter1 = const DurationConverter();
-  static TypeConverter<Duration, int> $converter2 = const DurationConverter();
-  static TypeConverter<Snowflake, int> $converter3 = const SnowflakeConverter();
-  static TypeConverter<Snowflake, int> $converter4 = const SnowflakeConverter();
-  static TypeConverter<Snowflake, int> $converter5 = const SnowflakeConverter();
-  static TypeConverter<Snowflake, int> $converter6 = const SnowflakeConverter();
+  static TypeConverter<Duration, int> $convertersubmissionsLength =
+      const DurationConverter();
+  static TypeConverter<Duration, int> $converterreviewLength =
+      const DurationConverter();
+  static TypeConverter<Snowflake, int> $converterannouncementsChannelId =
+      const SnowflakeConverter();
+  static TypeConverter<Snowflake, int> $converterreviewsChannelId =
+      const SnowflakeConverter();
+  static TypeConverter<Snowflake, int> $converterparticipantRoleId =
+      const SnowflakeConverter();
+  static TypeConverter<Snowflake, int> $converterguildId =
+      const SnowflakeConverter();
 }
 
 class EventDependencie extends DataClass
@@ -690,31 +695,32 @@ class $EventDependenciesTable extends EventDependencies
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $EventDependenciesTable(this.attachedDatabase, [this._alias]);
-  final VerificationMeta _idMeta = const VerificationMeta('id');
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
+      hasAutoIncrement: true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'),
-      hasAutoIncrement: true);
-  final VerificationMeta _eventMeta = const VerificationMeta('event');
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _eventMeta = const VerificationMeta('event');
   @override
   late final GeneratedColumn<int> event = GeneratedColumn<int>(
       'event', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES "events" ("id")'));
-  final VerificationMeta _dependencyMeta = const VerificationMeta('dependency');
+          GeneratedColumn.constraintIsAlways('REFERENCES events (id)'));
+  static const VerificationMeta _dependencyMeta =
+      const VerificationMeta('dependency');
   @override
   late final GeneratedColumn<int> dependency = GeneratedColumn<int>(
       'dependency', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES "events" ("id")'));
+          GeneratedColumn.constraintIsAlways('REFERENCES events (id)'));
   @override
   List<GeneratedColumn> get $columns => [id, event, dependency];
   @override
@@ -779,21 +785,47 @@ class Cycle extends DataClass implements Insertable<Cycle> {
 
   /// The time at which the current cycle started.
   final DateTime startedAt;
+
+  /// The ID of the guild event representing this cycle's submissions
+  final Snowflake submissionsEventId;
+
+  /// The ID of the guild event representing this cycle's reviews
+  final Snowflake reviewsEventId;
+
+  /// The ID of the guild event representing the next cycle's submissions
+  final Snowflake nextCycleSubmissionsEventId;
   const Cycle(
       {required this.id,
       required this.event,
       required this.status,
-      required this.startedAt});
+      required this.startedAt,
+      required this.submissionsEventId,
+      required this.reviewsEventId,
+      required this.nextCycleSubmissionsEventId});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['event'] = Variable<int>(event);
     {
-      final converter = $CyclesTable.$converter0;
+      final converter = $CyclesTable.$converterstatus;
       map['status'] = Variable<int>(converter.toSql(status));
     }
     map['started_at'] = Variable<DateTime>(startedAt);
+    {
+      final converter = $CyclesTable.$convertersubmissionsEventId;
+      map['submissions_event_id'] =
+          Variable<int>(converter.toSql(submissionsEventId));
+    }
+    {
+      final converter = $CyclesTable.$converterreviewsEventId;
+      map['reviews_event_id'] = Variable<int>(converter.toSql(reviewsEventId));
+    }
+    {
+      final converter = $CyclesTable.$converternextCycleSubmissionsEventId;
+      map['next_cycle_submissions_event_id'] =
+          Variable<int>(converter.toSql(nextCycleSubmissionsEventId));
+    }
     return map;
   }
 
@@ -803,6 +835,9 @@ class Cycle extends DataClass implements Insertable<Cycle> {
       event: Value(event),
       status: Value(status),
       startedAt: Value(startedAt),
+      submissionsEventId: Value(submissionsEventId),
+      reviewsEventId: Value(reviewsEventId),
+      nextCycleSubmissionsEventId: Value(nextCycleSubmissionsEventId),
     );
   }
 
@@ -814,6 +849,11 @@ class Cycle extends DataClass implements Insertable<Cycle> {
       event: serializer.fromJson<int>(json['event']),
       status: serializer.fromJson<CycleStatus>(json['status']),
       startedAt: serializer.fromJson<DateTime>(json['startedAt']),
+      submissionsEventId:
+          serializer.fromJson<Snowflake>(json['submissionsEventId']),
+      reviewsEventId: serializer.fromJson<Snowflake>(json['reviewsEventId']),
+      nextCycleSubmissionsEventId:
+          serializer.fromJson<Snowflake>(json['nextCycleSubmissionsEventId']),
     );
   }
   @override
@@ -824,16 +864,30 @@ class Cycle extends DataClass implements Insertable<Cycle> {
       'event': serializer.toJson<int>(event),
       'status': serializer.toJson<CycleStatus>(status),
       'startedAt': serializer.toJson<DateTime>(startedAt),
+      'submissionsEventId': serializer.toJson<Snowflake>(submissionsEventId),
+      'reviewsEventId': serializer.toJson<Snowflake>(reviewsEventId),
+      'nextCycleSubmissionsEventId':
+          serializer.toJson<Snowflake>(nextCycleSubmissionsEventId),
     };
   }
 
   Cycle copyWith(
-          {int? id, int? event, CycleStatus? status, DateTime? startedAt}) =>
+          {int? id,
+          int? event,
+          CycleStatus? status,
+          DateTime? startedAt,
+          Snowflake? submissionsEventId,
+          Snowflake? reviewsEventId,
+          Snowflake? nextCycleSubmissionsEventId}) =>
       Cycle(
         id: id ?? this.id,
         event: event ?? this.event,
         status: status ?? this.status,
         startedAt: startedAt ?? this.startedAt,
+        submissionsEventId: submissionsEventId ?? this.submissionsEventId,
+        reviewsEventId: reviewsEventId ?? this.reviewsEventId,
+        nextCycleSubmissionsEventId:
+            nextCycleSubmissionsEventId ?? this.nextCycleSubmissionsEventId,
       );
   @override
   String toString() {
@@ -841,13 +895,17 @@ class Cycle extends DataClass implements Insertable<Cycle> {
           ..write('id: $id, ')
           ..write('event: $event, ')
           ..write('status: $status, ')
-          ..write('startedAt: $startedAt')
+          ..write('startedAt: $startedAt, ')
+          ..write('submissionsEventId: $submissionsEventId, ')
+          ..write('reviewsEventId: $reviewsEventId, ')
+          ..write('nextCycleSubmissionsEventId: $nextCycleSubmissionsEventId')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, event, status, startedAt);
+  int get hashCode => Object.hash(id, event, status, startedAt,
+      submissionsEventId, reviewsEventId, nextCycleSubmissionsEventId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -855,7 +913,11 @@ class Cycle extends DataClass implements Insertable<Cycle> {
           other.id == this.id &&
           other.event == this.event &&
           other.status == this.status &&
-          other.startedAt == this.startedAt);
+          other.startedAt == this.startedAt &&
+          other.submissionsEventId == this.submissionsEventId &&
+          other.reviewsEventId == this.reviewsEventId &&
+          other.nextCycleSubmissionsEventId ==
+              this.nextCycleSubmissionsEventId);
 }
 
 class CyclesCompanion extends UpdateCompanion<Cycle> {
@@ -863,31 +925,51 @@ class CyclesCompanion extends UpdateCompanion<Cycle> {
   final Value<int> event;
   final Value<CycleStatus> status;
   final Value<DateTime> startedAt;
+  final Value<Snowflake> submissionsEventId;
+  final Value<Snowflake> reviewsEventId;
+  final Value<Snowflake> nextCycleSubmissionsEventId;
   const CyclesCompanion({
     this.id = const Value.absent(),
     this.event = const Value.absent(),
     this.status = const Value.absent(),
     this.startedAt = const Value.absent(),
+    this.submissionsEventId = const Value.absent(),
+    this.reviewsEventId = const Value.absent(),
+    this.nextCycleSubmissionsEventId = const Value.absent(),
   });
   CyclesCompanion.insert({
     this.id = const Value.absent(),
     required int event,
     required CycleStatus status,
     required DateTime startedAt,
+    required Snowflake submissionsEventId,
+    required Snowflake reviewsEventId,
+    required Snowflake nextCycleSubmissionsEventId,
   })  : event = Value(event),
         status = Value(status),
-        startedAt = Value(startedAt);
+        startedAt = Value(startedAt),
+        submissionsEventId = Value(submissionsEventId),
+        reviewsEventId = Value(reviewsEventId),
+        nextCycleSubmissionsEventId = Value(nextCycleSubmissionsEventId);
   static Insertable<Cycle> custom({
     Expression<int>? id,
     Expression<int>? event,
     Expression<int>? status,
     Expression<DateTime>? startedAt,
+    Expression<int>? submissionsEventId,
+    Expression<int>? reviewsEventId,
+    Expression<int>? nextCycleSubmissionsEventId,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (event != null) 'event': event,
       if (status != null) 'status': status,
       if (startedAt != null) 'started_at': startedAt,
+      if (submissionsEventId != null)
+        'submissions_event_id': submissionsEventId,
+      if (reviewsEventId != null) 'reviews_event_id': reviewsEventId,
+      if (nextCycleSubmissionsEventId != null)
+        'next_cycle_submissions_event_id': nextCycleSubmissionsEventId,
     });
   }
 
@@ -895,12 +977,19 @@ class CyclesCompanion extends UpdateCompanion<Cycle> {
       {Value<int>? id,
       Value<int>? event,
       Value<CycleStatus>? status,
-      Value<DateTime>? startedAt}) {
+      Value<DateTime>? startedAt,
+      Value<Snowflake>? submissionsEventId,
+      Value<Snowflake>? reviewsEventId,
+      Value<Snowflake>? nextCycleSubmissionsEventId}) {
     return CyclesCompanion(
       id: id ?? this.id,
       event: event ?? this.event,
       status: status ?? this.status,
       startedAt: startedAt ?? this.startedAt,
+      submissionsEventId: submissionsEventId ?? this.submissionsEventId,
+      reviewsEventId: reviewsEventId ?? this.reviewsEventId,
+      nextCycleSubmissionsEventId:
+          nextCycleSubmissionsEventId ?? this.nextCycleSubmissionsEventId,
     );
   }
 
@@ -914,11 +1003,26 @@ class CyclesCompanion extends UpdateCompanion<Cycle> {
       map['event'] = Variable<int>(event.value);
     }
     if (status.present) {
-      final converter = $CyclesTable.$converter0;
+      final converter = $CyclesTable.$converterstatus;
       map['status'] = Variable<int>(converter.toSql(status.value));
     }
     if (startedAt.present) {
       map['started_at'] = Variable<DateTime>(startedAt.value);
+    }
+    if (submissionsEventId.present) {
+      final converter = $CyclesTable.$convertersubmissionsEventId;
+      map['submissions_event_id'] =
+          Variable<int>(converter.toSql(submissionsEventId.value));
+    }
+    if (reviewsEventId.present) {
+      final converter = $CyclesTable.$converterreviewsEventId;
+      map['reviews_event_id'] =
+          Variable<int>(converter.toSql(reviewsEventId.value));
+    }
+    if (nextCycleSubmissionsEventId.present) {
+      final converter = $CyclesTable.$converternextCycleSubmissionsEventId;
+      map['next_cycle_submissions_event_id'] =
+          Variable<int>(converter.toSql(nextCycleSubmissionsEventId.value));
     }
     return map;
   }
@@ -929,7 +1033,10 @@ class CyclesCompanion extends UpdateCompanion<Cycle> {
           ..write('id: $id, ')
           ..write('event: $event, ')
           ..write('status: $status, ')
-          ..write('startedAt: $startedAt')
+          ..write('startedAt: $startedAt, ')
+          ..write('submissionsEventId: $submissionsEventId, ')
+          ..write('reviewsEventId: $reviewsEventId, ')
+          ..write('nextCycleSubmissionsEventId: $nextCycleSubmissionsEventId')
           ..write(')'))
         .toString();
   }
@@ -940,36 +1047,69 @@ class $CyclesTable extends Cycles with TableInfo<$CyclesTable, Cycle> {
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $CyclesTable(this.attachedDatabase, [this._alias]);
-  final VerificationMeta _idMeta = const VerificationMeta('id');
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
+      hasAutoIncrement: true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'),
-      hasAutoIncrement: true);
-  final VerificationMeta _eventMeta = const VerificationMeta('event');
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _eventMeta = const VerificationMeta('event');
   @override
   late final GeneratedColumn<int> event = GeneratedColumn<int>(
       'event', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES "events" ("id")'));
-  final VerificationMeta _statusMeta = const VerificationMeta('status');
+          GeneratedColumn.constraintIsAlways('REFERENCES events (id)'));
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
   @override
   late final GeneratedColumnWithTypeConverter<CycleStatus, int> status =
       GeneratedColumn<int>('status', aliasedName, false,
               type: DriftSqlType.int, requiredDuringInsert: true)
-          .withConverter<CycleStatus>($CyclesTable.$converter0);
-  final VerificationMeta _startedAtMeta = const VerificationMeta('startedAt');
+          .withConverter<CycleStatus>($CyclesTable.$converterstatus);
+  static const VerificationMeta _startedAtMeta =
+      const VerificationMeta('startedAt');
   @override
   late final GeneratedColumn<DateTime> startedAt = GeneratedColumn<DateTime>(
       'started_at', aliasedName, false,
       type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _submissionsEventIdMeta =
+      const VerificationMeta('submissionsEventId');
   @override
-  List<GeneratedColumn> get $columns => [id, event, status, startedAt];
+  late final GeneratedColumnWithTypeConverter<Snowflake, int>
+      submissionsEventId = GeneratedColumn<int>(
+              'submissions_event_id', aliasedName, false,
+              type: DriftSqlType.int, requiredDuringInsert: true)
+          .withConverter<Snowflake>($CyclesTable.$convertersubmissionsEventId);
+  static const VerificationMeta _reviewsEventIdMeta =
+      const VerificationMeta('reviewsEventId');
+  @override
+  late final GeneratedColumnWithTypeConverter<Snowflake, int> reviewsEventId =
+      GeneratedColumn<int>('reviews_event_id', aliasedName, false,
+              type: DriftSqlType.int, requiredDuringInsert: true)
+          .withConverter<Snowflake>($CyclesTable.$converterreviewsEventId);
+  static const VerificationMeta _nextCycleSubmissionsEventIdMeta =
+      const VerificationMeta('nextCycleSubmissionsEventId');
+  @override
+  late final GeneratedColumnWithTypeConverter<Snowflake, int>
+      nextCycleSubmissionsEventId = GeneratedColumn<int>(
+              'next_cycle_submissions_event_id', aliasedName, false,
+              type: DriftSqlType.int, requiredDuringInsert: true)
+          .withConverter<Snowflake>(
+              $CyclesTable.$converternextCycleSubmissionsEventId);
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        event,
+        status,
+        startedAt,
+        submissionsEventId,
+        reviewsEventId,
+        nextCycleSubmissionsEventId
+      ];
   @override
   String get aliasedName => _alias ?? 'cycles';
   @override
@@ -995,6 +1135,10 @@ class $CyclesTable extends Cycles with TableInfo<$CyclesTable, Cycle> {
     } else if (isInserting) {
       context.missing(_startedAtMeta);
     }
+    context.handle(_submissionsEventIdMeta, const VerificationResult.success());
+    context.handle(_reviewsEventIdMeta, const VerificationResult.success());
+    context.handle(
+        _nextCycleSubmissionsEventIdMeta, const VerificationResult.success());
     return context;
   }
 
@@ -1008,10 +1152,20 @@ class $CyclesTable extends Cycles with TableInfo<$CyclesTable, Cycle> {
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       event: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}event'])!,
-      status: $CyclesTable.$converter0.fromSql(attachedDatabase.typeMapping
+      status: $CyclesTable.$converterstatus.fromSql(attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}status'])!),
       startedAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}started_at'])!,
+      submissionsEventId: $CyclesTable.$convertersubmissionsEventId.fromSql(
+          attachedDatabase.typeMapping.read(DriftSqlType.int,
+              data['${effectivePrefix}submissions_event_id'])!),
+      reviewsEventId: $CyclesTable.$converterreviewsEventId.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.int, data['${effectivePrefix}reviews_event_id'])!),
+      nextCycleSubmissionsEventId: $CyclesTable
+          .$converternextCycleSubmissionsEventId
+          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.int,
+              data['${effectivePrefix}next_cycle_submissions_event_id'])!),
     );
   }
 
@@ -1020,8 +1174,14 @@ class $CyclesTable extends Cycles with TableInfo<$CyclesTable, Cycle> {
     return $CyclesTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<CycleStatus, int> $converter0 =
+  static TypeConverter<CycleStatus, int> $converterstatus =
       const EnumIndexConverter<CycleStatus>(CycleStatus.values);
+  static TypeConverter<Snowflake, int> $convertersubmissionsEventId =
+      const SnowflakeConverter();
+  static TypeConverter<Snowflake, int> $converterreviewsEventId =
+      const SnowflakeConverter();
+  static TypeConverter<Snowflake, int> $converternextCycleSubmissionsEventId =
+      const SnowflakeConverter();
 }
 
 class CurrentCycle extends DataClass implements Insertable<CurrentCycle> {
@@ -1140,22 +1300,22 @@ class $CurrentCyclesTable extends CurrentCycles
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $CurrentCyclesTable(this.attachedDatabase, [this._alias]);
-  final VerificationMeta _eventMeta = const VerificationMeta('event');
+  static const VerificationMeta _eventMeta = const VerificationMeta('event');
   @override
   late final GeneratedColumn<int> event = GeneratedColumn<int>(
       'event', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES "events" ("id")'));
-  final VerificationMeta _cycleMeta = const VerificationMeta('cycle');
+          GeneratedColumn.constraintIsAlways('REFERENCES events (id)'));
+  static const VerificationMeta _cycleMeta = const VerificationMeta('cycle');
   @override
   late final GeneratedColumn<int> cycle = GeneratedColumn<int>(
       'cycle', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES "cycles" ("id")'));
+          GeneratedColumn.constraintIsAlways('REFERENCES cycles (id)'));
   @override
   List<GeneratedColumn> get $columns => [event, cycle];
   @override
@@ -1183,7 +1343,7 @@ class $CurrentCyclesTable extends CurrentCycles
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => <GeneratedColumn>{};
+  Set<GeneratedColumn> get $primaryKey => const {};
   @override
   CurrentCycle map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -1224,7 +1384,7 @@ class Submission extends DataClass implements Insertable<Submission> {
     map['id'] = Variable<int>(id);
     map['cycle'] = Variable<int>(cycle);
     {
-      final converter = $SubmissionsTable.$converter0;
+      final converter = $SubmissionsTable.$converteruserId;
       map['user_id'] = Variable<int>(converter.toSql(userId));
     }
     map['content'] = Variable<String>(content);
@@ -1348,7 +1508,7 @@ class SubmissionsCompanion extends UpdateCompanion<Submission> {
       map['cycle'] = Variable<int>(cycle.value);
     }
     if (userId.present) {
-      final converter = $SubmissionsTable.$converter0;
+      final converter = $SubmissionsTable.$converteruserId;
       map['user_id'] = Variable<int>(converter.toSql(userId.value));
     }
     if (content.present) {
@@ -1375,30 +1535,31 @@ class $SubmissionsTable extends Submissions
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $SubmissionsTable(this.attachedDatabase, [this._alias]);
-  final VerificationMeta _idMeta = const VerificationMeta('id');
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
+      hasAutoIncrement: true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'),
-      hasAutoIncrement: true);
-  final VerificationMeta _cycleMeta = const VerificationMeta('cycle');
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _cycleMeta = const VerificationMeta('cycle');
   @override
   late final GeneratedColumn<int> cycle = GeneratedColumn<int>(
       'cycle', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES "cycles" ("id")'));
-  final VerificationMeta _userIdMeta = const VerificationMeta('userId');
+          GeneratedColumn.constraintIsAlways('REFERENCES cycles (id)'));
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
   @override
   late final GeneratedColumnWithTypeConverter<Snowflake, int> userId =
       GeneratedColumn<int>('user_id', aliasedName, false,
               type: DriftSqlType.int, requiredDuringInsert: true)
-          .withConverter<Snowflake>($SubmissionsTable.$converter0);
-  final VerificationMeta _contentMeta = const VerificationMeta('content');
+          .withConverter<Snowflake>($SubmissionsTable.$converteruserId);
+  static const VerificationMeta _contentMeta =
+      const VerificationMeta('content');
   @override
   late final GeneratedColumn<String> content = GeneratedColumn<String>(
       'content', aliasedName, false,
@@ -1443,7 +1604,8 @@ class $SubmissionsTable extends Submissions
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       cycle: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}cycle'])!,
-      userId: $SubmissionsTable.$converter0.fromSql(attachedDatabase.typeMapping
+      userId: $SubmissionsTable.$converteruserId.fromSql(attachedDatabase
+          .typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}user_id'])!),
       content: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}content'])!,
@@ -1455,7 +1617,8 @@ class $SubmissionsTable extends Submissions
     return $SubmissionsTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<Snowflake, int> $converter0 = const SnowflakeConverter();
+  static TypeConverter<Snowflake, int> $converteruserId =
+      const SnowflakeConverter();
 }
 
 class Assignment extends DataClass implements Insertable<Assignment> {
@@ -1481,7 +1644,7 @@ class Assignment extends DataClass implements Insertable<Assignment> {
     map['id'] = Variable<int>(id);
     map['submission'] = Variable<int>(submission);
     {
-      final converter = $AssignmentsTable.$converter0;
+      final converter = $AssignmentsTable.$converterassignedUser;
       map['assigned_user'] = Variable<int>(converter.toSql(assignedUser));
     }
     map['discarded'] = Variable<bool>(discarded);
@@ -1607,7 +1770,7 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
       map['submission'] = Variable<int>(submission.value);
     }
     if (assignedUser.present) {
-      final converter = $AssignmentsTable.$converter0;
+      final converter = $AssignmentsTable.$converterassignedUser;
       map['assigned_user'] = Variable<int>(converter.toSql(assignedUser.value));
     }
     if (discarded.present) {
@@ -1634,31 +1797,33 @@ class $AssignmentsTable extends Assignments
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $AssignmentsTable(this.attachedDatabase, [this._alias]);
-  final VerificationMeta _idMeta = const VerificationMeta('id');
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
+      hasAutoIncrement: true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'),
-      hasAutoIncrement: true);
-  final VerificationMeta _submissionMeta = const VerificationMeta('submission');
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _submissionMeta =
+      const VerificationMeta('submission');
   @override
   late final GeneratedColumn<int> submission = GeneratedColumn<int>(
       'submission', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: true,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES "submissions" ("id")'));
-  final VerificationMeta _assignedUserMeta =
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES submissions (id)'));
+  static const VerificationMeta _assignedUserMeta =
       const VerificationMeta('assignedUser');
   @override
   late final GeneratedColumnWithTypeConverter<Snowflake, int> assignedUser =
       GeneratedColumn<int>('assigned_user', aliasedName, false,
               type: DriftSqlType.int, requiredDuringInsert: true)
-          .withConverter<Snowflake>($AssignmentsTable.$converter0);
-  final VerificationMeta _discardedMeta = const VerificationMeta('discarded');
+          .withConverter<Snowflake>($AssignmentsTable.$converterassignedUser);
+  static const VerificationMeta _discardedMeta =
+      const VerificationMeta('discarded');
   @override
   late final GeneratedColumn<bool> discarded =
       GeneratedColumn<bool>('discarded', aliasedName, false,
@@ -1711,9 +1876,9 @@ class $AssignmentsTable extends Assignments
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       submission: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}submission'])!,
-      assignedUser: $AssignmentsTable.$converter0.fromSql(attachedDatabase
-          .typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}assigned_user'])!),
+      assignedUser: $AssignmentsTable.$converterassignedUser.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.int, data['${effectivePrefix}assigned_user'])!),
       discarded: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}discarded'])!,
     );
@@ -1724,7 +1889,8 @@ class $AssignmentsTable extends Assignments
     return $AssignmentsTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<Snowflake, int> $converter0 = const SnowflakeConverter();
+  static TypeConverter<Snowflake, int> $converterassignedUser =
+      const SnowflakeConverter();
 }
 
 class Review extends DataClass implements Insertable<Review> {
@@ -1750,7 +1916,7 @@ class Review extends DataClass implements Insertable<Review> {
     map['id'] = Variable<int>(id);
     map['submission'] = Variable<int>(submission);
     {
-      final converter = $ReviewsTable.$converter0;
+      final converter = $ReviewsTable.$converteruserId;
       map['user_id'] = Variable<int>(converter.toSql(userId));
     }
     map['content'] = Variable<String>(content);
@@ -1874,7 +2040,7 @@ class ReviewsCompanion extends UpdateCompanion<Review> {
       map['submission'] = Variable<int>(submission.value);
     }
     if (userId.present) {
-      final converter = $ReviewsTable.$converter0;
+      final converter = $ReviewsTable.$converteruserId;
       map['user_id'] = Variable<int>(converter.toSql(userId.value));
     }
     if (content.present) {
@@ -1900,30 +2066,32 @@ class $ReviewsTable extends Reviews with TableInfo<$ReviewsTable, Review> {
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $ReviewsTable(this.attachedDatabase, [this._alias]);
-  final VerificationMeta _idMeta = const VerificationMeta('id');
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
+      hasAutoIncrement: true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'),
-      hasAutoIncrement: true);
-  final VerificationMeta _submissionMeta = const VerificationMeta('submission');
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _submissionMeta =
+      const VerificationMeta('submission');
   @override
   late final GeneratedColumn<int> submission = GeneratedColumn<int>(
       'submission', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: true,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES "submissions" ("id")'));
-  final VerificationMeta _userIdMeta = const VerificationMeta('userId');
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES submissions (id)'));
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
   @override
   late final GeneratedColumnWithTypeConverter<Snowflake, int> userId =
       GeneratedColumn<int>('user_id', aliasedName, false,
               type: DriftSqlType.int, requiredDuringInsert: true)
-          .withConverter<Snowflake>($ReviewsTable.$converter0);
-  final VerificationMeta _contentMeta = const VerificationMeta('content');
+          .withConverter<Snowflake>($ReviewsTable.$converteruserId);
+  static const VerificationMeta _contentMeta =
+      const VerificationMeta('content');
   @override
   late final GeneratedColumn<String> content = GeneratedColumn<String>(
       'content', aliasedName, false,
@@ -1970,7 +2138,8 @@ class $ReviewsTable extends Reviews with TableInfo<$ReviewsTable, Review> {
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       submission: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}submission'])!,
-      userId: $ReviewsTable.$converter0.fromSql(attachedDatabase.typeMapping
+      userId: $ReviewsTable.$converteruserId.fromSql(attachedDatabase
+          .typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}user_id'])!),
       content: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}content'])!,
@@ -1982,7 +2151,8 @@ class $ReviewsTable extends Reviews with TableInfo<$ReviewsTable, Review> {
     return $ReviewsTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<Snowflake, int> $converter0 = const SnowflakeConverter();
+  static TypeConverter<Snowflake, int> $converteruserId =
+      const SnowflakeConverter();
 }
 
 abstract class _$Database extends GeneratedDatabase {
@@ -1996,7 +2166,7 @@ abstract class _$Database extends GeneratedDatabase {
   late final $AssignmentsTable assignments = $AssignmentsTable(this);
   late final $ReviewsTable reviews = $ReviewsTable(this);
   @override
-  Iterable<TableInfo<Table, dynamic>> get allTables =>
+  Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [

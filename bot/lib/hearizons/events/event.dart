@@ -8,6 +8,8 @@ import 'package:hearizons/errors.dart';
 import 'package:hearizons/utils/context_extension.dart';
 import 'package:logging/logging.dart';
 import 'package:nyxx/nyxx.dart';
+import 'package:nyxx/src/core/guild/scheduled_event.dart';
+import 'package:nyxx/src/utils/builders/guild_event_builder.dart';
 import 'package:nyxx_commands/nyxx_commands.dart';
 
 class Event {
@@ -30,8 +32,20 @@ class Event {
     }
 
     await sendNewCycleAnnouncement();
+    final cycleStart = await database.getNextCycleStart(this);
+    final events = await createReviewsAndNextCycleEvents(cycleStart);
 
-    await database.moveEventToNextCycle(this);
+    // Submissions event might be out of sync, update it here
+    await updateSubmissionsEvent(
+      (await database.getCurrentCycle(this)).nextCycleSubmissionsEventId,
+      cycleStart,
+    );
+
+    await database.moveEventToNextCycle(
+      this,
+      reviewsEventId: events[0],
+      nextCycleSubmissionsEventId: events[1],
+    );
 
     logger.fine('Moved to next cycle');
   }
@@ -62,15 +76,24 @@ class Event {
   Future<void> activate() async {
     logger.info('Activating event');
 
-    await database.startCycleForEvent(this);
-    await database.updateEvent(data.copyWith(active: true));
     await sendNewCycleAnnouncement();
+    final events = await createSubmissionsReviewsAndNextCycleEvents(DateTime.now());
+
+    await database.startCycleForEvent(
+      this,
+      submissionsEventId: events[0],
+      reviewsEventId: events[1],
+      nextSubmissionsEventId: events[2],
+    );
+    await database.updateEvent(data.copyWith(active: true));
 
     logger.info('Activated event');
   }
 
   Future<void> deactivate() => database.transaction(() async {
         logger.info('Deactivating event');
+
+        await cancelAllEvents();
 
         await database.discardAssignments(this);
         await database.updateEvent(data.copyWith(active: false));
@@ -308,6 +331,93 @@ The next cycle starts ${TimeStampStyle.relativeTime.format(DateTime.now().add(da
   Future<List<Event>> getLinkedEvents() => database.getDependenciesOf(this);
 
   Future<void> unlink(Event other) => database.unlink(this, other);
+
+  Future<List<Snowflake>> createReviewsAndNextCycleEvents(DateTime cycleStart) async {
+    final builders = await Future.wait([
+      createReviewsEventBuilder(cycleStart),
+      createSubmissionsEventBuilder(cycleStart.add(data.submissionsLength + data.reviewLength)),
+    ].map(Future.value));
+
+    return Future.wait(builders.map((builder) async {
+      if (builder.startDate!.isBefore(DateTime.now())) {
+        return Snowflake.zero();
+      }
+
+      return (await client.httpEndpoints.createGuildEvent(data.guildId, builder)).id;
+    }));
+  }
+
+  Future<List<Snowflake>> createSubmissionsReviewsAndNextCycleEvents(DateTime cycleStart) async {
+    final builders = await Future.wait([
+      createSubmissionsEventBuilder(cycleStart),
+      createReviewsEventBuilder(cycleStart),
+      createSubmissionsEventBuilder(cycleStart.add(data.submissionsLength + data.reviewLength)),
+    ].map(Future.value));
+
+    return Future.wait(builders.map((builder) async {
+      if (builder.startDate!.isBefore(DateTime.now())) {
+        return Snowflake.zero();
+      }
+
+      return (await client.httpEndpoints.createGuildEvent(data.guildId, builder)).id;
+    }));
+  }
+
+  FutureOr<GuildEventBuilder> createReviewsEventBuilder(DateTime cycleStart) async =>
+      GuildEventBuilder()
+        ..channelId = null
+        ..startDate = cycleStart.add(data.submissionsLength)
+        ..endDate = cycleStart.add(data.submissionsLength + data.reviewLength)
+        ..name = '${data.name} Reviews'
+        ..metadata = EntityMetadataBuilder(
+            '#${(await client.httpEndpoints.fetchChannel<IMinimalGuildChannel>(data.reviewsChannelId)).name}')
+        ..type = GuildEventType.external
+        ..privacyLevel = GuildEventPrivacyLevel.guildOnly;
+
+  FutureOr<GuildEventBuilder> createSubmissionsEventBuilder(DateTime cycleStart) =>
+      GuildEventBuilder()
+        ..channelId = null
+        ..startDate = cycleStart
+        ..endDate = cycleStart.add(data.submissionsLength)
+        ..name = '${data.name} Submissions'
+        ..metadata = EntityMetadataBuilder('/submit')
+        ..type = GuildEventType.external
+        ..privacyLevel = GuildEventPrivacyLevel.guildOnly;
+
+  Future<void> cancelAllEvents() async {
+    final cycle = await database.getCurrentCycle(this);
+
+    for (final id in [
+      cycle.submissionsEventId,
+      cycle.reviewsEventId,
+      cycle.nextCycleSubmissionsEventId
+    ]) {
+      await client.httpEndpoints.editGuildEvent(
+        data.guildId,
+        id,
+        GuildEventBuilder()..status = GuildEventStatus.canceled,
+      );
+    }
+  }
+
+  Future<void> updateSubmissionsEvent(Snowflake eventId, DateTime cycleStart) async {
+    final eventBuilder = await createSubmissionsEventBuilder(cycleStart);
+
+    if (eventBuilder.endDate!.isBefore(DateTime.now())) {
+      return;
+    }
+
+    if (eventId == Snowflake.zero()) {
+      return;
+    }
+
+    await client.httpEndpoints.editGuildEvent(
+      data.guildId,
+      eventId,
+      // Don't change start time, it might be in the past
+      eventBuilder..startDate = null,
+    );
+  }
 
   Future<IMessage?> _sendMessageToChannel(Snowflake channelId, MessageBuilder message) async {
     try {

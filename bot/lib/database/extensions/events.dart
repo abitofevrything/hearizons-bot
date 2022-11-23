@@ -13,6 +13,15 @@ final Logger _logger = Logger('Database.Events');
 extension EventUtils on Database {
   Event _toEvent(EventData data) => data.type.create(data);
 
+  Future<List<Event>> getActiveEvents() async {
+    final query = select(events)..where((_) => events.active);
+
+    final rawResults = await query.get();
+    final results = rawResults.map((row) => _toEvent(row)).toList();
+
+    return results;
+  }
+
   Future<List<Event>> getEventsPendingNewCycle() async {
     final cycleEndTime = DateTimeExpressions.fromUnixEpoch(
       cycles.startedAt.unixepoch + (events.submissionsLength + events.reviewLength),
@@ -91,13 +100,22 @@ extension EventUtils on Database {
     return results;
   }
 
-  Future<Cycle> startCycleForEvent(Event event) => transaction(() async {
+  Future<Cycle> startCycleForEvent(
+    Event event, {
+    required Snowflake submissionsEventId,
+    required Snowflake reviewsEventId,
+    required Snowflake nextSubmissionsEventId,
+  }) =>
+      transaction(() async {
         _logger.fine('Creating new cycle for event ${event.data.id}');
 
         final cycle = await into(cycles).insertReturning(CyclesCompanion.insert(
           event: event.data.id,
           status: CycleStatus.submissions,
           startedAt: DateTime.now(),
+          nextCycleSubmissionsEventId: nextSubmissionsEventId,
+          reviewsEventId: reviewsEventId,
+          submissionsEventId: submissionsEventId,
         ));
 
         final update = this.update(currentCycles)
@@ -116,24 +134,36 @@ extension EventUtils on Database {
         return cycle;
       });
 
-  Future<Cycle> moveEventToNextCycle(Event event) => transaction(() async {
+  Future<DateTime> getNextCycleStart(Event event) async {
+    final previousCycle = await getCurrentCycle(event);
+
+    final previousCycleStart = previousCycle.startedAt;
+    final nextCycleStart =
+        previousCycleStart.add(event.data.submissionsLength).add(event.data.reviewLength);
+
+    // Don't allow short cycles to build up
+    final minimumStartTime = DateTime.now().subtract(const Duration(hours: 1));
+
+    return minimumStartTime.isAfter(nextCycleStart) ? minimumStartTime : nextCycleStart;
+  }
+
+  Future<Cycle> moveEventToNextCycle(
+    Event event, {
+    required Snowflake nextCycleSubmissionsEventId,
+    required Snowflake reviewsEventId,
+  }) =>
+      transaction(() async {
         _logger.fine('Moving event ${event.data.id} to new cycle');
 
-        final previousCycleStart = (await getCurrentCycle(event)).startedAt;
-        final nextCycleStart =
-            previousCycleStart.add(event.data.submissionsLength).add(event.data.reviewLength);
-
-        // Don't allow short cycles to build up
-        final minimumStartTime = DateTime.now().subtract(const Duration(hours: 1));
-
-        final actualStartTime =
-            minimumStartTime.isAfter(nextCycleStart) ? minimumStartTime : nextCycleStart;
-
+        final previousCycle = await getCurrentCycle(event);
         // Create a new cycle
         final cycle = await into(cycles).insertReturning(CyclesCompanion.insert(
           event: event.data.id,
           status: CycleStatus.submissions,
-          startedAt: actualStartTime,
+          startedAt: await getNextCycleStart(event),
+          nextCycleSubmissionsEventId: nextCycleSubmissionsEventId,
+          reviewsEventId: reviewsEventId,
+          submissionsEventId: previousCycle.nextCycleSubmissionsEventId,
         ));
 
         // Update the entry in the current cycles table

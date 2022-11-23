@@ -73,6 +73,15 @@ class Cycles extends Table {
 
   /// The time at which the current cycle started.
   DateTimeColumn get startedAt => dateTime()();
+
+  /// The ID of the guild event representing this cycle's submissions
+  IntColumn get submissionsEventId => integer().map(const SnowflakeConverter())();
+
+  /// The ID of the guild event representing this cycle's reviews
+  IntColumn get reviewsEventId => integer().map(const SnowflakeConverter())();
+
+  /// The ID of the guild event representing the next cycle's submissions
+  IntColumn get nextCycleSubmissionsEventId => integer().map(const SnowflakeConverter())();
 }
 
 /// A submission to a cycle.
