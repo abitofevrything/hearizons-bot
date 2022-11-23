@@ -16,8 +16,7 @@ Future<void> handleError(CommandsException error) async {
         return exception.handle(context);
       }
 
-      logger.severe('Unhandled exception');
-      logger.severe(exception.toString());
+      logger.severe('Unhandled exception', error);
 
       await context.error(
         title: 'Sorry, an unexpected error has occurred.',

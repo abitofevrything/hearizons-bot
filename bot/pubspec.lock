@@ -346,10 +346,12 @@ packages:
   nyxx:
     dependency: "direct main"
     description:
-      name: nyxx
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.3.0"
+      path: "."
+      ref: dev
+      resolved-ref: "648f2c776110dfcfd142fd0861b1a832f4dcfbf8"
+      url: "https://github.com/nyxx-discord/nyxx.git"
+    source: git
+    version: "4.4.0-dev.0"
   nyxx_commands:
     dependency: "direct main"
     description:
