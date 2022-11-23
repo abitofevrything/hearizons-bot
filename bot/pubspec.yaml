@@ -7,12 +7,18 @@ environment:
   sdk: '>=2.18.0 <3.0.0'
 
 dependency_overrides:
-  # Force drift_dev to use drift from git
+  # Force drift_dev to use drift and sqlparser from git
   drift:
     git:
       url: https://github.com/simolus3/moor.git
       ref: develop
       path: drift
+
+  sqlparser:
+    git:
+      url: https://github.com/simolus3/moor.git
+      ref: develop
+      path: sqlparser
 
 dependencies:
   drift:

@@ -174,7 +174,7 @@ packages:
     description:
       path: drift
       ref: develop
-      resolved-ref: "75fe463a9fa5d344cff623828aec4b6bd5409205"
+      resolved-ref: "59d347adbe9db890a42965ddd0a3ea2d26b49449"
       url: "https://github.com/simolus3/moor.git"
     source: git
     version: "2.3.0-dev"
@@ -183,7 +183,7 @@ packages:
     description:
       path: drift_dev
       ref: develop
-      resolved-ref: "75fe463a9fa5d344cff623828aec4b6bd5409205"
+      resolved-ref: "59d347adbe9db890a42965ddd0a3ea2d26b49449"
       url: "https://github.com/simolus3/moor.git"
     source: git
     version: "2.3.0-dev"
@@ -192,7 +192,7 @@ packages:
     description:
       path: "extras/drift_postgres"
       ref: HEAD
-      resolved-ref: "75fe463a9fa5d344cff623828aec4b6bd5409205"
+      resolved-ref: "59d347adbe9db890a42965ddd0a3ea2d26b49449"
       url: "https://github.com/simolus3/moor.git"
     source: git
     version: "1.0.0"
@@ -349,16 +349,16 @@ packages:
       name: nyxx
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.2.0"
+    version: "4.3.0"
   nyxx_commands:
     dependency: "direct main"
     description:
       path: "."
       ref: next
-      resolved-ref: "26ea11345d22194b71c33a284e922d17120d7324"
+      resolved-ref: "681b461e752f8f16aab062a40171e98bb1fc577b"
       url: "https://github.com/nyxx-discord/nyxx_commands.git"
     source: git
-    version: "5.0.0-dev.0"
+    version: "5.0.0-dev.1"
   nyxx_interactions:
     dependency: "direct main"
     description:
@@ -429,6 +429,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.1.0"
+  retry:
+    dependency: transitive
+    description:
+      name: retry
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.1.0"
   sasl_scram:
     dependency: transitive
     description:
@@ -507,12 +514,14 @@ packages:
     source: hosted
     version: "1.9.1"
   sqlparser:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: sqlparser
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.23.3"
+      path: sqlparser
+      ref: develop
+      resolved-ref: "59d347adbe9db890a42965ddd0a3ea2d26b49449"
+      url: "https://github.com/simolus3/moor.git"
+    source: git
+    version: "0.24.0-dev"
   stack_trace:
     dependency: transitive
     description:
