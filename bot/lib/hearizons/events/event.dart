@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hearizons/database/database.dart';
+import 'package:hearizons/database/tables.dart';
 import 'package:hearizons/errors.dart';
 import 'package:hearizons/utils/context_extension.dart';
 import 'package:logging/logging.dart';
@@ -32,7 +33,7 @@ class Event {
       return;
     }
 
-    await sendNewCycleAnnouncement();
+    final message = await sendNewCycleAnnouncement();
     final cycleStart = await database.getNextCycleStart(this);
     final events = await createReviewsAndNextCycleEvents(cycleStart);
 
@@ -46,6 +47,7 @@ class Event {
       this,
       reviewsEventId: events[0],
       nextCycleSubmissionsEventId: events[1],
+      statusMessageId: message?.id ?? Snowflake.zero(),
     );
 
     logger.fine('Moved to next cycle');
@@ -61,14 +63,17 @@ class Event {
       return;
     }
 
-    await sendStartingReviewsAnnouncement();
+    final message = await sendStartingReviewsAnnouncement();
 
     final assignments = (await createAssignments(submissions)).toList();
     await sendAssignmentMessages(submissions, assignments);
 
     await database.transaction(() async {
       await database.createAssignments(assignments);
-      await database.moveEventToReviewPhase(this);
+      await database.moveEventToReviewPhase(
+        this,
+        statusMessageId: message?.id ?? Snowflake.zero(),
+      );
     });
 
     logger.info('Moved to review phase');
@@ -77,7 +82,7 @@ class Event {
   Future<void> activate() async {
     logger.info('Activating event');
 
-    await sendNewCycleAnnouncement();
+    final message = await sendNewCycleAnnouncement();
     final events = await createSubmissionsReviewsAndNextCycleEvents(DateTime.now());
 
     await database.startCycleForEvent(
@@ -85,6 +90,7 @@ class Event {
       submissionsEventId: events[0],
       reviewsEventId: events[1],
       nextSubmissionsEventId: events[2],
+      statusMessageId: message?.id ?? Snowflake.zero(),
     );
     await database.updateEvent(data.copyWith(active: true));
 
@@ -116,6 +122,25 @@ class Event {
       final event = data[1] as GuildEventBuilder;
 
       await _updateEvent(id, event);
+    }
+
+    if (cycle.statusMessageId != Snowflake.zero()) {
+      try {
+        EmbedBuilder embed;
+        if (cycle.status == CycleStatus.submissions) {
+          embed = await createNewCycleAnnouncement();
+        } else {
+          embed = await createStartingReviewsAnnouncement();
+        }
+
+        await client.httpEndpoints.editMessage(
+          data.announcementsChannelId,
+          cycle.statusMessageId,
+          MessageBuilder.embed(embed),
+        );
+      } on IHttpResponseError {
+        // ignore: Message was probably deleted
+      }
     }
   }
 
@@ -244,12 +269,12 @@ class Event {
 
   FutureOr<bool> canMoveToReviews(List<Submission> submissions) => submissions.length >= 2;
 
-  Future<void> sendNewCycleAnnouncement() async => _sendMessageToChannel(
+  Future<IMessage?> sendNewCycleAnnouncement() async => _sendMessageToChannel(
         data.announcementsChannelId,
         MessageBuilder.embed(await createNewCycleAnnouncement()),
       );
 
-  Future<void> sendStartingReviewsAnnouncement() async => _sendMessageToChannel(
+  Future<IMessage?> sendStartingReviewsAnnouncement() async => _sendMessageToChannel(
         data.announcementsChannelId,
         MessageBuilder.embed(await createStartingReviewsAnnouncement()),
       );

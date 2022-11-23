@@ -44,7 +44,7 @@ class Database extends _$Database {
   Database() : super(_openConnection());
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -140,6 +140,13 @@ class Database extends _$Database {
             await customStatement(
                 'ALTER TABLE assignments ALTER COLUMN assigned_user SET DATA TYPE bigint;');
             await customStatement('ALTER TABLE reviews ALTER COLUMN user_id SET DATA TYPE bigint;');
+          }
+
+          if (from < 8) {
+            await customStatement('ALTER TABLE cycles ADD COLUMN status_message_id bigint;');
+            await customStatement('UPDATE cycles SET status_message_id = 0;');
+            await customStatement(
+                'ALTER TABLE cycles ALTER COLUMN status_message_id SET NOT NULL;');
           }
         }),
       );

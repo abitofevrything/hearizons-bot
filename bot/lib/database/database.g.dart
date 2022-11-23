@@ -795,6 +795,9 @@ class Cycle extends DataClass implements Insertable<Cycle> {
 
   /// The ID of the guild event representing the next cycle's submissions
   final Snowflake nextCycleSubmissionsEventId;
+
+  /// The ID of the message in the announcement channel representing the current status.
+  final Snowflake statusMessageId;
   const Cycle(
       {required this.id,
       required this.event,
@@ -802,7 +805,8 @@ class Cycle extends DataClass implements Insertable<Cycle> {
       required this.startedAt,
       required this.submissionsEventId,
       required this.reviewsEventId,
-      required this.nextCycleSubmissionsEventId});
+      required this.nextCycleSubmissionsEventId,
+      required this.statusMessageId});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -828,6 +832,11 @@ class Cycle extends DataClass implements Insertable<Cycle> {
       map['next_cycle_submissions_event_id'] =
           Variable<BigInt>(converter.toSql(nextCycleSubmissionsEventId));
     }
+    {
+      final converter = $CyclesTable.$converterstatusMessageId;
+      map['status_message_id'] =
+          Variable<BigInt>(converter.toSql(statusMessageId));
+    }
     return map;
   }
 
@@ -840,6 +849,7 @@ class Cycle extends DataClass implements Insertable<Cycle> {
       submissionsEventId: Value(submissionsEventId),
       reviewsEventId: Value(reviewsEventId),
       nextCycleSubmissionsEventId: Value(nextCycleSubmissionsEventId),
+      statusMessageId: Value(statusMessageId),
     );
   }
 
@@ -856,6 +866,7 @@ class Cycle extends DataClass implements Insertable<Cycle> {
       reviewsEventId: serializer.fromJson<Snowflake>(json['reviewsEventId']),
       nextCycleSubmissionsEventId:
           serializer.fromJson<Snowflake>(json['nextCycleSubmissionsEventId']),
+      statusMessageId: serializer.fromJson<Snowflake>(json['statusMessageId']),
     );
   }
   @override
@@ -870,6 +881,7 @@ class Cycle extends DataClass implements Insertable<Cycle> {
       'reviewsEventId': serializer.toJson<Snowflake>(reviewsEventId),
       'nextCycleSubmissionsEventId':
           serializer.toJson<Snowflake>(nextCycleSubmissionsEventId),
+      'statusMessageId': serializer.toJson<Snowflake>(statusMessageId),
     };
   }
 
@@ -880,7 +892,8 @@ class Cycle extends DataClass implements Insertable<Cycle> {
           DateTime? startedAt,
           Snowflake? submissionsEventId,
           Snowflake? reviewsEventId,
-          Snowflake? nextCycleSubmissionsEventId}) =>
+          Snowflake? nextCycleSubmissionsEventId,
+          Snowflake? statusMessageId}) =>
       Cycle(
         id: id ?? this.id,
         event: event ?? this.event,
@@ -890,6 +903,7 @@ class Cycle extends DataClass implements Insertable<Cycle> {
         reviewsEventId: reviewsEventId ?? this.reviewsEventId,
         nextCycleSubmissionsEventId:
             nextCycleSubmissionsEventId ?? this.nextCycleSubmissionsEventId,
+        statusMessageId: statusMessageId ?? this.statusMessageId,
       );
   @override
   String toString() {
@@ -900,14 +914,22 @@ class Cycle extends DataClass implements Insertable<Cycle> {
           ..write('startedAt: $startedAt, ')
           ..write('submissionsEventId: $submissionsEventId, ')
           ..write('reviewsEventId: $reviewsEventId, ')
-          ..write('nextCycleSubmissionsEventId: $nextCycleSubmissionsEventId')
+          ..write('nextCycleSubmissionsEventId: $nextCycleSubmissionsEventId, ')
+          ..write('statusMessageId: $statusMessageId')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, event, status, startedAt,
-      submissionsEventId, reviewsEventId, nextCycleSubmissionsEventId);
+  int get hashCode => Object.hash(
+      id,
+      event,
+      status,
+      startedAt,
+      submissionsEventId,
+      reviewsEventId,
+      nextCycleSubmissionsEventId,
+      statusMessageId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -919,7 +941,8 @@ class Cycle extends DataClass implements Insertable<Cycle> {
           other.submissionsEventId == this.submissionsEventId &&
           other.reviewsEventId == this.reviewsEventId &&
           other.nextCycleSubmissionsEventId ==
-              this.nextCycleSubmissionsEventId);
+              this.nextCycleSubmissionsEventId &&
+          other.statusMessageId == this.statusMessageId);
 }
 
 class CyclesCompanion extends UpdateCompanion<Cycle> {
@@ -930,6 +953,7 @@ class CyclesCompanion extends UpdateCompanion<Cycle> {
   final Value<Snowflake> submissionsEventId;
   final Value<Snowflake> reviewsEventId;
   final Value<Snowflake> nextCycleSubmissionsEventId;
+  final Value<Snowflake> statusMessageId;
   const CyclesCompanion({
     this.id = const Value.absent(),
     this.event = const Value.absent(),
@@ -938,6 +962,7 @@ class CyclesCompanion extends UpdateCompanion<Cycle> {
     this.submissionsEventId = const Value.absent(),
     this.reviewsEventId = const Value.absent(),
     this.nextCycleSubmissionsEventId = const Value.absent(),
+    this.statusMessageId = const Value.absent(),
   });
   CyclesCompanion.insert({
     this.id = const Value.absent(),
@@ -947,12 +972,14 @@ class CyclesCompanion extends UpdateCompanion<Cycle> {
     required Snowflake submissionsEventId,
     required Snowflake reviewsEventId,
     required Snowflake nextCycleSubmissionsEventId,
+    required Snowflake statusMessageId,
   })  : event = Value(event),
         status = Value(status),
         startedAt = Value(startedAt),
         submissionsEventId = Value(submissionsEventId),
         reviewsEventId = Value(reviewsEventId),
-        nextCycleSubmissionsEventId = Value(nextCycleSubmissionsEventId);
+        nextCycleSubmissionsEventId = Value(nextCycleSubmissionsEventId),
+        statusMessageId = Value(statusMessageId);
   static Insertable<Cycle> custom({
     Expression<int>? id,
     Expression<int>? event,
@@ -961,6 +988,7 @@ class CyclesCompanion extends UpdateCompanion<Cycle> {
     Expression<BigInt>? submissionsEventId,
     Expression<BigInt>? reviewsEventId,
     Expression<BigInt>? nextCycleSubmissionsEventId,
+    Expression<BigInt>? statusMessageId,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -972,6 +1000,7 @@ class CyclesCompanion extends UpdateCompanion<Cycle> {
       if (reviewsEventId != null) 'reviews_event_id': reviewsEventId,
       if (nextCycleSubmissionsEventId != null)
         'next_cycle_submissions_event_id': nextCycleSubmissionsEventId,
+      if (statusMessageId != null) 'status_message_id': statusMessageId,
     });
   }
 
@@ -982,7 +1011,8 @@ class CyclesCompanion extends UpdateCompanion<Cycle> {
       Value<DateTime>? startedAt,
       Value<Snowflake>? submissionsEventId,
       Value<Snowflake>? reviewsEventId,
-      Value<Snowflake>? nextCycleSubmissionsEventId}) {
+      Value<Snowflake>? nextCycleSubmissionsEventId,
+      Value<Snowflake>? statusMessageId}) {
     return CyclesCompanion(
       id: id ?? this.id,
       event: event ?? this.event,
@@ -992,6 +1022,7 @@ class CyclesCompanion extends UpdateCompanion<Cycle> {
       reviewsEventId: reviewsEventId ?? this.reviewsEventId,
       nextCycleSubmissionsEventId:
           nextCycleSubmissionsEventId ?? this.nextCycleSubmissionsEventId,
+      statusMessageId: statusMessageId ?? this.statusMessageId,
     );
   }
 
@@ -1026,6 +1057,11 @@ class CyclesCompanion extends UpdateCompanion<Cycle> {
       map['next_cycle_submissions_event_id'] =
           Variable<BigInt>(converter.toSql(nextCycleSubmissionsEventId.value));
     }
+    if (statusMessageId.present) {
+      final converter = $CyclesTable.$converterstatusMessageId;
+      map['status_message_id'] =
+          Variable<BigInt>(converter.toSql(statusMessageId.value));
+    }
     return map;
   }
 
@@ -1038,7 +1074,8 @@ class CyclesCompanion extends UpdateCompanion<Cycle> {
           ..write('startedAt: $startedAt, ')
           ..write('submissionsEventId: $submissionsEventId, ')
           ..write('reviewsEventId: $reviewsEventId, ')
-          ..write('nextCycleSubmissionsEventId: $nextCycleSubmissionsEventId')
+          ..write('nextCycleSubmissionsEventId: $nextCycleSubmissionsEventId, ')
+          ..write('statusMessageId: $statusMessageId')
           ..write(')'))
         .toString();
   }
@@ -1103,6 +1140,14 @@ class $CyclesTable extends Cycles with TableInfo<$CyclesTable, Cycle> {
               type: DriftSqlType.bigInt, requiredDuringInsert: true)
           .withConverter<Snowflake>(
               $CyclesTable.$converternextCycleSubmissionsEventId);
+  static const VerificationMeta _statusMessageIdMeta =
+      const VerificationMeta('statusMessageId');
+  @override
+  late final GeneratedColumnWithTypeConverter<Snowflake, BigInt>
+      statusMessageId = GeneratedColumn<BigInt>(
+              'status_message_id', aliasedName, false,
+              type: DriftSqlType.bigInt, requiredDuringInsert: true)
+          .withConverter<Snowflake>($CyclesTable.$converterstatusMessageId);
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -1111,7 +1156,8 @@ class $CyclesTable extends Cycles with TableInfo<$CyclesTable, Cycle> {
         startedAt,
         submissionsEventId,
         reviewsEventId,
-        nextCycleSubmissionsEventId
+        nextCycleSubmissionsEventId,
+        statusMessageId
       ];
   @override
   String get aliasedName => _alias ?? 'cycles';
@@ -1142,6 +1188,7 @@ class $CyclesTable extends Cycles with TableInfo<$CyclesTable, Cycle> {
     context.handle(_reviewsEventIdMeta, const VerificationResult.success());
     context.handle(
         _nextCycleSubmissionsEventIdMeta, const VerificationResult.success());
+    context.handle(_statusMessageIdMeta, const VerificationResult.success());
     return context;
   }
 
@@ -1169,6 +1216,9 @@ class $CyclesTable extends Cycles with TableInfo<$CyclesTable, Cycle> {
           .$converternextCycleSubmissionsEventId
           .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.bigInt,
               data['${effectivePrefix}next_cycle_submissions_event_id'])!),
+      statusMessageId: $CyclesTable.$converterstatusMessageId.fromSql(
+          attachedDatabase.typeMapping.read(DriftSqlType.bigInt,
+              data['${effectivePrefix}status_message_id'])!),
     );
   }
 
@@ -1185,6 +1235,8 @@ class $CyclesTable extends Cycles with TableInfo<$CyclesTable, Cycle> {
       const SnowflakeConverter();
   static TypeConverter<Snowflake, BigInt>
       $converternextCycleSubmissionsEventId = const SnowflakeConverter();
+  static TypeConverter<Snowflake, BigInt> $converterstatusMessageId =
+      const SnowflakeConverter();
 }
 
 class CurrentCycle extends DataClass implements Insertable<CurrentCycle> {

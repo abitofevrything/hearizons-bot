@@ -82,6 +82,9 @@ class Cycles extends Table {
 
   /// The ID of the guild event representing the next cycle's submissions
   Int64Column get nextCycleSubmissionsEventId => int64().map(const SnowflakeConverter())();
+
+  /// The ID of the message in the announcement channel representing the current status.
+  Int64Column get statusMessageId => int64().map(const SnowflakeConverter())();
 }
 
 /// A submission to a cycle.

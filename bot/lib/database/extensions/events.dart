@@ -105,6 +105,7 @@ extension EventUtils on Database {
     required Snowflake submissionsEventId,
     required Snowflake reviewsEventId,
     required Snowflake nextSubmissionsEventId,
+    required Snowflake statusMessageId,
   }) =>
       transaction(() async {
         _logger.fine('Creating new cycle for event ${event.data.id}');
@@ -116,6 +117,7 @@ extension EventUtils on Database {
           nextCycleSubmissionsEventId: nextSubmissionsEventId,
           reviewsEventId: reviewsEventId,
           submissionsEventId: submissionsEventId,
+          statusMessageId: statusMessageId,
         ));
 
         final update = this.update(currentCycles)
@@ -151,6 +153,7 @@ extension EventUtils on Database {
     Event event, {
     required Snowflake nextCycleSubmissionsEventId,
     required Snowflake reviewsEventId,
+    required Snowflake statusMessageId,
   }) =>
       transaction(() async {
         _logger.fine('Moving event ${event.data.id} to new cycle');
@@ -164,6 +167,7 @@ extension EventUtils on Database {
           nextCycleSubmissionsEventId: nextCycleSubmissionsEventId,
           reviewsEventId: reviewsEventId,
           submissionsEventId: previousCycle.nextCycleSubmissionsEventId,
+          statusMessageId: statusMessageId,
         ));
 
         // Update the entry in the current cycles table
@@ -179,7 +183,10 @@ extension EventUtils on Database {
         return cycle;
       });
 
-  Future<Cycle> moveEventToReviewPhase(Event event) async {
+  Future<Cycle> moveEventToReviewPhase(
+    Event event, {
+    required Snowflake statusMessageId,
+  }) async {
     final update = this.update(cycles)
       ..where((_) => cycles.id.equalsExp(subqueryExpression(selectOnly(currentCycles)
         ..addColumns([currentCycles.cycle])
@@ -187,8 +194,11 @@ extension EventUtils on Database {
 
     _logger.fine('Moving event ${event.data.id} to review phase');
 
-    final rawResult =
-        await update.writeReturning(CyclesCompanion(status: Value(CycleStatus.review)));
+    final rawResult = await update.writeReturning(CyclesCompanion(
+      status: Value(CycleStatus.review),
+      statusMessageId: Value(statusMessageId),
+    ));
+
     final result = rawResult.single;
 
     _logger.fine('Moved event ${event.data.id} to review phase => $result');
