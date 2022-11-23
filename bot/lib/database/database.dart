@@ -75,6 +75,10 @@ class Database extends _$Database {
               discarded: Value(false),
             ));
           }
+
+          if (from < 5) {
+            await m.createTable(eventDependencies);
+          }
         }),
       );
 }
