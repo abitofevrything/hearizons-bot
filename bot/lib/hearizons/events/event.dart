@@ -7,11 +7,10 @@ import 'package:get_it/get_it.dart';
 import 'package:hearizons/database/database.dart';
 import 'package:hearizons/database/tables.dart';
 import 'package:hearizons/errors.dart';
+import 'package:hearizons/platforms/platform.dart';
 import 'package:hearizons/utils/context_extension.dart';
 import 'package:logging/logging.dart';
 import 'package:nyxx/nyxx.dart';
-import 'package:nyxx/src/core/guild/scheduled_event.dart';
-import 'package:nyxx/src/utils/builders/guild_event_builder.dart';
 import 'package:nyxx_commands/nyxx_commands.dart';
 
 class Event {
@@ -434,7 +433,6 @@ The next cycle starts ${TimeStampStyle.relativeTime.format(DateTime.now().add(da
 
   FutureOr<GuildEventBuilder> createReviewsEventBuilder(DateTime cycleStart) async =>
       GuildEventBuilder()
-        ..channelId = null
         ..startDate = cycleStart.add(data.submissionsLength)
         ..endDate = cycleStart.add(data.submissionsLength + data.reviewLength)
         ..name = '${data.name} Reviews'
@@ -445,7 +443,6 @@ The next cycle starts ${TimeStampStyle.relativeTime.format(DateTime.now().add(da
 
   FutureOr<GuildEventBuilder> createSubmissionsEventBuilder(DateTime cycleStart) =>
       GuildEventBuilder()
-        ..channelId = null
         ..startDate = cycleStart
         ..endDate = cycleStart.add(data.submissionsLength)
         ..name = '${data.name} Submissions'

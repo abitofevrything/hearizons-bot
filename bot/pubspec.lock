@@ -365,13 +365,13 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: dev
-      resolved-ref: "5368f2060627dcbde2fb42d7a65ec8ea81f2a7e8"
+      ref: "927e5589e8ba5e036a71438717bd394c0b872b06"
+      resolved-ref: "927e5589e8ba5e036a71438717bd394c0b872b06"
       url: "https://github.com/nyxx-discord/nyxx_interactions.git"
     source: git
     version: "4.4.0"
   oauth2:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: oauth2
       url: "https://pub.dartlang.org"
