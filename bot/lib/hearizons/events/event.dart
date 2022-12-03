@@ -191,11 +191,34 @@ class Event {
   }) async {
     await _forAllDependencies((event) => event.validateSubmission(submission, userId));
 
-    final createdSubmission = await database.createSubmission(SubmissionsCompanion.insert(
-      cycle: (await database.getCurrentCycle(this)).id,
+    final cycle = (await database.getCurrentCycle(this)).id;
+
+    SubmissionsCompanion? toCreate;
+
+    final List<Future<SubmissionsCompanion?>> pending = platforms
+        .map((platform) => Future.value(platform.createSubmission(
+              submission,
+              cycle: cycle,
+              userId: userId,
+            )))
+        .toList();
+
+    for (final future in pending) {
+      final submission = await future;
+
+      if (submission != null) {
+        toCreate = submission;
+        break;
+      }
+    }
+
+    toCreate ??= SubmissionsCompanion.insert(
+      cycle: cycle,
       userId: userId,
       content: submission,
-    ));
+    );
+
+    final createdSubmission = await database.createSubmission(toCreate);
 
     await processSubmission(createdSubmission);
   }

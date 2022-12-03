@@ -9,6 +9,7 @@ import 'package:hearizons/commands/submit.dart';
 import 'package:hearizons/database/database.dart';
 import 'package:hearizons/error_handler.dart';
 import 'package:hearizons/hearizons/events_service.dart';
+import 'package:hearizons/platforms/spotify.dart';
 import 'package:nyxx/nyxx.dart';
 import 'package:nyxx_commands/nyxx_commands.dart';
 
@@ -49,6 +50,8 @@ void main() async {
   GetIt.I.registerSingleton(EventsService());
   GetIt.I.registerSingleton(client);
   GetIt.I.registerSingleton(commands);
+
+  GetIt.I.registerSingleton(await Spotify.connect());
 
   await client.connect();
 }
