@@ -61,8 +61,12 @@ class Spotify extends Platform {
       );
     } on SpotifyException catch (e, s) {
       _logger.warning('Error fetching track $id', e, s);
-      // Got an error, move on
       return null;
     }
+  }
+
+  @override
+  Future<void> dispose() async {
+    (await spotify.client).close();
   }
 }
