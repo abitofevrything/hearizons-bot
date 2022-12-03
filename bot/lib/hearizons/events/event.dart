@@ -181,7 +181,7 @@ class Event {
         review.userId,
       );
     } on IHttpResponseError catch (e) {
-      logger.info('Error code ${e.code} removing role from ${review.userId}');
+      logger.info('Error code ${e.errorCode} removing role from ${review.userId}');
     }
   }
 
@@ -251,7 +251,7 @@ class Event {
         submission.userId,
       );
     } on IHttpResponseError catch (e) {
-      logger.fine('Http error ${e.code} adding role to member ${submission.userId}');
+      logger.fine('Http error ${e.errorCode} adding role to member ${submission.userId}');
     }
   }
 
