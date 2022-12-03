@@ -117,7 +117,8 @@ class EventData extends DataClass implements Insertable<EventData> {
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       active: serializer.fromJson<bool>(json['active']),
-      type: serializer.fromJson<EventType>(json['type']),
+      type: $EventsTable.$convertertype
+          .fromJson(serializer.fromJson<int>(json['type'])),
       submissionsLength:
           serializer.fromJson<Duration>(json['submissionsLength']),
       reviewLength: serializer.fromJson<Duration>(json['reviewLength']),
@@ -139,7 +140,7 @@ class EventData extends DataClass implements Insertable<EventData> {
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
       'active': serializer.toJson<bool>(active),
-      'type': serializer.toJson<EventType>(type),
+      'type': serializer.toJson<int>($EventsTable.$convertertype.toJson(type)),
       'submissionsLength': serializer.toJson<Duration>(submissionsLength),
       'reviewLength': serializer.toJson<Duration>(reviewLength),
       'announcementsChannelId':
@@ -584,7 +585,7 @@ class $EventsTable extends Events with TableInfo<$EventsTable, EventData> {
     return $EventsTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<EventType, int> $convertertype =
+  static JsonTypeConverter2<EventType, int, int> $convertertype =
       const EnumIndexConverter<EventType>(EventType.values);
   static TypeConverter<Duration, int> $convertersubmissionsLength =
       const DurationConverter();
@@ -907,7 +908,8 @@ class Cycle extends DataClass implements Insertable<Cycle> {
     return Cycle(
       id: serializer.fromJson<int>(json['id']),
       event: serializer.fromJson<int>(json['event']),
-      status: serializer.fromJson<CycleStatus>(json['status']),
+      status: $CyclesTable.$converterstatus
+          .fromJson(serializer.fromJson<int>(json['status'])),
       startedAt: serializer.fromJson<DateTime>(json['startedAt']),
       submissionsEventId:
           serializer.fromJson<Snowflake>(json['submissionsEventId']),
@@ -923,7 +925,8 @@ class Cycle extends DataClass implements Insertable<Cycle> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'event': serializer.toJson<int>(event),
-      'status': serializer.toJson<CycleStatus>(status),
+      'status':
+          serializer.toJson<int>($CyclesTable.$converterstatus.toJson(status)),
       'startedAt': serializer.toJson<DateTime>(startedAt),
       'submissionsEventId': serializer.toJson<Snowflake>(submissionsEventId),
       'reviewsEventId': serializer.toJson<Snowflake>(reviewsEventId),
@@ -1275,7 +1278,7 @@ class $CyclesTable extends Cycles with TableInfo<$CyclesTable, Cycle> {
     return $CyclesTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<CycleStatus, int> $converterstatus =
+  static JsonTypeConverter2<CycleStatus, int, int> $converterstatus =
       const EnumIndexConverter<CycleStatus>(CycleStatus.values);
   static TypeConverter<Snowflake, BigInt> $convertersubmissionsEventId =
       const SnowflakeConverter();
@@ -1476,11 +1479,23 @@ class Submission extends DataClass implements Insertable<Submission> {
 
   /// The content of the submission.
   final String content;
+
+  /// A URL where this submission's content can be found, if any.
+  final String? url;
+
+  /// The title of this submission, if any.
+  final String? title;
+
+  /// The name of this submission's artist, if any.
+  final String? artist;
   const Submission(
       {required this.id,
       required this.cycle,
       required this.userId,
-      required this.content});
+      required this.content,
+      this.url,
+      this.title,
+      this.artist});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1491,6 +1506,15 @@ class Submission extends DataClass implements Insertable<Submission> {
       map['user_id'] = Variable<BigInt>(converter.toSql(userId));
     }
     map['content'] = Variable<String>(content);
+    if (!nullToAbsent || url != null) {
+      map['url'] = Variable<String>(url);
+    }
+    if (!nullToAbsent || title != null) {
+      map['title'] = Variable<String>(title);
+    }
+    if (!nullToAbsent || artist != null) {
+      map['artist'] = Variable<String>(artist);
+    }
     return map;
   }
 
@@ -1500,6 +1524,11 @@ class Submission extends DataClass implements Insertable<Submission> {
       cycle: Value(cycle),
       userId: Value(userId),
       content: Value(content),
+      url: url == null && nullToAbsent ? const Value.absent() : Value(url),
+      title:
+          title == null && nullToAbsent ? const Value.absent() : Value(title),
+      artist:
+          artist == null && nullToAbsent ? const Value.absent() : Value(artist),
     );
   }
 
@@ -1511,6 +1540,9 @@ class Submission extends DataClass implements Insertable<Submission> {
       cycle: serializer.fromJson<int>(json['cycle']),
       userId: serializer.fromJson<Snowflake>(json['userId']),
       content: serializer.fromJson<String>(json['content']),
+      url: serializer.fromJson<String?>(json['url']),
+      title: serializer.fromJson<String?>(json['title']),
+      artist: serializer.fromJson<String?>(json['artist']),
     );
   }
   @override
@@ -1521,16 +1553,28 @@ class Submission extends DataClass implements Insertable<Submission> {
       'cycle': serializer.toJson<int>(cycle),
       'userId': serializer.toJson<Snowflake>(userId),
       'content': serializer.toJson<String>(content),
+      'url': serializer.toJson<String?>(url),
+      'title': serializer.toJson<String?>(title),
+      'artist': serializer.toJson<String?>(artist),
     };
   }
 
   Submission copyWith(
-          {int? id, int? cycle, Snowflake? userId, String? content}) =>
+          {int? id,
+          int? cycle,
+          Snowflake? userId,
+          String? content,
+          Value<String?> url = const Value.absent(),
+          Value<String?> title = const Value.absent(),
+          Value<String?> artist = const Value.absent()}) =>
       Submission(
         id: id ?? this.id,
         cycle: cycle ?? this.cycle,
         userId: userId ?? this.userId,
         content: content ?? this.content,
+        url: url.present ? url.value : this.url,
+        title: title.present ? title.value : this.title,
+        artist: artist.present ? artist.value : this.artist,
       );
   @override
   String toString() {
@@ -1538,13 +1582,17 @@ class Submission extends DataClass implements Insertable<Submission> {
           ..write('id: $id, ')
           ..write('cycle: $cycle, ')
           ..write('userId: $userId, ')
-          ..write('content: $content')
+          ..write('content: $content, ')
+          ..write('url: $url, ')
+          ..write('title: $title, ')
+          ..write('artist: $artist')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, cycle, userId, content);
+  int get hashCode =>
+      Object.hash(id, cycle, userId, content, url, title, artist);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1552,7 +1600,10 @@ class Submission extends DataClass implements Insertable<Submission> {
           other.id == this.id &&
           other.cycle == this.cycle &&
           other.userId == this.userId &&
-          other.content == this.content);
+          other.content == this.content &&
+          other.url == this.url &&
+          other.title == this.title &&
+          other.artist == this.artist);
 }
 
 class SubmissionsCompanion extends UpdateCompanion<Submission> {
@@ -1560,17 +1611,26 @@ class SubmissionsCompanion extends UpdateCompanion<Submission> {
   final Value<int> cycle;
   final Value<Snowflake> userId;
   final Value<String> content;
+  final Value<String?> url;
+  final Value<String?> title;
+  final Value<String?> artist;
   const SubmissionsCompanion({
     this.id = const Value.absent(),
     this.cycle = const Value.absent(),
     this.userId = const Value.absent(),
     this.content = const Value.absent(),
+    this.url = const Value.absent(),
+    this.title = const Value.absent(),
+    this.artist = const Value.absent(),
   });
   SubmissionsCompanion.insert({
     this.id = const Value.absent(),
     required int cycle,
     required Snowflake userId,
     required String content,
+    this.url = const Value.absent(),
+    this.title = const Value.absent(),
+    this.artist = const Value.absent(),
   })  : cycle = Value(cycle),
         userId = Value(userId),
         content = Value(content);
@@ -1579,12 +1639,18 @@ class SubmissionsCompanion extends UpdateCompanion<Submission> {
     Expression<int>? cycle,
     Expression<BigInt>? userId,
     Expression<String>? content,
+    Expression<String>? url,
+    Expression<String>? title,
+    Expression<String>? artist,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (cycle != null) 'cycle': cycle,
       if (userId != null) 'user_id': userId,
       if (content != null) 'content': content,
+      if (url != null) 'url': url,
+      if (title != null) 'title': title,
+      if (artist != null) 'artist': artist,
     });
   }
 
@@ -1592,12 +1658,18 @@ class SubmissionsCompanion extends UpdateCompanion<Submission> {
       {Value<int>? id,
       Value<int>? cycle,
       Value<Snowflake>? userId,
-      Value<String>? content}) {
+      Value<String>? content,
+      Value<String?>? url,
+      Value<String?>? title,
+      Value<String?>? artist}) {
     return SubmissionsCompanion(
       id: id ?? this.id,
       cycle: cycle ?? this.cycle,
       userId: userId ?? this.userId,
       content: content ?? this.content,
+      url: url ?? this.url,
+      title: title ?? this.title,
+      artist: artist ?? this.artist,
     );
   }
 
@@ -1617,6 +1689,15 @@ class SubmissionsCompanion extends UpdateCompanion<Submission> {
     if (content.present) {
       map['content'] = Variable<String>(content.value);
     }
+    if (url.present) {
+      map['url'] = Variable<String>(url.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (artist.present) {
+      map['artist'] = Variable<String>(artist.value);
+    }
     return map;
   }
 
@@ -1626,7 +1707,10 @@ class SubmissionsCompanion extends UpdateCompanion<Submission> {
           ..write('id: $id, ')
           ..write('cycle: $cycle, ')
           ..write('userId: $userId, ')
-          ..write('content: $content')
+          ..write('content: $content, ')
+          ..write('url: $url, ')
+          ..write('title: $title, ')
+          ..write('artist: $artist')
           ..write(')'))
         .toString();
   }
@@ -1667,8 +1751,24 @@ class $SubmissionsTable extends Submissions
   late final GeneratedColumn<String> content = GeneratedColumn<String>(
       'content', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _urlMeta = const VerificationMeta('url');
   @override
-  List<GeneratedColumn> get $columns => [id, cycle, userId, content];
+  late final GeneratedColumn<String> url = GeneratedColumn<String>(
+      'url', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+      'title', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _artistMeta = const VerificationMeta('artist');
+  @override
+  late final GeneratedColumn<String> artist = GeneratedColumn<String>(
+      'artist', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, cycle, userId, content, url, title, artist];
   @override
   String get aliasedName => _alias ?? 'submissions';
   @override
@@ -1694,6 +1794,18 @@ class $SubmissionsTable extends Submissions
     } else if (isInserting) {
       context.missing(_contentMeta);
     }
+    if (data.containsKey('url')) {
+      context.handle(
+          _urlMeta, url.isAcceptableOrUnknown(data['url']!, _urlMeta));
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+          _titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
+    }
+    if (data.containsKey('artist')) {
+      context.handle(_artistMeta,
+          artist.isAcceptableOrUnknown(data['artist']!, _artistMeta));
+    }
     return context;
   }
 
@@ -1712,6 +1824,12 @@ class $SubmissionsTable extends Submissions
           .read(DriftSqlType.bigInt, data['${effectivePrefix}user_id'])!),
       content: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}content'])!,
+      url: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}url']),
+      title: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}title']),
+      artist: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}artist']),
     );
   }
 

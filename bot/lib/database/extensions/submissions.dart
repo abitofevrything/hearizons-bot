@@ -31,3 +31,27 @@ extension SubmissionUtils on Database {
     return into(submissions).insertReturning(submission);
   }
 }
+
+extension SubmissionX on Submission {
+  String get displayedContent {
+    final content = StringBuffer();
+
+    if (title != null) {
+      content.write(title);
+
+      if (artist != null) {
+        content.write(' by $artist');
+      }
+
+      if (url != null) {
+        content.write(' (<$url>)');
+      }
+    } else if (url != null) {
+      content.write('<$url>');
+    } else {
+      content.write(this.content);
+    }
+
+    return content.toString();
+  }
+}

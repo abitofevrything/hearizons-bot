@@ -28,7 +28,7 @@ dependency_overrides:
   nyxx_interactions:
     git:
       url: https://github.com/nyxx-discord/nyxx_interactions.git
-      ref: bug/http-error-change
+      ref: dev
 
 dependencies:
   drift:
@@ -56,6 +56,7 @@ dependencies:
   nyxx_interactions: ^4.3.1
   fuzzywuzzy: ^0.2.0
   human_duration_parser: ^2.0.1
+  spotify: ^0.8.0
   
 
 dev_dependencies:

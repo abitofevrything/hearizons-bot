@@ -103,6 +103,15 @@ class Submissions extends Table {
 
   /// The content of the submission.
   TextColumn get content => text()();
+
+  /// A URL where this submission's content can be found, if any.
+  TextColumn get url => text().nullable()();
+
+  /// The title of this submission, if any.
+  TextColumn get title => text().nullable()();
+
+  /// The name of this submission's artist, if any.
+  TextColumn get artist => text().nullable()();
 }
 
 /// An assignment for a user to review a submission.

@@ -174,25 +174,25 @@ packages:
     description:
       path: drift
       ref: develop
-      resolved-ref: "59d347adbe9db890a42965ddd0a3ea2d26b49449"
+      resolved-ref: d60c7754357c6d1641e65f8b0201f90b2cf2bb43
       url: "https://github.com/simolus3/moor.git"
     source: git
-    version: "2.3.0-dev"
+    version: "2.4.0-dev"
   drift_dev:
     dependency: "direct dev"
     description:
       path: drift_dev
       ref: develop
-      resolved-ref: "59d347adbe9db890a42965ddd0a3ea2d26b49449"
+      resolved-ref: d60c7754357c6d1641e65f8b0201f90b2cf2bb43
       url: "https://github.com/simolus3/moor.git"
     source: git
-    version: "2.3.0-dev"
+    version: "2.4.0-dev"
   drift_postgres:
     dependency: "direct main"
     description:
       path: "extras/drift_postgres"
       ref: HEAD
-      resolved-ref: "59d347adbe9db890a42965ddd0a3ea2d26b49449"
+      resolved-ref: d60c7754357c6d1641e65f8b0201f90b2cf2bb43
       url: "https://github.com/simolus3/moor.git"
     source: git
     version: "1.0.0"
@@ -223,7 +223,7 @@ packages:
       name: frontend_server_client
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.0"
+    version: "3.2.0"
   fuzzywuzzy:
     dependency: "direct main"
     description:
@@ -335,7 +335,7 @@ packages:
       name: mime
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.2"
+    version: "1.0.3"
   node_preamble:
     dependency: transitive
     description:
@@ -348,7 +348,7 @@ packages:
     description:
       path: "."
       ref: dev
-      resolved-ref: "648f2c776110dfcfd142fd0861b1a832f4dcfbf8"
+      resolved-ref: "48f9cb66602896e665688175ef91cea4cd3f40cf"
       url: "https://github.com/nyxx-discord/nyxx.git"
     source: git
     version: "4.4.0-dev.0"
@@ -357,7 +357,7 @@ packages:
     description:
       path: "."
       ref: next
-      resolved-ref: "681b461e752f8f16aab062a40171e98bb1fc577b"
+      resolved-ref: a7738f1bcf70f824bcec427a7bf04c0ece04ebdf
       url: "https://github.com/nyxx-discord/nyxx_commands.git"
     source: git
     version: "5.0.0-dev.1"
@@ -365,11 +365,18 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "bug/http-error-change"
-      resolved-ref: "6d16bad6df0bc50533214fd6fc360ccc4b907c0c"
+      ref: dev
+      resolved-ref: "5368f2060627dcbde2fb42d7a65ec8ea81f2a7e8"
       url: "https://github.com/nyxx-discord/nyxx_interactions.git"
     source: git
     version: "4.4.0"
+  oauth2:
+    dependency: transitive
+    description:
+      name: oauth2
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1"
   package_config:
     dependency: transitive
     description:
@@ -510,6 +517,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.9.1"
+  spotify:
+    dependency: "direct main"
+    description:
+      name: spotify
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.8.0"
   sqlite3:
     dependency: transitive
     description:
@@ -522,10 +536,10 @@ packages:
     description:
       path: sqlparser
       ref: develop
-      resolved-ref: "59d347adbe9db890a42965ddd0a3ea2d26b49449"
+      resolved-ref: d60c7754357c6d1641e65f8b0201f90b2cf2bb43
       url: "https://github.com/simolus3/moor.git"
     source: git
-    version: "0.24.0-dev"
+    version: "0.24.0"
   stack_trace:
     dependency: transitive
     description:

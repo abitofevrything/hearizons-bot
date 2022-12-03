@@ -44,7 +44,7 @@ class Database extends _$Database {
   Database() : super(_openConnection());
 
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 10;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -155,6 +155,15 @@ class Database extends _$Database {
             await customStatement('UPDATE events SET announcement_role_id = 0;');
             await customStatement(
                 'ALTER TABLE events ALTER COLUMN announcement_role_id SET NOT NULL;');
+          }
+
+          if (from < 10) {
+            await customStatement(
+              '''ALTER TABLE submissions
+                   ADD COLUMN url TEXT,
+                   ADD COLUMN title TEXT,
+                   ADD COLUMN artist TEXT;''',
+            );
           }
 
           await Future.wait(postUpgradeCallbacks.map((f) => f()));
