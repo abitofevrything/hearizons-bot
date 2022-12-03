@@ -320,7 +320,7 @@ The next cycle starts ${TimeStampStyle.relativeTime.format(DateTime.now().add(da
       ...assignments.map(
         (assignment) => '<@${assignment.assignedUser.value}>: ${submissions.firstWhere(
               (submission) => submission.id == assignment.submission.value,
-            ).content}\n',
+            ).displayedContent}\n',
       ),
     ].map((line) => line.length > 1024 ? '${line.substring(0, 1021)}...' : line);
 
@@ -357,7 +357,8 @@ The next cycle starts ${TimeStampStyle.relativeTime.format(DateTime.now().add(da
 
     return EmbedBuilder()
       ..title = 'Review by ${(await client.fetchUser(assignment.assignedUser)).username}'
-      ..description = 'This is <@!${assignment.assignedUser}>\'s review of ${submission.content}'
+      ..description =
+          'This is <@!${assignment.assignedUser}>\'s review of ${submission.displayedContent}'
       ..addField(name: 'Review', content: review)
       ..timestamp = DateTime.now()
       ..color = infoColour;

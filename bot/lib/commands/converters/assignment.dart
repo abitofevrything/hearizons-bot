@@ -43,7 +43,7 @@ String _combinedAssignmentToString(TypedResult result) {
   final submission = _extractSubmission(result);
   final event = _extractEvent(result);
 
-  final message = '${event.name} | ${submission.content}';
+  final message = '${event.name} | ${submission.displayedContent}';
 
   if (message.length > 100) {
     return message.substring(0, 100);
