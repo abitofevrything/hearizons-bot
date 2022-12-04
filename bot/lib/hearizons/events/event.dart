@@ -32,8 +32,8 @@ class Event {
       return;
     }
 
-    final message = await sendNewCycleAnnouncement();
     final cycleStart = await database.getNextCycleStart(this);
+    final message = await sendNewCycleAnnouncement(cycleStart);
     final events = await createReviewsAndNextCycleEvents(cycleStart);
 
     // Submissions event might be out of sync, update it here
@@ -62,7 +62,8 @@ class Event {
       return;
     }
 
-    final message = await sendStartingReviewsAnnouncement();
+    final cycleStart = (await database.getCurrentCycle(this)).startedAt;
+    final message = await sendStartingReviewsAnnouncement(cycleStart);
 
     final assignments = (await createAssignments(submissions)).toList();
     await sendAssignmentMessages(submissions, assignments);
@@ -81,8 +82,9 @@ class Event {
   Future<void> activate() async {
     logger.info('Activating event');
 
-    final message = await sendNewCycleAnnouncement();
-    final events = await createSubmissionsReviewsAndNextCycleEvents(DateTime.now());
+    final cycleStart = DateTime.now();
+    final message = await sendNewCycleAnnouncement(cycleStart);
+    final events = await createSubmissionsReviewsAndNextCycleEvents(cycleStart);
 
     await database.startCycleForEvent(
       this,
@@ -127,9 +129,9 @@ class Event {
       try {
         MessageBuilder message;
         if (cycle.status == CycleStatus.submissions) {
-          message = await createNewCycleAnnouncement();
+          message = await createNewCycleAnnouncement(cycle.startedAt);
         } else {
-          message = await createStartingReviewsAnnouncement();
+          message = await createStartingReviewsAnnouncement(cycle.startedAt);
         }
 
         await client.httpEndpoints
@@ -288,17 +290,18 @@ class Event {
 
   FutureOr<bool> canMoveToReviews(List<Submission> submissions) => submissions.length >= 2;
 
-  Future<IMessage?> sendNewCycleAnnouncement() async => _sendMessageToChannel(
+  Future<IMessage?> sendNewCycleAnnouncement(DateTime cycleStart) async => _sendMessageToChannel(
         data.announcementsChannelId,
-        await createNewCycleAnnouncement(),
+        await createNewCycleAnnouncement(cycleStart),
       );
 
-  Future<IMessage?> sendStartingReviewsAnnouncement() async => _sendMessageToChannel(
+  Future<IMessage?> sendStartingReviewsAnnouncement(DateTime cycleStart) async =>
+      _sendMessageToChannel(
         data.announcementsChannelId,
-        await createStartingReviewsAnnouncement(),
+        await createStartingReviewsAnnouncement(cycleStart),
       );
 
-  FutureOr<MessageBuilder> createNewCycleAnnouncement() => MessageBuilder()
+  FutureOr<MessageBuilder> createNewCycleAnnouncement(DateTime cycleStart) => MessageBuilder()
     ..append(
       data.announcementRoleId == data.guildId ? '@everyone' : '<@&${data.announcementRoleId}>',
     )
@@ -309,29 +312,30 @@ class Event {
 Submissions are now open for ${data.name}!
 Add your submission with `/submit event:${data.name}`!
 
-Submissions close ${TimeStampStyle.relativeTime.format(DateTime.now().add(data.submissionsLength))}.
+Submissions close ${TimeStampStyle.relativeTime.format(cycleStart.add(data.submissionsLength))}.
 '''
         ..color = infoColour
         ..timestamp = DateTime.now();
     });
 
-  FutureOr<MessageBuilder> createStartingReviewsAnnouncement() => MessageBuilder()
-    ..append(
-      data.participantRoleId == data.guildId ? '@everyone' : '<@&${data.participantRoleId}>',
-    )
-    ..addEmbed((embed) {
-      embed
-        ..title = 'Reviews open'
-        ..description = '''
+  FutureOr<MessageBuilder> createStartingReviewsAnnouncement(DateTime cycleStart) =>
+      MessageBuilder()
+        ..append(
+          data.participantRoleId == data.guildId ? '@everyone' : '<@&${data.participantRoleId}>',
+        )
+        ..addEmbed((embed) {
+          embed
+            ..title = 'Reviews open'
+            ..description = '''
 The review phase for ${data.name} is now open!
 Create a review by running `/review event:${data.name}` and completing the form that appears with
 the content of your review.
 
-The next cycle starts ${TimeStampStyle.relativeTime.format(DateTime.now().add(data.reviewLength))}.
+The next cycle starts ${TimeStampStyle.relativeTime.format(cycleStart.add(data.submissionsLength + data.reviewLength))}.
 '''
-        ..color = infoColour
-        ..timestamp = DateTime.now();
-    });
+            ..color = infoColour
+            ..timestamp = DateTime.now();
+        });
 
   Future<void> sendAssignmentMessages(
     List<Submission> submissions,
