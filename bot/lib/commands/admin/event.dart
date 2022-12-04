@@ -73,7 +73,7 @@ final details = ChatCommand(
       final cycle = await database.getCurrentCycle(event);
 
       cycleStatus = '''
-Current cycle started at: ${cycle.startedAt}
+Current cycle started at: ${TimeStampStyle.shortDateTime.format(cycle.startedAt)}
 Current cycle status: ${cycle.status.name}
 ''';
     }
