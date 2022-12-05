@@ -24,14 +24,17 @@ extension EventUtils on Database {
 
   Future<List<Event>> getEventsPendingNewCycle() async {
     final cycleEndTime = DateTimeExpressions.fromUnixEpoch(
-      cycles.startedAt.unixepoch + (events.submissionsLength + events.reviewLength),
+      cycles.startedAt.unixepoch +
+          (events.submissionsLength + events.reviewLength + events.intervalLength),
     );
 
     final query = select(events).join([
       innerJoin(currentCycles, currentCycles.event.equalsExp(events.id)),
       innerJoin(cycles, currentCycles.cycle.equalsExp(cycles.id)),
     ])
-      ..where(cycleEndTime.isSmallerThan(currentTime) & events.active);
+      ..where(cycleEndTime.isSmallerThan(currentTime) &
+          events.active &
+          cycles.status.equalsValue(CycleStatus.interval));
 
     _logger.fine('Getting events pending new cycles');
 
@@ -39,6 +42,29 @@ extension EventUtils on Database {
     final results = rawResults.map((row) => _toEvent(row.readTable(events))).toList();
 
     _logger.fine('Got ${results.length} events pending new cycles => ${results.join(', ')}');
+
+    return results;
+  }
+
+  Future<List<Event>> getEventsPendingInterval() async {
+    final cycleEndTime = DateTimeExpressions.fromUnixEpoch(
+      cycles.startedAt.unixepoch + (events.submissionsLength + events.reviewLength),
+    );
+
+    final query = select(events).join([
+      innerJoin(currentCycles, currentCycles.event.equalsExp(events.id)),
+      innerJoin(cycles, currentCycles.cycle.equalsExp(cycles.id)),
+    ])
+      ..where(cycleEndTime.isSmallerThan(currentTime) &
+          events.active &
+          cycles.status.equalsValue(CycleStatus.review));
+
+    _logger.fine('Getting events pending interval');
+
+    final rawResults = await query.get();
+    final results = rawResults.map((row) => _toEvent(row.readTable(events))).toList();
+
+    _logger.fine('Got ${results.length} events pending interval => ${results.join(', ')}');
 
     return results;
   }
@@ -140,8 +166,10 @@ extension EventUtils on Database {
     final previousCycle = await getCurrentCycle(event);
 
     final previousCycleStart = previousCycle.startedAt;
-    final nextCycleStart =
-        previousCycleStart.add(event.data.submissionsLength).add(event.data.reviewLength);
+    final nextCycleStart = previousCycleStart
+        .add(event.data.submissionsLength)
+        .add(event.data.reviewLength)
+        .add(event.data.intervalLength);
 
     // Don't allow short cycles to build up
     final minimumStartTime = DateTime.now().subtract(const Duration(hours: 1));
@@ -202,6 +230,25 @@ extension EventUtils on Database {
     final result = rawResult.single;
 
     _logger.fine('Moved event ${event.data.id} to review phase => $result');
+
+    return result;
+  }
+
+  Future<Cycle> moveEventToInterval(Event event) async {
+    final update = this.update(cycles)
+      ..where((_) => cycles.id.equalsExp(subqueryExpression(selectOnly(currentCycles)
+        ..addColumns([currentCycles.cycle])
+        ..where(currentCycles.event.equals(event.data.id)))));
+
+    _logger.fine('Moving event ${event.data.id} to review phase');
+
+    final rawResult = await update.writeReturning(CyclesCompanion(
+      status: Value(CycleStatus.interval),
+    ));
+
+    final result = rawResult.single;
+
+    _logger.fine('Moved event ${event.data.id} to interval => $result');
 
     return result;
   }

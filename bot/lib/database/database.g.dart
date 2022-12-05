@@ -22,6 +22,9 @@ class EventData extends DataClass implements Insertable<EventData> {
   /// The length of one cycle's review phase.
   final Duration reviewLength;
 
+  /// The length of one cycle's interval
+  final Duration intervalLength;
+
   /// The id of the channel to send announcements to.
   final Snowflake announcementsChannelId;
 
@@ -43,6 +46,7 @@ class EventData extends DataClass implements Insertable<EventData> {
       required this.type,
       required this.submissionsLength,
       required this.reviewLength,
+      required this.intervalLength,
       required this.announcementsChannelId,
       required this.reviewsChannelId,
       required this.participantRoleId,
@@ -66,6 +70,10 @@ class EventData extends DataClass implements Insertable<EventData> {
     {
       final converter = $EventsTable.$converterreviewLength;
       map['review_length'] = Variable<int>(converter.toSql(reviewLength));
+    }
+    {
+      final converter = $EventsTable.$converterintervalLength;
+      map['interval_length'] = Variable<int>(converter.toSql(intervalLength));
     }
     {
       final converter = $EventsTable.$converterannouncementsChannelId;
@@ -102,6 +110,7 @@ class EventData extends DataClass implements Insertable<EventData> {
       type: Value(type),
       submissionsLength: Value(submissionsLength),
       reviewLength: Value(reviewLength),
+      intervalLength: Value(intervalLength),
       announcementsChannelId: Value(announcementsChannelId),
       reviewsChannelId: Value(reviewsChannelId),
       participantRoleId: Value(participantRoleId),
@@ -122,6 +131,7 @@ class EventData extends DataClass implements Insertable<EventData> {
       submissionsLength:
           serializer.fromJson<Duration>(json['submissionsLength']),
       reviewLength: serializer.fromJson<Duration>(json['reviewLength']),
+      intervalLength: serializer.fromJson<Duration>(json['intervalLength']),
       announcementsChannelId:
           serializer.fromJson<Snowflake>(json['announcementsChannelId']),
       reviewsChannelId:
@@ -143,6 +153,7 @@ class EventData extends DataClass implements Insertable<EventData> {
       'type': serializer.toJson<int>($EventsTable.$convertertype.toJson(type)),
       'submissionsLength': serializer.toJson<Duration>(submissionsLength),
       'reviewLength': serializer.toJson<Duration>(reviewLength),
+      'intervalLength': serializer.toJson<Duration>(intervalLength),
       'announcementsChannelId':
           serializer.toJson<Snowflake>(announcementsChannelId),
       'reviewsChannelId': serializer.toJson<Snowflake>(reviewsChannelId),
@@ -159,6 +170,7 @@ class EventData extends DataClass implements Insertable<EventData> {
           EventType? type,
           Duration? submissionsLength,
           Duration? reviewLength,
+          Duration? intervalLength,
           Snowflake? announcementsChannelId,
           Snowflake? reviewsChannelId,
           Snowflake? participantRoleId,
@@ -171,6 +183,7 @@ class EventData extends DataClass implements Insertable<EventData> {
         type: type ?? this.type,
         submissionsLength: submissionsLength ?? this.submissionsLength,
         reviewLength: reviewLength ?? this.reviewLength,
+        intervalLength: intervalLength ?? this.intervalLength,
         announcementsChannelId:
             announcementsChannelId ?? this.announcementsChannelId,
         reviewsChannelId: reviewsChannelId ?? this.reviewsChannelId,
@@ -187,6 +200,7 @@ class EventData extends DataClass implements Insertable<EventData> {
           ..write('type: $type, ')
           ..write('submissionsLength: $submissionsLength, ')
           ..write('reviewLength: $reviewLength, ')
+          ..write('intervalLength: $intervalLength, ')
           ..write('announcementsChannelId: $announcementsChannelId, ')
           ..write('reviewsChannelId: $reviewsChannelId, ')
           ..write('participantRoleId: $participantRoleId, ')
@@ -204,6 +218,7 @@ class EventData extends DataClass implements Insertable<EventData> {
       type,
       submissionsLength,
       reviewLength,
+      intervalLength,
       announcementsChannelId,
       reviewsChannelId,
       participantRoleId,
@@ -219,6 +234,7 @@ class EventData extends DataClass implements Insertable<EventData> {
           other.type == this.type &&
           other.submissionsLength == this.submissionsLength &&
           other.reviewLength == this.reviewLength &&
+          other.intervalLength == this.intervalLength &&
           other.announcementsChannelId == this.announcementsChannelId &&
           other.reviewsChannelId == this.reviewsChannelId &&
           other.participantRoleId == this.participantRoleId &&
@@ -233,6 +249,7 @@ class EventsCompanion extends UpdateCompanion<EventData> {
   final Value<EventType> type;
   final Value<Duration> submissionsLength;
   final Value<Duration> reviewLength;
+  final Value<Duration> intervalLength;
   final Value<Snowflake> announcementsChannelId;
   final Value<Snowflake> reviewsChannelId;
   final Value<Snowflake> participantRoleId;
@@ -245,6 +262,7 @@ class EventsCompanion extends UpdateCompanion<EventData> {
     this.type = const Value.absent(),
     this.submissionsLength = const Value.absent(),
     this.reviewLength = const Value.absent(),
+    this.intervalLength = const Value.absent(),
     this.announcementsChannelId = const Value.absent(),
     this.reviewsChannelId = const Value.absent(),
     this.participantRoleId = const Value.absent(),
@@ -258,6 +276,7 @@ class EventsCompanion extends UpdateCompanion<EventData> {
     required EventType type,
     required Duration submissionsLength,
     required Duration reviewLength,
+    required Duration intervalLength,
     required Snowflake announcementsChannelId,
     required Snowflake reviewsChannelId,
     required Snowflake participantRoleId,
@@ -268,6 +287,7 @@ class EventsCompanion extends UpdateCompanion<EventData> {
         type = Value(type),
         submissionsLength = Value(submissionsLength),
         reviewLength = Value(reviewLength),
+        intervalLength = Value(intervalLength),
         announcementsChannelId = Value(announcementsChannelId),
         reviewsChannelId = Value(reviewsChannelId),
         participantRoleId = Value(participantRoleId),
@@ -280,6 +300,7 @@ class EventsCompanion extends UpdateCompanion<EventData> {
     Expression<int>? type,
     Expression<int>? submissionsLength,
     Expression<int>? reviewLength,
+    Expression<int>? intervalLength,
     Expression<BigInt>? announcementsChannelId,
     Expression<BigInt>? reviewsChannelId,
     Expression<BigInt>? participantRoleId,
@@ -293,6 +314,7 @@ class EventsCompanion extends UpdateCompanion<EventData> {
       if (type != null) 'type': type,
       if (submissionsLength != null) 'submissions_length': submissionsLength,
       if (reviewLength != null) 'review_length': reviewLength,
+      if (intervalLength != null) 'interval_length': intervalLength,
       if (announcementsChannelId != null)
         'announcements_channel_id': announcementsChannelId,
       if (reviewsChannelId != null) 'reviews_channel_id': reviewsChannelId,
@@ -310,6 +332,7 @@ class EventsCompanion extends UpdateCompanion<EventData> {
       Value<EventType>? type,
       Value<Duration>? submissionsLength,
       Value<Duration>? reviewLength,
+      Value<Duration>? intervalLength,
       Value<Snowflake>? announcementsChannelId,
       Value<Snowflake>? reviewsChannelId,
       Value<Snowflake>? participantRoleId,
@@ -322,6 +345,7 @@ class EventsCompanion extends UpdateCompanion<EventData> {
       type: type ?? this.type,
       submissionsLength: submissionsLength ?? this.submissionsLength,
       reviewLength: reviewLength ?? this.reviewLength,
+      intervalLength: intervalLength ?? this.intervalLength,
       announcementsChannelId:
           announcementsChannelId ?? this.announcementsChannelId,
       reviewsChannelId: reviewsChannelId ?? this.reviewsChannelId,
@@ -355,6 +379,11 @@ class EventsCompanion extends UpdateCompanion<EventData> {
     if (reviewLength.present) {
       final converter = $EventsTable.$converterreviewLength;
       map['review_length'] = Variable<int>(converter.toSql(reviewLength.value));
+    }
+    if (intervalLength.present) {
+      final converter = $EventsTable.$converterintervalLength;
+      map['interval_length'] =
+          Variable<int>(converter.toSql(intervalLength.value));
     }
     if (announcementsChannelId.present) {
       final converter = $EventsTable.$converterannouncementsChannelId;
@@ -392,6 +421,7 @@ class EventsCompanion extends UpdateCompanion<EventData> {
           ..write('type: $type, ')
           ..write('submissionsLength: $submissionsLength, ')
           ..write('reviewLength: $reviewLength, ')
+          ..write('intervalLength: $intervalLength, ')
           ..write('announcementsChannelId: $announcementsChannelId, ')
           ..write('reviewsChannelId: $reviewsChannelId, ')
           ..write('participantRoleId: $participantRoleId, ')
@@ -452,6 +482,13 @@ class $EventsTable extends Events with TableInfo<$EventsTable, EventData> {
       GeneratedColumn<int>('review_length', aliasedName, false,
               type: DriftSqlType.int, requiredDuringInsert: true)
           .withConverter<Duration>($EventsTable.$converterreviewLength);
+  static const VerificationMeta _intervalLengthMeta =
+      const VerificationMeta('intervalLength');
+  @override
+  late final GeneratedColumnWithTypeConverter<Duration, int> intervalLength =
+      GeneratedColumn<int>('interval_length', aliasedName, false,
+              type: DriftSqlType.int, requiredDuringInsert: true)
+          .withConverter<Duration>($EventsTable.$converterintervalLength);
   static const VerificationMeta _announcementsChannelIdMeta =
       const VerificationMeta('announcementsChannelId');
   @override
@@ -500,6 +537,7 @@ class $EventsTable extends Events with TableInfo<$EventsTable, EventData> {
         type,
         submissionsLength,
         reviewLength,
+        intervalLength,
         announcementsChannelId,
         reviewsChannelId,
         participantRoleId,
@@ -533,6 +571,7 @@ class $EventsTable extends Events with TableInfo<$EventsTable, EventData> {
     context.handle(_typeMeta, const VerificationResult.success());
     context.handle(_submissionsLengthMeta, const VerificationResult.success());
     context.handle(_reviewLengthMeta, const VerificationResult.success());
+    context.handle(_intervalLengthMeta, const VerificationResult.success());
     context.handle(
         _announcementsChannelIdMeta, const VerificationResult.success());
     context.handle(_reviewsChannelIdMeta, const VerificationResult.success());
@@ -562,6 +601,9 @@ class $EventsTable extends Events with TableInfo<$EventsTable, EventData> {
       reviewLength: $EventsTable.$converterreviewLength.fromSql(attachedDatabase
           .typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}review_length'])!),
+      intervalLength: $EventsTable.$converterintervalLength.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.int, data['${effectivePrefix}interval_length'])!),
       announcementsChannelId: $EventsTable.$converterannouncementsChannelId
           .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.bigInt,
               data['${effectivePrefix}announcements_channel_id'])!),
@@ -590,6 +632,8 @@ class $EventsTable extends Events with TableInfo<$EventsTable, EventData> {
   static TypeConverter<Duration, int> $convertersubmissionsLength =
       const DurationConverter();
   static TypeConverter<Duration, int> $converterreviewLength =
+      const DurationConverter();
+  static TypeConverter<Duration, int> $converterintervalLength =
       const DurationConverter();
   static TypeConverter<Snowflake, BigInt> $converterannouncementsChannelId =
       const SnowflakeConverter();

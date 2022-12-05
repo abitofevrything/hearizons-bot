@@ -20,7 +20,9 @@ class EventsService {
         // Handlers
         // Run sequentially to avoid race conditions
         handleEventsPendingReviewPhase().then(
-          (_) => handleEventsPendingNewCycle(),
+          (_) => handleEventsPendingInterval().then(
+            (_) => handleEventsPendingNewCycle(),
+          ),
         ),
       ]);
     }
@@ -36,6 +38,18 @@ class EventsService {
     await Future.wait(events.map((event) => event.enterReviewPhase()));
 
     logger.fine('${events.length} events moved to review phases');
+  }
+
+  Future<void> handleEventsPendingInterval() async {
+    logger.fine('Handling events pending intervals');
+
+    final events = await database.getEventsPendingInterval();
+
+    logger.fine('Got ${events.length} events pending interval => ${events.join(', ')}');
+
+    await Future.wait(events.map((event) => event.startInterval()));
+
+    logger.fine('${events.length} events moved to interval');
   }
 
   Future<void> handleEventsPendingNewCycle() async {

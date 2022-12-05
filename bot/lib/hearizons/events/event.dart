@@ -52,6 +52,19 @@ class Event {
     logger.fine('Moved to next cycle');
   }
 
+  Future<void> startInterval() async {
+    logger.info('Moving to interval');
+
+    if (!await canMoveToInterval()) {
+      logger.fine("Can't move to interval");
+      return;
+    }
+
+    await database.moveEventToInterval(this);
+
+    logger.fine('Moved to interval');
+  }
+
   Future<void> enterReviewPhase() async {
     logger.info('Entering review phase');
 
@@ -112,7 +125,7 @@ class Event {
       createSubmissionsEventBuilder(cycle.startedAt),
       createReviewsEventBuilder(cycle.startedAt),
       createSubmissionsEventBuilder(
-          cycle.startedAt.add(data.submissionsLength + data.reviewLength)),
+          cycle.startedAt.add(data.submissionsLength + data.reviewLength + data.intervalLength)),
     ].map(Future.value));
 
     for (final data in IterableZip([
@@ -229,13 +242,17 @@ class Event {
     String submission,
     Snowflake userId,
   ) async {
-    final existing = await database.getCurrentSubmissionsFromUser(this, userId);
+    final cycle = await database.getCurrentCycle(this);
 
-    if (existing.isNotEmpty) {
-      throw AlreadySubmittedException(
-        event: this,
-        existing: existing,
-      );
+    if (cycle.status == CycleStatus.submissions) {
+      final existing = await database.getCurrentSubmissionsFromUser(this, userId);
+
+      if (existing.isNotEmpty) {
+        throw AlreadySubmittedException(
+          event: this,
+          existing: existing,
+        );
+      }
     }
 
     final pending = await database.getIncompleteAssignmentsForUserInEvent(this, userId);
@@ -288,6 +305,8 @@ class Event {
 
   FutureOr<bool> canMoveToNextCycle() => true;
 
+  FutureOr<bool> canMoveToInterval() => true;
+
   FutureOr<bool> canMoveToReviews(List<Submission> submissions) => submissions.length >= 2;
 
   Future<IMessage?> sendNewCycleAnnouncement(DateTime cycleStart) async => _sendMessageToChannel(
@@ -331,7 +350,8 @@ The review phase for ${data.name} is now open!
 Create a review by running `/review event:${data.name}` and completing the form that appears with
 the content of your review.
 
-The next cycle starts ${TimeStampStyle.relativeTime.format(cycleStart.add(data.submissionsLength + data.reviewLength))}.
+Reviews close in ${TimeStampStyle.relativeTime.format(cycleStart.add(data.submissionsLength + data.reviewLength))}.
+The next cycle starts ${TimeStampStyle.relativeTime.format(cycleStart.add(data.submissionsLength + data.reviewLength + data.intervalLength))}.
 '''
             ..color = infoColour
             ..timestamp = DateTime.now();
@@ -425,7 +445,8 @@ The next cycle starts ${TimeStampStyle.relativeTime.format(cycleStart.add(data.s
   Future<List<Snowflake>> createReviewsAndNextCycleEvents(DateTime cycleStart) async {
     final builders = await Future.wait([
       createReviewsEventBuilder(cycleStart),
-      createSubmissionsEventBuilder(cycleStart.add(data.submissionsLength + data.reviewLength)),
+      createSubmissionsEventBuilder(
+          cycleStart.add(data.submissionsLength + data.reviewLength + data.intervalLength)),
     ].map(Future.value));
 
     return Future.wait(builders.map((builder) async {
@@ -441,7 +462,8 @@ The next cycle starts ${TimeStampStyle.relativeTime.format(cycleStart.add(data.s
     final builders = await Future.wait([
       createSubmissionsEventBuilder(cycleStart),
       createReviewsEventBuilder(cycleStart),
-      createSubmissionsEventBuilder(cycleStart.add(data.submissionsLength + data.reviewLength)),
+      createSubmissionsEventBuilder(
+          cycleStart.add(data.submissionsLength + data.reviewLength + data.intervalLength)),
     ].map(Future.value));
 
     return Future.wait(builders.map((builder) async {
@@ -451,6 +473,10 @@ The next cycle starts ${TimeStampStyle.relativeTime.format(cycleStart.add(data.s
 
       final lateStartTime = DateTime.now().add(const Duration(minutes: 1));
       if (builder.startDate!.isBefore(lateStartTime)) {
+        if (builder.endDate!.isBefore(lateStartTime)) {
+          return Snowflake.zero(); // Give up, it's too late now...
+        }
+
         builder.startDate = lateStartTime;
       }
 
@@ -461,7 +487,7 @@ The next cycle starts ${TimeStampStyle.relativeTime.format(cycleStart.add(data.s
   FutureOr<GuildEventBuilder> createReviewsEventBuilder(DateTime cycleStart) async =>
       GuildEventBuilder()
         ..startDate = cycleStart.add(data.submissionsLength)
-        ..endDate = cycleStart.add(data.submissionsLength + data.reviewLength)
+        ..endDate = cycleStart.add(data.submissionsLength + data.reviewLength + data.intervalLength)
         ..name = '${data.name} Reviews'
         ..metadata = EntityMetadataBuilder(
             '#${(await client.httpEndpoints.fetchChannel<IMinimalGuildChannel>(data.reviewsChannelId)).name}')

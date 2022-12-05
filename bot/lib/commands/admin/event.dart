@@ -26,6 +26,7 @@ final create = ChatCommand(
     @Description('The type of the event') @UseConverter(eventTypeConverter) EventType type,
     @Description('The length of the submissions phase') Duration submissionsLength,
     @Description('The length of the review phase') Duration reviewLength,
+    @Description('The length of the interval between cycles') Duration intervalLength,
     @Description('The channel to send announcements to') ITextGuildChannel announcementsChannel,
     @Description('The channel to send reviews to') ITextGuildChannel reviewsChannel,
     @Description('The role to give to participants') IRole participantRole,
@@ -39,6 +40,7 @@ final create = ChatCommand(
       type: type,
       submissionsLength: submissionsLength,
       reviewLength: reviewLength,
+      intervalLength: intervalLength,
       announcementsChannelId: announcementsChannel.id,
       reviewsChannelId: reviewsChannel.id,
       guildId: context.guild!.id,
@@ -91,6 +93,7 @@ Active: ${data.active}
 Type: ${data.type.name}
 Submissions length: ${data.submissionsLength}
 Reviews length: ${data.reviewLength}
+Interval length: ${data.intervalLength}
 Announcement channel: <#${data.announcementsChannelId}>
 Reviews channel: <#${data.reviewsChannelId}>
 Participant role: <@&${data.participantRoleId}>
@@ -113,6 +116,7 @@ final update = ChatCommand(
     @Description('The type of the event') @UseConverter(eventTypeConverter) EventType? type,
     @Description('The length of the submissions phase') Duration? submissionsLength,
     @Description('The length of the review phase') Duration? reviewLength,
+    @Description('The length of the interval between cycles') Duration? intervalLength,
     @Description('The channel to send announcements to') ITextGuildChannel? announcementsChannel,
     @Description('The channel to send reviews to') ITextGuildChannel? reviewsChannel,
     @Description('The role to give to participants') IRole? participantRole,
@@ -123,6 +127,7 @@ final update = ChatCommand(
       announcementsChannelId: Value.ofNullable(announcementsChannel?.id),
       participantRoleId: Value.ofNullable(participantRole?.id),
       reviewLength: Value.ofNullable(reviewLength),
+      intervalLength: Value.ofNullable(intervalLength),
       reviewsChannelId: Value.ofNullable(reviewsChannel?.id),
       submissionsLength: Value.ofNullable(submissionsLength),
       type: Value.ofNullable(type),

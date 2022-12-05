@@ -44,7 +44,7 @@ class Database extends _$Database {
   Database() : super(_openConnection());
 
   @override
-  int get schemaVersion => 10;
+  int get schemaVersion => 11;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -164,6 +164,12 @@ class Database extends _$Database {
                    ADD COLUMN title TEXT,
                    ADD COLUMN artist TEXT;''',
             );
+          }
+
+          if (from < 11) {
+            await customStatement('ALTER TABLE events ADD COLUMN interval_length INTEGER;');
+            await customStatement('UPDATE events SET interval_length = 0;');
+            await customStatement('ALTER TABLE events ALTER COLUMN interval_length SET NOT NULL;');
           }
 
           await Future.wait(postUpgradeCallbacks.map((f) => f()));

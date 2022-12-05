@@ -24,6 +24,9 @@ class Events extends Table {
   /// The length of one cycle's review phase.
   IntColumn get reviewLength => integer().map(const DurationConverter())();
 
+  /// The length of one cycle's interval
+  IntColumn get intervalLength => integer().map(const DurationConverter())();
+
   /// The id of the channel to send announcements to.
   Int64Column get announcementsChannelId => int64().map(const SnowflakeConverter())();
 
@@ -61,6 +64,9 @@ enum CycleStatus {
 
   /// The cycle is currently open for reviews.
   review,
+
+  /// The cycle is in interval
+  interval,
 }
 
 /// A cycle, consisting of a submission phase and a review phase, of an event.
