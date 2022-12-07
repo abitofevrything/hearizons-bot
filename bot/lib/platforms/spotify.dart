@@ -14,18 +14,36 @@ final _spotifyUrlPattern = RegExp(r'https:\/\/open\.spotify\.com\/track\/(\w+)')
 final Logger _logger = Logger('Platform.Spotify');
 
 class Spotify extends Platform {
-  final SpotifyApi spotify;
+  SpotifyApi get spotify => _spotify;
+  SpotifyApi _spotify;
 
-  Spotify(this.spotify);
+  Spotify(this._spotify);
 
   static Future<Spotify> connect() async {
+    return Spotify(await _connectApi());
+  }
+
+  static Future<SpotifyApi> _connectApi() async {
     final client = await clientCredentialsGrant(
       Uri(scheme: 'https', host: 'accounts.spotify.com', path: '/api/token'),
       io.Platform.environment['SPOTIFY_CLIENT_ID']!,
       io.Platform.environment['SPOTIFY_CLIENT_SECRET']!,
     );
 
-    return Spotify(SpotifyApi.fromClient(client));
+    return SpotifyApi.fromClient(client);
+  }
+
+  Future<SpotifyApi>? _refreshingFuture;
+  Future<SpotifyApi> _refresh() async {
+    if (_refreshingFuture != null) {
+      return _refreshingFuture!;
+    }
+
+    _refreshingFuture = _connectApi();
+    _spotify = await _refreshingFuture!;
+    _refreshingFuture = null;
+
+    return spotify;
   }
 
   @override
@@ -46,6 +64,10 @@ class Spotify extends Platform {
 
     try {
       _logger.fine('Fetching track with id $id');
+
+      if ((await spotify.getCredentials()).isExpired) {
+        await _refresh();
+      }
 
       final track = await spotify.tracks.get(id);
 
