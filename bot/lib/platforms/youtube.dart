@@ -69,7 +69,8 @@ class YouTube extends Platform {
         content: submissionContent,
         url: Value(match.group(0)!),
         title: Value(video.snippet!.title!),
-        artist: Value(video.snippet!.channelTitle!),
+        // TODO: Handle artist, possibly
+        // artist: Value(video.snippet!.channelTitle!),
       );
     } on ApiRequestError catch (e, s) {
       _logger.warning('Error fetching video', e, s);
