@@ -391,6 +391,13 @@ packages:
       url: "https://github.com/nyxx-discord/nyxx_interactions.git"
     source: git
     version: "4.4.0"
+  nyxx_pagination:
+    dependency: "direct main"
+    description:
+      name: nyxx_pagination
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.3.0"
   oauth2:
     dependency: "direct main"
     description:
