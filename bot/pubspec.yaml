@@ -28,7 +28,7 @@ dependency_overrides:
   nyxx_interactions:
     git:
       url: https://github.com/nyxx-discord/nyxx_interactions.git
-      ref: 927e5589e8ba5e036a71438717bd394c0b872b06
+      ref: dev
 
 dependencies:
   drift:
