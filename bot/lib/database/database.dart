@@ -20,15 +20,27 @@ export 'extensions/submissions.dart';
 part 'database.g.dart';
 
 LazyDatabase _openConnection() => LazyDatabase(dialect: SqlDialect.postgres, () async {
-      PostgreSQLConnection connection = PostgreSQLConnection(
-        'database',
-        5432,
-        Platform.environment['POSTGRES_DB']!,
-        username: Platform.environment['POSTGRES_USER']!,
-        password: Platform.environment['POSTGRES_PASSWORD']!,
-      );
+      PostgreSQLConnection connection() => PostgreSQLConnection(
+            'database',
+            5432,
+            Platform.environment['POSTGRES_DB']!,
+            username: Platform.environment['POSTGRES_USER']!,
+            password: Platform.environment['POSTGRES_PASSWORD']!,
+          );
 
-      return PgDatabase(connection);
+      while (true) {
+        try {
+          final testConnection = connection();
+          await testConnection.open(); // Throws on connection error, triggering the continue
+          await testConnection.close();
+        } catch (_) {
+          continue;
+        }
+
+        break;
+      }
+
+      return PgDatabase(connection());
     });
 
 @DriftDatabase(tables: [

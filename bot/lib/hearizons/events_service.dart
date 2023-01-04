@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:hearizons/database/database.dart';
 import 'package:logging/logging.dart';
+import 'package:nyxx/nyxx.dart';
 
 class EventsService {
   Database get database => GetIt.I.get<Database>();
@@ -8,7 +9,7 @@ class EventsService {
   final Logger logger = Logger('Events.Service');
 
   EventsService() {
-    _loop();
+    GetIt.I.get<INyxxWebsocket>().onReady.listen((_) => _loop());
   }
 
   Future<Never> _loop() async {

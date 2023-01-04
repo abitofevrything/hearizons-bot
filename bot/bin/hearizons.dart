@@ -60,10 +60,12 @@ void main() async {
     ..registerPlugin(IgnoreExceptions())
     ..registerPlugin(commands);
 
-  GetIt.I.registerSingleton(Database());
-  GetIt.I.registerSingleton(EventsService());
   GetIt.I.registerSingleton(client);
   GetIt.I.registerSingleton(commands);
+
+  // Depend on client & commands singletons
+  GetIt.I.registerSingleton(Database());
+  GetIt.I.registerSingleton(EventsService());
 
   GetIt.I.registerSingleton(await Spotify.connect());
   GetIt.I.registerSingleton(await YouTube.connect());
