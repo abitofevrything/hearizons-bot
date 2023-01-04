@@ -6,36 +6,8 @@ publish_to: none
 environment:
   sdk: '>=2.18.0 <3.0.0'
 
-dependency_overrides:
-  # Force drift_dev to use drift and sqlparser from git
-  drift:
-    git:
-      url: https://github.com/simolus3/moor.git
-      ref: develop
-      path: drift
-
-  sqlparser:
-    git:
-      url: https://github.com/simolus3/moor.git
-      ref: develop
-      path: sqlparser
-
-  nyxx:
-    git:
-      url: https://github.com/nyxx-discord/nyxx.git
-      ref: dev
-
-  nyxx_interactions:
-    git:
-      url: https://github.com/nyxx-discord/nyxx_interactions.git
-      ref: dev
-
 dependencies:
-  drift:
-    git:
-      url: https://github.com/simolus3/moor.git
-      ref: develop
-      path: drift
+  drift: ^2.4.2
 
   drift_postgres:
     git:
@@ -43,7 +15,7 @@ dependencies:
       path: extras/drift_postgres
   get_it: ^7.2.0
   http: ^0.13.5
-  nyxx: ^4.1.0
+  nyxx: ^4.4.0
 
   nyxx_commands:
     git: 
@@ -53,7 +25,7 @@ dependencies:
   postgres: ^2.5.2
   logging: ^1.1.0
   collection: ^1.17.0
-  nyxx_interactions: ^4.3.1
+  nyxx_interactions: ^4.5.0
   fuzzywuzzy: ^0.2.0
   human_duration_parser: ^2.0.1
   spotify: ^0.8.0
@@ -68,8 +40,4 @@ dev_dependencies:
   lints: ^2.0.0
   test: ^1.16.0
 
-  drift_dev:
-    git:
-      url: https://github.com/simolus3/moor.git
-      ref: develop
-      path: drift_dev
+  drift_dev: ^2.4.1
