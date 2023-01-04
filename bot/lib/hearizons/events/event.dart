@@ -487,7 +487,7 @@ The next cycle starts ${TimeStampStyle.relativeTime.format(cycleStart.add(data.s
   FutureOr<GuildEventBuilder> createReviewsEventBuilder(DateTime cycleStart) async =>
       GuildEventBuilder()
         ..startDate = cycleStart.add(data.submissionsLength)
-        ..endDate = cycleStart.add(data.submissionsLength + data.reviewLength + data.intervalLength)
+        ..endDate = cycleStart.add(data.submissionsLength + data.reviewLength)
         ..name = '${data.name} Reviews'
         ..metadata = EntityMetadataBuilder(
             '#${(await client.httpEndpoints.fetchChannel<IMinimalGuildChannel>(data.reviewsChannelId)).name}')

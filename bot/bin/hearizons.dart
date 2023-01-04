@@ -32,6 +32,7 @@ void main() async {
       defaultResponseLevel: ResponseLevel.private,
       inferDefaultCommandType: true,
       logErrors: false,
+      autoAcknowledgeDuration: Duration.zero, // Hack for slow internet
     ),
   );
 
@@ -46,6 +47,12 @@ void main() async {
   commands
     ..addConverter(durationConverter)
     ..addConverter<Duration?>(durationConverter);
+
+  // Nullable converters
+  commands
+    ..addConverter(commands.getConverter(const DartType<String?>(), logWarn: false)!)
+    ..addConverter(commands.getConverter(const DartType<ITextGuildChannel?>(), logWarn: false)!)
+    ..addConverter(commands.getConverter(const DartType<IRole?>(), logWarn: false)!);
 
   client
     ..registerPlugin(Logging())
