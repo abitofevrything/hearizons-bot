@@ -35,7 +35,7 @@ packages:
       name: args
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.1"
+    version: "2.3.2"
   async:
     dependency: transitive
     description:
@@ -56,7 +56,7 @@ packages:
       name: buffer
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.1"
+    version: "1.2.0"
   build:
     dependency: transitive
     description:
@@ -112,7 +112,7 @@ packages:
       name: built_value
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "8.4.2"
+    version: "8.4.3"
   charcode:
     dependency: transitive
     description:
@@ -161,7 +161,7 @@ packages:
       name: coverage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.6.1"
+    version: "1.6.2"
   crypto:
     dependency: transitive
     description:
@@ -195,7 +195,7 @@ packages:
     description:
       path: "extras/drift_postgres"
       ref: HEAD
-      resolved-ref: fafcf114a3b1d2aaae25b13464f2c2b331b08d0e
+      resolved-ref: "48e7785491c05e1cb66fe04f23980e1066e090d9"
       url: "https://github.com/simolus3/moor.git"
     source: git
     version: "1.0.0"
@@ -303,7 +303,7 @@ packages:
       name: io
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.3"
+    version: "1.0.4"
   js:
     dependency: transitive
     description:
@@ -317,7 +317,7 @@ packages:
       name: json_annotation
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.7.0"
+    version: "4.8.0"
   lints:
     dependency: "direct dev"
     description:
@@ -352,7 +352,7 @@ packages:
       name: mime
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.3"
+    version: "1.0.4"
   node_preamble:
     dependency: transitive
     description:
@@ -372,7 +372,7 @@ packages:
     description:
       path: "."
       ref: next
-      resolved-ref: "5d8469e135384218a2e8ca046130d02bdd60f665"
+      resolved-ref: cf7549f36fedc77627715d0d01753151f661417e
       url: "https://github.com/nyxx-discord/nyxx_commands.git"
     source: git
     version: "5.0.0-dev.1"
@@ -557,7 +557,7 @@ packages:
       name: sqlparser
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.26.0"
+    version: "0.26.1"
   stack_trace:
     dependency: transitive
     description:
@@ -599,28 +599,28 @@ packages:
       name: test
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.22.1"
+    version: "1.22.2"
   test_api:
     dependency: transitive
     description:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.17"
+    version: "0.4.18"
   test_core:
     dependency: transitive
     description:
       name: test_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.21"
+    version: "0.4.22"
   timing:
     dependency: transitive
     description:
       name: timing
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "1.0.1"
   typed_data:
     dependency: transitive
     description:
@@ -641,7 +641,7 @@ packages:
       name: vm_service
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "9.4.0"
+    version: "10.1.0"
   watcher:
     dependency: transitive
     description:
@@ -655,7 +655,7 @@ packages:
       name: web_socket_channel
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.0"
+    version: "2.3.0"
   webkit_inspection_protocol:
     dependency: transitive
     description:
